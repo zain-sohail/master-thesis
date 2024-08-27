@@ -1,0 +1,47 @@
+\newglossaryentry{train}{
+    name={Train},
+    description={Also known as \textit{Macrobunch}. A train represents a group of closely spaced electron bunches produced and accelerated by the \gls{FEL} (or more generally, any accelerator). Each train is associated with a unique identifier called \texttt{trainId}, which is used as the primary index for much of the data reduction process}
+}
+
+\newglossaryentry{pulse}{
+    name={Pulse},
+    description={Also known as \textit{\gls{microbunch}}. Each \gls{train} contains about 500 pulses produced from the \gls{SASE} process (See \gls{sase}). These are which are used as a secondary index for the data reduction process},
+    plural={pulses},
+}
+
+\newglossaryentry{sase}{
+    name={Self-Amplified Spontaneous Emission},
+    description={is a process where the electron beam in the accelerator, when passing through an undulator, starts emitting radiation due to acceleration. The interaction between the emitted radiation and the charge distribution leads to microbunching. These microbunches emit radiation coherently, leading to the intense, coherent radition, characteristic of an \gls{FEL}. For more information see \cite{ackermann_operation_2007-1}}
+}
+
+\newglossaryentry{microbunch}{
+    name={Microbunch},
+    description={Microbunches are produced by the interaction between the oscillating electrons in the undulator and the radiation that they produce (due to the oscillatory acceleration) leads to periodic longitudinal density modulation known as Microbunching. The in-phase emitted radition adds coherently, increasing intensity and enhancing microbunching. Adapted from \cite{ackermann_operation_2007-1}},
+    plural={Microbunches},
+}
+
+% \newglossaryentry{spontaneous_emission}{
+%     name={Spontaneous Emission},
+%     description={This occurs when an electron in an excited atomic or molecular state randomly falls to a lower energy level, emitting a photon in the process. The direction and phase of the emitted photon are random.}
+% }
+
+% \newglossaryentry{stimulated_emission}{
+%     name={Stimulated Emission},
+%     description={}
+% }
+
+\newglossaryentry{fel}{
+    name={Free-Electron Laser},
+    description={
+    is an x-ray radiation source; fundamentally comprising of a linear particle accelerator and an \gls{undulator} (or a series of undulators). The accelerator produces a bunched electron beam similar to that of a synchrotron, which can be compressed to reach ultrashort pulse duration (femtosecond) with peak brightness many orders of magnitude above synchrotrons. Since the electrons move in a vacuum, it is termed Free-Electron in comparison to traditional lasers which are bound by the materials energy levels. Whereas, it is called a Laser due to there being light amplification and the shared properties with traditional optical lasers such as high pulse energy and being coherent. Taken from \cite{sohail_ultrafast_2021}}
+}
+
+\newglossaryentry{undulator}{
+    name={Undulator},
+    description={Magnets arranged periodically to produce a periodic magnetic field. It is used to produce coherent radiation by accelerating electrons through it}
+}
+
+\newglossaryentry{beamline}{
+    name={Beamline},
+    description={A path leading the photons from the particle accelerator to the experimental end-station.}
+}

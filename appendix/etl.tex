@@ -1,0 +1,95 @@
+\chapter{Transforming Raw Data to structured format}
+\section*{Extract, Transform, Load}
+Raw data from the experiment is stored in \gls{HDF5} files. This includes many \gls{beamline} diagnostic information such as \gls{BAM}, \gls{GMD}, the delay stage readings, the monochromator energy, sample specific information such as extractor voltage, and the three-dimensional electron counting by the \gls{DLD}. This information is resolved at each bunch of electrons coming from the accelerator called a \gls{train}, which are further microbunched into \glsplural{pulse}.
+
+The \gls{OpenCOMPES} was established to develop tools and infrastructure to make analysis easier. To this end, a modular Python library called \texttt{\gls{SED}} was created that provides the entire pipeline from easy data ingestion to common calibration and corrections, Multidimensional binning to create images, and saving the images standard formats, with data provenance.
+
+
+
+The data pipeline is designed to extract raw data from \gls{HDF5} files, transform the data into a structured format for analysis, and load the transformed data into buffer files. These buffer files are subsequently used for downstream processing, analysis, and visualization. The following sections provide a detailed description of each stage in the ETL process.    
+
+
+\section*{Pipeline Overview}
+The ETL pipeline is divided into several key stages, each critical to the preparation and validation of the data. These stages include:
+
+\begin{itemize}
+    \item \textbf{Data Extraction:} Retrieving raw H5 files from experimental runs.
+    \item \textbf{Buffer File Creation:} Generating interim buffer files that facilitate further processing.
+    \item \textbf{Data Transformation and Validation:} Applying domain-specific transformations, such as forward-filling non-electron channels and splitting sector IDs, while validating data integrity against predefined schemas.
+    \item \textbf{Data Structuring:} Organizing the processed data into structured Parquet files suitable for downstream analysis.
+\end{itemize}
+
+\section*{Detailed Pipeline Stages}
+
+\subsection*{Data Extraction}
+The initial stage of the pipeline involves the extraction of raw data from H5 files. These files contain experimental data with various channels, such as electron and timed information, stored in a hierarchical structure. The paths to these H5 files are provided as input to the pipeline, along with configuration settings that dictate the subsequent processing steps.
+
+\subsection*{Buffer File Creation}
+To streamline the data processing, the pipeline first creates buffer files for each type of data (electron and timed dataframes). This is achieved through the \texttt{BufferFilePaths} class, which initializes paths for the raw H5 files and corresponding buffer files. The class checks for existing buffer files and determines whether new files need to be generated or existing ones should be reused, based on the \texttt{force\_recreate} flag.
+
+For each H5 file, the pipeline generates two buffer files:
+\begin{itemize}
+    \item \textbf{Electron Buffer File:} Contains data relevant to individual electron events.
+    \item \textbf{Timed Buffer File:} Aggregates data at pulse and train levels, resolving timing information without individual electron data.
+\end{itemize}
+
+\subsection*{Data Transformation and Validation}
+Once the buffer files are established, the pipeline proceeds to transform the data. The key transformation steps include:
+
+\begin{itemize}
+    \item \textbf{Forward-Filling Non-Electron Channels:} Missing values in non-electron channels are filled using a forward-fill strategy to ensure data continuity.
+    \item \textbf{Schema Validation:} The schema of the generated Parquet files is validated against the expected schema derived from configuration files. This ensures that all required channels are present and correctly formatted. The schema check involves:
+    \begin{itemize}
+        \item Reading the schema from existing Parquet files.
+        \item Comparing the actual schema with the expected schema.
+        \item Raising errors if discrepancies are found, prompting a review of the configuration or a forced recreation of buffer files.
+    \end{itemize}
+    \item \textbf{Splitting Sector ID from DLD Time:} A custom transformation is applied to separate the sector ID from the DLD (Delay Line Detector) time within the electron dataframe. This operation is essential for accurately resolving electron events.
+\end{itemize}
+
+\subsection*{Data Structuring and Finalization}
+After transforming and validating the data, the pipeline structures it into Parquet files, which are columnar storage formats optimized for analytical queries. The steps involved include:
+
+\begin{itemize}
+    \item \textbf{Electron Dataframe Structuring:} The electron-resolved dataframe is processed to drop non-electron data and reset the index. The processed data is then saved as a Parquet file.
+    \item \textbf{Timed Dataframe Structuring:} The timed dataframe is derived by aggregating data at pulse and train levels, excluding electron-specific data. This structured data is also saved as a Parquet file.
+    \item \textbf{Metadata Generation:} Metadata related to file statistics, filling operations, and schema checks is compiled and saved, providing crucial information for downstream analysis and data auditing.
+\end{itemize}
+
+% \subsubsection{Parallel Processing and Buffer File Creation}
+% To enhance the efficiency of the transformation process, buffer file creation is parallelized using joblib's Parallel class. This allows multiple files to be processed simultaneously, leveraging the available CPU cores. The number of cores used is dynamically determined based on the system's capabilities and the number of files to process. For debugging purposes or when encountering issues during parallel processing, the transformation can also be performed serially.
+
+% \subsection{Loading of Transformed Data}
+% The final stage of the ETL pipeline involves loading the transformed data from the buffer files into Dask DataFrames. Dask is chosen for its ability to handle large datasets efficiently and perform parallel computations. The get dataframes method reads the Parquet buffer files into separate Dask DataFrames for both electron and timed data.
+
+% \subsubsection{Lazy Loading and Forward-Filling Across Files}
+% Upon loading, the DataFrames undergo lazy forward-filling to handle any remaining missing values that might span across multiple buffer files. This step ensures that data continuity is maintained across different segments of the dataset. The forward-filling operation is optimized to only fill gaps that exceed a minimum overlap, thereby reducing unnecessary computations and preserving computational resources.
+
+% \subsubsection{Splitting Sector ID from DLD Time}
+% For electron-resolved data, an additional transformation is applied to split the sector ID from the DLD (Drift Length Detector) time if the configuration specifies this operation. This step involves separating the encoded sector information embedded within the DLD time, which is crucial for correctly associating detected events with specific detector sectors. The transformation is performed lazily, maintaining the efficiency of the pipeline.
+
+% \subsubsection{Metadata Mangamenet}
+% Throughout the ETL process, various metadata is collected and stored, including file statistics, schema information, and filling parameters. This metadata provides valuable insights into the data quality, the transformations applied, and any potential issues encountered during processing. It also facilitates reproducibility and traceability of the data processing workflow, ensuring that the results can be verified and validated.
+
+
+% At \gls{FLASH}, the data \gls{trARPES}
+% Each file:
+% Train indexed data is stored in HDF5 files. Index and data itself are stored in two separate HDF groups.
+% Each pair is called channel. Load relevant channels. ~500 pulses each train. Some data is stored as pulse resolved but each index has an array
+% so pandas Multiindex is used to create heirarchy. Detector measurements such as the X Y and TOF are electron resolved. So they are a 3d array and that can have another level of index then. There is an offset in pulseId so that no measurements are missed. This offset is first corrected. All data is below pulse 0 is removed as it is invalid. All nan pulses are also dropped. We do not filter above 500 even though those might also be invalid but leave that to end analysis. Pulses are sorted as due to machine, they might have bits moved around.
+% Electron resolved channels are then combined together as they have the same index. THese channels are outer joined with the pulse and train resolved data (the slower frequency channels) to create a dataframe. 
+
+% Two dataframes from this are created, an electron dataframe and a pulse resolved dataframe.
+% All non-electron channels are forward filled. After this, all rows without an electron event are dropped. This is the electorn dataframe.
+
+% It's possible that not all pulses/trains produce an electron and hence the pulse and train resolved channels with that information would not be available in the electron dataframe. So another dataframe that is containing all trains and pulses but is not electron reolsved is created called the timed dataframe. This is used to normalize by the delay axis for example
+% Aux channel treatment (4d array)
+
+% Channels groups are first validated if they exist in the file.
+
+
+% This reduction process is done for all files and they are saved as parquet (buffer) since it is storage efficient and fast to read.
+
+% We load all these files as one dataframe dask, a distributed computing python library. These files are again forward filled for each dataframe (only non-electron channels) to fill the interfile values. Probably wrong to fill different runs.
+
+% The schema of the buffer files is checked against the list of channels before loading the data to dask.

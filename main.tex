@@ -1,0 +1,149 @@
+\documentclass[a4paper,12pt,twoside]{book}
+
+% Page layout and formatting
+\usepackage[margin=3cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{float}
+
+% Appendix
+\usepackage[toc,page]{appendix}
+
+% Math packages
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+% Language and encoding
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+% Font used
+\usepackage{lmodern}
+
+% Graphics and color
+\usepackage{graphicx}
+\usepackage[export]{adjustbox}
+\usepackage{xcolor}
+\graphicspath{{images/}}
+
+% Figures and tables
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage{multirow}
+\usepackage[font=small,labelfont=bf]{caption}
+\captionsetup{justification=raggedright, singlelinecheck=false}
+
+% Bibliography
+\usepackage[square,numbers,sort]{natbib}
+\bibliographystyle{IEEEtranN}
+\usepackage{tocbibind}  % To include the bibliography in the TOC
+
+% Hyperlinks
+\usepackage[hidelinks]{hyperref}
+\usepackage{url}
+
+% Acronyms and glossaries
+\usepackage[toc, acronym]{glossaries}
+\makeglossaries
+\setacronymstyle{long-short}
+\input{acronyms.tex}
+\input{glossary.tex}
+\setlength{\glsdescwidth}{0.8\hsize}
+
+% Other utilities
+\usepackage{notoccite}
+
+% Customizations
+\renewcommand{\baselinestretch}{1}  % Line spacing
+\setlength{\parskip}{0.25em}        % Paragraph spacing
+\setlength{\headheight}{15pt}       % Header height
+\titleformat{\chapter}[display]{\normalfont\bfseries}{}{0pt}{\Huge}
+
+% Fancyhdr settings
+\fancyhead{}
+\fancyfoot{}
+\fancyhead[LE]{\leftmark}
+\fancyhead[RO]{\rightmark}
+\renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}
+\renewcommand{\chaptermark}[1]{\markboth{\chaptername\ \thechapter.\ #1}{}}
+\pagestyle{fancy}
+
+% IEEEtranN control
+\makeatletter
+\def\bstctlcite{\@ifnextchar[{\@bstctlcite}{\@bstctlcite[@auxout]}}
+\def\@bstctlcite[#1]#2{\@bsphack
+  \@for\@citeb:=#2\do{%
+    \edef\@citeb{\expandafter\@firstofone\@citeb}%
+    \if@filesw\immediate\write\csname #1\endcsname{\string\citation{\@citeb}}\fi}%
+  \@esphack}
+\makeatother
+
+\begin{document}
+\bstctlcite{IEEEexample:BSTcontrol}
+
+% Preliminary pages
+\pagenumbering{roman}
+\input{titlepage.tex}
+\chapter*{Summary}
+% \addcontentsline{toc}{chapter}{Summary}
+\input{abstract}
+\tableofcontents
+
+% Acronyms
+\printglossary[style=tree, type=\acronymtype, title=List of Acronyms]
+% \addcontentsline{toc}{chapter}{List of Acronyms}
+
+\printglossary
+% \addcontentsline{toc}{chapter}{Glossary}
+\glsunsetall
+\glsresetall
+
+% Main content
+% \chapter{TODO}
+% \input{chapters/extras}
+
+\chapter{Introduction}
+\input{chapters/introduction}
+\pagenumbering{arabic}
+
+\chapter{Photoemission Spectroscopy}
+\input{chapters/pes}
+
+\chapter{Imaging}
+\input{chapters/imaging}
+
+% \chapter*{PES}
+% \addcontentsline{toc}{chapter}{PES}
+
+
+\chapter{Image Reconstruction}
+\input{chapters/reconstruction}
+
+\chapter{Conclusion and Outlook}
+\input{chapters/conclusion}
+
+% Bibliography
+\bibliography{references}
+
+% Additional chapters
+% TODO: Add acknowledgements back
+\chapter*{Acknowledgements}
+\addcontentsline{toc}{chapter}{Acknowledgements}
+\input{acknowledgements}
+
+\chapter*{Contributions}
+\addcontentsline{toc}{chapter}{Contributions}
+\input{contributions}
+
+\chapter*{Declaration}
+\addcontentsline{toc}{chapter}{Declaration}
+\input{declaration}
+
+\begin{appendices}
+  \input{appendix/etl}
+  \input{appendix/math_notation.tex}
+\end{appendices}
+
+\end{document}

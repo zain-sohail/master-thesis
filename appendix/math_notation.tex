@@ -1,0 +1,94 @@
+\chapter{Mathematical Background}
+\label{appendix:mathematical-notation}
+
+\section{Probablity Measure}
+\subsection{Measurable Space}
+\label{section:measurable_space}
+Let $\Omega = \emptyset$, $P(\Omega)$ the power set of $\Omega$ and $\mathcal{A} \subset P(\Omega)$. If the following conditions are met, $\mathcal{A}$ is a called $\sigma$-algebra, and the $(\Omega, \mathcal{A})$ pair make up a measurable space.
+
+
+\begin{enumerate}
+    \item $\Omega \in \mathcal{A}$.
+    \item If $A \in \mathcal{A}$, then $\Omega \setminus A \in \mathcal{A}$.
+    \item If $(A_n)_{n \in \mathbb{N}}$ is a sequence of sets where $A_n \in \mathcal{A}$ for all $n \in \mathbb{N}$, then 
+    \begin{equation*}
+        \bigcup_{n \in \mathbb{N}} A_n \in \mathcal{A}.
+    \end{equation*}
+\end{enumerate}
+
+\subsection{Positive Measure}
+
+Let $(\Omega, \mathcal{A})$ be a measurable space as defined in \ref{section:measurable_space}. A function $\mu: \mathcal{A} \to [0, \infty]$ is called a \textit{positive measure} if it satisfies the following conditions:
+
+\begin{enumerate}
+    \item $\mu(\emptyset) = 0$, (the measure of the empty set is zero)
+    \item $\mu$ is \textit{countably additive}: For any countable collection of disjoint sets $(A_i)_{i \in \mathbb{N}} \subset \mathcal{A}$, we have
+    \begin{equation*}
+        \mu\left( \bigcup_{i=1}^{\infty} A_i \right) = \sum_{i=1}^{\infty} \mu(A_i).
+    \end{equation*}
+\end{enumerate}
+
+If these conditions are met, then $\mu$ is called a \textit{measure} on the measurable space $(\Omega, \mathcal{A})$.
+
+\subsection{Probability Measure}
+
+A \textit{probability measure} $p: \mathcal{A} \to [0, 1]$ satisfies all the properties of a positive measure, with the additional property known as the Normalization condition:
+
+\begin{equation*}
+    p(\Omega) = 1
+\end{equation*}
+
+With the measure space being $(\Omega, \mathcal{A}, p)$
+
+% \begin{enumerate}
+%     \item $p(A) \geq 0$ for all $A \in \mathcal{A}$. (Non-negativity)
+%     \item $p(\emptyset) = 0$. (The measure of the empty set is zero)
+%     \item $p$ is \textit{countably additive}: For any countable collection of disjoint sets $(A_i)_{i \in \mathbb{N}} \subset \mathcal{A}$,
+%     \begin{equation}
+%         p\left( \bigcup_{i=1}^{\infty} A_i \right) = \sum_{i=1}^{\infty} p(A_i).
+%     \end{equation}
+%     \item $p(\Omega) = 1$. (Normalization condition)
+% \end{enumerate}
+
+
+\section{Landau Notation}
+Landau notation, commonly referred to as Big O notation and its relatives (Big Omega, Big Theta, etc.), is used to describe the asymptotic behavior of functions. This is particularly important in the analysis of algorithms and in expressing the growth rates of functions.
+
+\section*{Big O Notation ($\mathcal{O}$)}
+% Big O notation, denoted as $\mathcal{O}(g(n))$, describes an upper bound on the time complexity of an algorithm or the growth rate of a function. It provides an asymptotic upper bound on the function.
+
+% % \begin{equation}
+% % f(n) = O(g(n)) \quad \text{if and only if there exist positive constants } C \text{ and } n_0 \text{ such that for all } n \geq n_0, \; |f(n)| \leq C \cdot |g(n)|.
+% % \end{equation}
+
+% \section*{Big Omega Notation ($\Omega$)}
+% Big Omega notation, denoted as $\Omega(g(n))$, describes a lower bound on the time complexity or growth rate of a function. It provides an asymptotic lower bound.
+
+% % \begin{equation}
+% % f(n) = \Omega(g(n)) \quad \text{if and only if there exist positive constants } C \text{ and } n_0 \text{ such that for all } n \geq n_0, \; |f(n)| \geq C \cdot |g(n)|.
+% % \end{equation}
+
+% \section*{Big Theta Notation}
+% Big Theta notation, denoted as $\Theta(g(n))$, provides both an upper and lower bound on the growth rate of a function. It effectively means that $(f(n)$) grows asymptotically at the same rate as $(g(n)$).
+
+% % \begin{equation}
+% % f(n) = \Theta(g(n)) \quad \text{if and only if there exist positive constants } C_1, C_2 \text{ and } n_0 \text{ such that for all } n \geq n_0, \; C_1 \cdot |g(n)| \leq |f(n)| \leq C_2 \cdot |g(n)|.
+% % \end{equation}
+
+% \section*{Little o Notation}
+% Little o notation, denoted as \(o(g(n))\), describes an upper bound that is not asymptotically tight. In other words, \(f(n)\) grows strictly slower than \(g(n)\).
+
+% % \begin{equation}
+% % f(n) = o(g(n)) \quad \text{if and only if \(\lim_{n \to \infty} \frac{f(n)}{g(n)} = 0\).
+% % \end{equation}
+
+% \section*{Little Omega Notation}
+% Little omega notation, denoted as $\omega(g(n))$, describes a lower bound that is not asymptotically tight. This means that \(f(n)\) grows strictly faster than $(g(n)$).
+
+% % \begin{equation}
+% % f(n) = \omega(g(n)) \quad \text{if and only if \(\lim_{n \to \infty} \frac{f(n)}{g(n)} = \infty\).
+% % \end{equation}
+
+% \section*{Usage in Analysis}
+% Landau notation is extensively used in algorithm analysis to describe the running time or space requirements of an algorithm as a function of the input size. It abstracts away constants and less significant terms, focusing on the dominant factor that impacts growth rate as input size increases.
+

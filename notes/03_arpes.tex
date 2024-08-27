@@ -1,0 +1,264 @@
+Scientists already use ML when they do linear regression.. like RMS etc
+
+optimization techniques used. backprop
+
+statistical inference.. frequentist and bayesian
+NNs are just layers of non linear models where a single unit is known as perceptron
+connection to neuronal networks from neuroscience
+applied data analysis linear models 
+
+might be quite interesting to talk about inference in statistics 
+formal logic/first order logic used for
+description logic introduced in semantic web lecture 8
+
+
+denoising is filtering part of scientific visualization workflow
+
+\section{Multi dimensional recording scheme}
+\subsection{SS}
+\section{Detector and source}
+The presence of a bimodal distribution in your photon count
+measurements, with a significant proportion of intervals having zero
+counts and another group centered around a mean of 10 counts, suggests
+that there might be two distinct processes or sources contributing to
+the photon counts.
+
+\hypertarget{possible-explanations-for-bimodal-distribution}{%
+\subsubsection{Possible Explanations for Bimodal
+Distribution}\label{possible-explanations-for-bimodal-distribution}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Intermittent Signal}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Intermittent Source}: If the photon source is intermittent,
+    turning on and off during the measurement intervals, you could get
+    many intervals with zero counts (when the source is off) and
+    intervals with a higher count (when the source is on).
+  \item
+    \textbf{Triggering Issues}: There might be issues with the
+    triggering mechanism of your detection system, leading to some
+    intervals without photon detection.
+  \end{itemize}
+\item
+  \textbf{Background and Signal Separation}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Background Noise}: The zero count mode could represent
+    intervals where only background noise is present, while the mode
+    around 10 counts represents intervals where the signal (and possibly
+    background) is detected.
+  \item
+    \textbf{Interference}: Another source of interference might cause
+    the bimodal nature, such as fluctuating environmental conditions or
+    interference from other equipment.
+  \end{itemize}
+\item
+  \textbf{Photon Bunching}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Photon Bunching}: In some quantum optical systems, photons
+    might arrive in bunches due to specific interactions or processes,
+    leading to intervals with zero counts and intervals with higher
+    counts.
+  \end{itemize}
+\item
+  \textbf{Detector Efficiency or Dead Time}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Efficiency Variations}: Variations in detector efficiency or
+    dead time effects could lead to periods with no detections followed
+    by periods with normal detection rates.
+  \end{itemize}
+\end{enumerate}
+
+\hypertarget{analyzing-the-bimodal-distribution}{%
+\subsubsection{Analyzing the Bimodal
+Distribution}\label{analyzing-the-bimodal-distribution}}
+
+To further understand and diagnose the bimodal distribution, you can
+perform the following analyses:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Time Series Analysis}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Plot the photon counts as a function of time to see if there are
+    patterns or periodicities that indicate an intermittent source or
+    other temporal behavior.
+  \end{itemize}
+\item
+  \textbf{Histogram and Density Plot}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Plot the histogram and kernel density estimate of the photon counts
+    to visualize the bimodal distribution clearly.
+  \end{itemize}
+\item
+  \textbf{Conditional Probability}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Calculate the conditional probability of getting a non-zero count
+    given a previous non-zero count to see if there is a temporal
+    correlation.
+  \end{itemize}
+\item
+  \textbf{Autocorrelation Function}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Compute the autocorrelation function of the photon count time series
+    to identify any periodicity or temporal correlation in the data.
+  \end{itemize}
+\end{enumerate}
+
+\hypertarget{example-analysis-in-python}{%
+\subsubsection{Example Analysis in
+Python}\label{example-analysis-in-python}}
+
+Here is an example of how you might visualize and analyze the bimodal
+distribution:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ numpy }\ImportTok{as}\NormalTok{ np}
+\ImportTok{import}\NormalTok{ matplotlib.pyplot }\ImportTok{as}\NormalTok{ plt}
+\ImportTok{import}\NormalTok{ seaborn }\ImportTok{as}\NormalTok{ sns}
+
+\CommentTok{\# Simulated photon counts (bimodal distribution)}
+\NormalTok{np.random.seed(}\DecValTok{42}\NormalTok{)}
+\NormalTok{photon\_counts }\OperatorTok{=}\NormalTok{ np.concatenate([np.random.poisson(}\DecValTok{10}\NormalTok{, }\DecValTok{800}\NormalTok{), np.zeros(}\DecValTok{200}\NormalTok{)])}
+
+\CommentTok{\# Time series plot}
+\NormalTok{plt.figure(figsize}\OperatorTok{=}\NormalTok{(}\DecValTok{12}\NormalTok{, }\DecValTok{4}\NormalTok{))}
+\NormalTok{plt.plot(photon\_counts, marker}\OperatorTok{=}\StringTok{\textquotesingle{}o\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}{-}\textquotesingle{}}\NormalTok{, markersize}\OperatorTok{=}\DecValTok{3}\NormalTok{)}
+\NormalTok{plt.title(}\StringTok{"Time Series of Photon Counts"}\NormalTok{)}
+\NormalTok{plt.xlabel(}\StringTok{"Time Interval"}\NormalTok{)}
+\NormalTok{plt.ylabel(}\StringTok{"Photon Counts"}\NormalTok{)}
+\NormalTok{plt.show()}
+
+\CommentTok{\# Histogram and Density Plot}
+\NormalTok{plt.figure(figsize}\OperatorTok{=}\NormalTok{(}\DecValTok{12}\NormalTok{, }\DecValTok{6}\NormalTok{))}
+\NormalTok{sns.histplot(photon\_counts, bins}\OperatorTok{=}\DecValTok{30}\NormalTok{, kde}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+\NormalTok{plt.title(}\StringTok{"Histogram and Density Plot of Photon Counts"}\NormalTok{)}
+\NormalTok{plt.xlabel(}\StringTok{"Photon Counts"}\NormalTok{)}
+\NormalTok{plt.ylabel(}\StringTok{"Density"}\NormalTok{)}
+\NormalTok{plt.show()}
+
+\CommentTok{\# Autocorrelation Function}
+\ImportTok{from}\NormalTok{ statsmodels.graphics.tsaplots }\ImportTok{import}\NormalTok{ plot\_acf}
+
+\NormalTok{plot\_acf(photon\_counts)}
+\NormalTok{plt.title(}\StringTok{"Autocorrelation of Photon Counts"}\NormalTok{)}
+\NormalTok{plt.xlabel(}\StringTok{"Lag"}\NormalTok{)}
+\NormalTok{plt.ylabel(}\StringTok{"Autocorrelation"}\NormalTok{)}
+\NormalTok{plt.show()}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{interpretation}{%
+\subsubsection{Interpretation}\label{interpretation}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Time Series Plot}: This can help identify patterns over time,
+  indicating if the signal is intermittent.
+\item
+  \textbf{Histogram and Density Plot}: Clearly shows the bimodal nature
+  of the data, with peaks at 0 and around 10.
+\item
+  \textbf{Autocorrelation}: Helps identify if there is any correlation
+  between counts in successive intervals, suggesting periodicity or
+  other temporal effects.
+\end{itemize}
+
+\hypertarget{next-steps}{%
+\subsubsection{Next Steps}\label{next-steps}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Investigate Source Behavior}: Check the stability and
+  operation mode of the photon source to ensure it is not intermittent
+  or influenced by external factors.
+\item
+  \textbf{Examine Detection System}: Look into the detection system for
+  any efficiency issues, dead times, or triggering problems that could
+  cause the observed distribution.
+\item
+  \textbf{Separate Background from Signal}: If possible, perform
+  measurements to separate background noise from the actual signal,
+  perhaps by measuring in the absence of the intended photon source.
+\end{itemize}
+
+By conducting these analyses and investigations, you should be able to
+determine the cause of the bimodal distribution and take appropriate
+steps to address any underlying issues.
+
+\section{Noise characterization}
+\textbf{Law of large numbers hsould def be talked about}
+
+also shot noise \href{https://en.wikipedia.org/wiki/Shot_noise}{}
+
+\section{Renormalization effects}
+Renormalization effects in solid state physics and angle-resolved photoemission spectroscopy (ARPES) refer to the modifications in the observed physical properties of a system due to interactions among its particles, such as electrons. These effects are crucial for understanding the behavior of many-body systems and are particularly important in materials with strong electron-electron correlations, like high-temperature superconductors and heavy fermion systems. Here’s a detailed explanation of these effects in both contexts:
+
+Renormalization in Solid State Physics
+
+1. Electron-Electron Interactions:
+- In an idealized system of non-interacting electrons, the properties can be described by simple band theory. However, real materials exhibit interactions among electrons that alter their effective mass, lifetime, and other properties.
+- Renormalization adjusts these properties to account for interactions, leading to concepts like quasiparticles, which are electrons that carry the same charge as a free electron but have an effective mass and lifetime modified by interactions.
+
+2. Quasiparticles and Effective Mass:
+- The effective mass of an electron in a solid is often much larger than the bare electron mass due to electron-electron interactions. This renormalized mass can be understood through the Landau Fermi-liquid theory, where quasiparticles are the central concept.
+- The effective mass \(m^*\) is renormalized from the bare mass \(m\) due to these interactions, affecting the electron’s response to external forces, heat capacity, and other properties.
+
+3. Self-Energy and Green's Functions:
+- The self-energy \(\Sigma(k, \omega)\) is a complex function that encapsulates the effects of interactions on the electron’s energy and lifetime. The real part of the self-energy shifts the energy levels (renormalization of energy), while the imaginary part gives the lifetime (inverse of the scattering rate).
+- Green’s functions \(G(k, \omega)\) are used to describe the propagation of particles in the presence of interactions. The renormalized Green’s function includes the self-energy and provides insights into the modified behavior of the system.
+
+Renormalization Effects in ARPES
+
+1. Quasiparticle Dispersion:
+- ARPES is a powerful tool to study the electronic structure of materials. It measures the energy and momentum of electrons ejected from a sample when it is irradiated with UV or X-ray photons.
+- The renormalized quasiparticle dispersion relation, which can be directly observed in ARPES spectra, deviates from the non-interacting band structure due to electron-electron interactions. This deviation provides information about the renormalization effects.
+
+2. Kinks and Band Flattening:
+- In ARPES spectra, renormalization effects can manifest as kinks in the dispersion relation, indicating strong coupling between electrons and other excitations like phonons or magnons.
+- These kinks, usually observed around certain energy scales (e.g., the Debye energy for phonons), provide direct evidence of electron-boson interactions and the resulting renormalization.
+
+3. Linewidth and Lifetime:
+- The linewidth of ARPES peaks provides information about the electron lifetime. A broader peak indicates a shorter lifetime due to increased scattering events, often from electron-electron or electron-phonon interactions.
+- Renormalization effects can thus be inferred from changes in the peak linewidth, as interactions lead to enhanced scattering rates and reduced quasiparticle lifetimes.
+
+4. Many-Body Effects:
+- Many-body effects like those seen in strongly correlated materials (e.g., Mott insulators, heavy fermion systems) can significantly renormalize the electronic structure.
+- ARPES can reveal features such as spectral weight redistribution, which is a hallmark of many-body interactions where electronic states are shifted or removed from certain energy ranges due to strong correlations.
+
+In summary, renormalization effects in solid state physics adjust the observed properties of particles due to interactions, resulting in concepts like quasiparticles with modified masses and lifetimes. In ARPES, these effects are directly observable as changes in the electronic dispersion, linewidths, and other spectral features, providing a detailed view of the underlying many-body interactions.
+
+\section{Chessy}
+Chessy Test Specimen
+The Chessy test specimen comprises more than 1.6 million gold squares on silicon which form a four-fold chequerboard pattern in a total size of 1cm2.
