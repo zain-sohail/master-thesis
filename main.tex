@@ -1,4 +1,4 @@
-\documentclass[a4paper,12pt,twoside]{book}
+\documentclass[a4paper,12pt,twoside,openany]{book}
 
 % Page layout and formatting
 \usepackage[margin=3cm]{geometry}
@@ -6,12 +6,23 @@
 \usepackage{titlesec}
 \usepackage{float}
 
+% Define admonitions
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\newtcolorbox{note}[2][]{breakable,sharp corners, skin=enhancedmiddle jigsaw,parbox=false,
+boxrule=0mm,leftrule=2mm,boxsep=0mm,arc=0mm,outer arc=0mm,attach title to upper,
+after title={.\ }, coltitle=black,colback=gray!10,colframe=black, title={#2},
+fonttitle=\bfseries,#1}
+
 % Appendix
 \usepackage[toc,page]{appendix}
+\usepackage{pdfpages}
 
 % Math packages
 \usepackage{amssymb}
 \usepackage{amsmath}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
 
 % Language and encoding
 \usepackage[utf8]{inputenc}
@@ -36,9 +47,11 @@
 \captionsetup{justification=raggedright, singlelinecheck=false}
 
 % Bibliography
-\usepackage[square,numbers,sort]{natbib}
-\bibliographystyle{IEEEtranN}
+\usepackage[style=numeric]{biblatex}
+\addbibresource{references.bib}  % Replace with your .bib file
 \usepackage{tocbibind}  % To include the bibliography in the TOC
+\usepackage{csquotes} 
+% \bibliography{references}
 
 % Hyperlinks
 \usepackage[hidelinks]{hyperref}
@@ -81,13 +94,13 @@
 \makeatother
 
 \begin{document}
-\bstctlcite{IEEEexample:BSTcontrol}
+% \bstctlcite{IEEEexample:BSTcontrol}
 
 % Preliminary pages
 \pagenumbering{roman}
 \input{titlepage.tex}
 \chapter*{Summary}
-% \addcontentsline{toc}{chapter}{Summary}
+\addcontentsline{toc}{chapter}{Summary}
 \input{abstract}
 \tableofcontents
 
@@ -114,8 +127,8 @@
 \chapter{Imaging}
 \input{chapters/imaging}
 
-% \chapter*{PES}
-% \addcontentsline{toc}{chapter}{PES}
+\chapter{Characterizing Photon and Photoelectron Statistics}
+\input{chapters/statistics}
 
 
 \chapter{Image Reconstruction}
@@ -124,8 +137,10 @@
 \chapter{Conclusion and Outlook}
 \input{chapters/conclusion}
 
-% Bibliography
-\bibliography{references}
+% % Bibliography
+% \bibliography{references}
+\printbibliography[heading=bibintoc, title={Bibliography}]
+
 
 % Additional chapters
 % TODO: Add acknowledgements back
@@ -144,6 +159,8 @@
 \begin{appendices}
   \input{appendix/etl}
   \input{appendix/math_notation.tex}
+  \input{appendix/deep_learning.tex}
+  % \input{jupyter_notebooks/notebooks.tex}
 \end{appendices}
 
 \end{document}
