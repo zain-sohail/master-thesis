@@ -1,55 +1,112 @@
 \chapter{Mathematical Background}
 \label{appendix:mathematical-notation}
 
-\section{Probablity Measure}
-\subsection{Measurable Space}
+\section{Measure Space and Measures}
 \label{section:measurable_space}
-Let $\Omega = \emptyset$, $P(\Omega)$ the power set of $\Omega$ and $\mathcal{A} \subset P(\Omega)$. If the following conditions are met, $\mathcal{A}$ is a called $\sigma$-algebra, and the $(\Omega, \mathcal{A})$ pair make up a measurable space.
+\begin{note}
+    {Measurable Space}
+
+    Let $\Omega = \emptyset$, $P(\Omega)$ the power set of $\Omega$ and $\mathcal{A} \subset P(\Omega)$. If the following conditions are met, $\mathcal{A}$ is a called $\sigma$-algebra, and the $(\Omega, \mathcal{A})$ pair make up a measurable space.
+    \begin{enumerate}
+        \item $\Omega \in \mathcal{A}$.
+        \item If $A \in \mathcal{A}$, then $\Omega \setminus A \in \mathcal{A}$.
+        \item If $(A_n)_{n \in \mathbb{N}}$ is a sequence of sets where $A_n \in \mathcal{A}$ for all $n \in \mathbb{N}$, then 
+        \begin{equation*}
+            \bigcup_{n \in \mathbb{N}} A_n \in \mathcal{A}.
+        \end{equation*}
+    \end{enumerate}
+\end{note}
+
+\begin{note}
+    {Positive Measure}
+    Let $(\Omega, \mathcal{A})$ be a measurable space as defined in above. A function $\mu: \mathcal{A} \to [0, \infty]$ is called a \textit{positive measure} if it satisfies the following conditions:
+
+    \begin{enumerate}
+        \item $\mu(\emptyset) = 0$, (the measure of the empty set is zero)
+        \item $\mu$ is \textit{countably additive}: For any countable collection of disjoint sets $(A_i)_{i \in \mathbb{N}} \subset \mathcal{A}$, we have
+        \begin{equation*}
+            \mu\left( \bigcup_{i=1}^{\infty} A_i \right) = \sum_{i=1}^{\infty} \mu(A_i).
+        \end{equation*}
+    \end{enumerate}
+    
+    If these conditions are met, then $\mu$ is called a \textit{measure} on the measurable space $(\Omega, \mathcal{A})$.
+\end{note}
 
 
-\begin{enumerate}
-    \item $\Omega \in \mathcal{A}$.
-    \item If $A \in \mathcal{A}$, then $\Omega \setminus A \in \mathcal{A}$.
-    \item If $(A_n)_{n \in \mathbb{N}}$ is a sequence of sets where $A_n \in \mathcal{A}$ for all $n \in \mathbb{N}$, then 
-    \begin{equation*}
-        \bigcup_{n \in \mathbb{N}} A_n \in \mathcal{A}.
-    \end{equation*}
-\end{enumerate}
 
-\subsection{Positive Measure}
+\section{Probability}
+The theory of probability is necessary to quantify stochastic and uncertain quantities. Throughout this text, it can be seen used the in context of inherently stochastic processes, such as quantum effects, and to quantify uncertainty in measurements.
 
-Let $(\Omega, \mathcal{A})$ be a measurable space as defined in \ref{section:measurable_space}. A function $\mu: \mathcal{A} \to [0, \infty]$ is called a \textit{positive measure} if it satisfies the following conditions:
-
-\begin{enumerate}
-    \item $\mu(\emptyset) = 0$, (the measure of the empty set is zero)
-    \item $\mu$ is \textit{countably additive}: For any countable collection of disjoint sets $(A_i)_{i \in \mathbb{N}} \subset \mathcal{A}$, we have
-    \begin{equation*}
-        \mu\left( \bigcup_{i=1}^{\infty} A_i \right) = \sum_{i=1}^{\infty} \mu(A_i).
-    \end{equation*}
-\end{enumerate}
-
-If these conditions are met, then $\mu$ is called a \textit{measure} on the measurable space $(\Omega, \mathcal{A})$.
-
-\subsection{Probability Measure}
-
-A \textit{probability measure} $p: \mathcal{A} \to [0, 1]$ satisfies all the properties of a positive measure, with the additional property known as the Normalization condition:
+\begin{note}
+    {Probability Measure}
+A \textit{probability measure} $P: \mathcal{A} \to [0, 1]$ satisfies all the properties of a positive measure (see Section \ref{section:measurable_space}), with the additional property known as the normalization condition:
 
 \begin{equation*}
-    p(\Omega) = 1
+    P(\Omega) = 1
 \end{equation*}
 
-With the measure space being $(\Omega, \mathcal{A}, p)$
+This leads to the measure space for probability (or probability space) being $(\Omega, \mathcal{A}, P)$. The probability of an event $A \in \mathcal{A}$ is $P(A)$. The probability measure is hence a real number between 0 and 1 that defines the likelihood of an event to occur.
+\end{note}
 
-% \begin{enumerate}
-%     \item $p(A) \geq 0$ for all $A \in \mathcal{A}$. (Non-negativity)
-%     \item $p(\emptyset) = 0$. (The measure of the empty set is zero)
-%     \item $p$ is \textit{countably additive}: For any countable collection of disjoint sets $(A_i)_{i \in \mathbb{N}} \subset \mathcal{A}$,
+In the \textit{frequentist} interpretation, probability is defined as the long-run relative frequency of an event occurring in repeated independent trials. It assumes that probabilities are objective and intrinsic properties of the physical world. For example, the probability of getting heads in a fair coin toss is 0.5, meaning that if we were to toss the coin an infinite number of times, half of the outcomes would be heads.
+
+The \textit{Bayesian} interpretation, on the other hand, views probability as a measure of belief or certainty about an event, given the available information. It is inherently subjective and updates as new evidence is introduced. For instance, if we initially believe that a coin is fair, but after observing several tosses we notice a bias, we update our belief (and hence the probability) to reflect the new evidence. This process of updating beliefs is formalized through \textit{Bayes' rule}, which is a cornerstone of Bayesian inference.
+
+\begin{note}{Law of Total Probability}
+    The law of total probability provides a way to compute the probability of an event based on a partition of the sample space. If $\{B_i\}_{i=1}^{n}$ is a partition of the sample space $\Omega$ (i.e., $B_i \cap B_j = \emptyset$ for $i \neq j$ and $\bigcup_{i=1}^{n} B_i = \Omega$), then for any event $A$:
+
+    \begin{equation}
+        P(A) = \sum_{i=1}^{n} P(A \mid B_i) P(B_i).
+    \end{equation}
+    
+    This law is particularly useful when dealing with complex events that can be decomposed into simpler, mutually exclusive cases.
+    
+\end{note}
+
+% \begin{note}{Conditional Probability}
+%     Conditional probability quantifies the probability of an event occurring given that another event has already occurred. If $A$ and $B$ are two events in a probability space with $P(B) > 0$, the \textit{conditional probability} of $A$ given $B$ is defined as:
+    
 %     \begin{equation}
-%         p\left( \bigcup_{i=1}^{\infty} A_i \right) = \sum_{i=1}^{\infty} p(A_i).
+%         P(A \mid B) = \frac{P(A \cap B)}{P(B)}.
 %     \end{equation}
-%     \item $p(\Omega) = 1$. (Normalization condition)
-% \end{enumerate}
+%     This measure allows us to update the likelihood of an event based on new information provided by the occurrence of another event.
+%     \end{note}
+    
+%     \begin{note}{Marginal Probability}
+%     Marginal probability, also known as the \textit{unconditional probability}, refers to the probability of an event irrespective of the outcomes of other variables. If $A$ is an event in a probability space, the marginal probability of $A$ is simply $P(A)$. 
+    
+%     For discrete random variables $X$ and $Y$, the marginal probability of $X$ can be found by summing the joint probabilities over all values of $Y$:
+    
+%     \begin{equation}
+%         P(X = x) = \sum_{y} P(X = x, Y = y).
+%     \end{equation}
+    
+%     Similarly, for continuous random variables, the marginal probability density function is obtained by integrating the joint probability density function over all possible values of the other variables.
+    
+%     \end{note}
 
+    
+% Another interpretation:
+% \begin{note}{Bayes' Rule}
+% Bayes' rule is a fundamental theorem in probability theory that relates conditional and marginal probabilities. Given two events $A$ and $B$ with $P(B) > 0$, Bayes' rule states:
+
+% \begin{equation}
+%     P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)}.
+% \end{equation}
+
+% Bayes' rule allows us to update our beliefs about the probability of event $A$ occurring based on new evidence represented by event $B$. It forms the backbone of Bayesian inference, where prior beliefs are updated with new data.
+
+% \end{note}
+
+% \begin{note}{Application of Bayes' Rule}
+%     Bayes' rule can be extended using the law of total probability:
+    
+%     \begin{equation}
+%         P(A \mid B) = \frac{P(B \mid A) P(A)}{\sum_{i} P(B \mid A_i) P(A_i)},
+%     \end{equation}
+    
+%     where $\{A_i\}$ is a partition of the sample space. This formula is useful in scenarios involving multiple hypotheses or models.
+% \end{note}
 
 \section{Landau Notation}
 Landau notation, commonly referred to as Big O notation and its relatives (Big Omega, Big Theta, etc.), is used to describe the asymptotic behavior of functions. This is particularly important in the analysis of algorithms and in expressing the growth rates of functions.
@@ -92,3 +149,11 @@ Landau notation, commonly referred to as Big O notation and its relatives (Big O
 % \section*{Usage in Analysis}
 % Landau notation is extensively used in algorithm analysis to describe the running time or space requirements of an algorithm as a function of the input size. It abstracts away constants and less significant terms, focusing on the dominant factor that impacts growth rate as input size increases.
 
+
+\section{Statistical Inference}
+
+\subsection{Testing/Confidence Intervals}
+Testing if distribution is poissonian
+
+\subsection{Optimal parameter estimation}
+Used in estimating distribution parameters

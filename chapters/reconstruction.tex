@@ -1,3 +1,4 @@
+
 Rather than calling it denoising, better word in image reconstruction because
 Image Reconstruction:
 
@@ -7,26 +8,60 @@ Reconstruction involves generating a complete image from partial or indirect dat
 
 \section{Address reconstruction/denoising schemes}
 VST with BM3D: BM3D uses collaborative filtering, which is also used in recommender systems [citation need]
-PnP iterative stuff
-maybe non local sometime
 UNET noise2noise
 
-\section{What is poisson}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=1\linewidth]{images/JD-54-image.png}
-    \caption{Enter Caption}
-    \label{fig:enter-label}
-\end{figure}
 
-Taken from \cite{bertero_image_2009} which cites \cite{feller_introduction_1968}
-
-\section{Comparsion of bm3d }
+\section{BM3D: Densoising in sparse domain}
 with and without anscombe on different datasets from flash, lab and fhi
 Testing s
+\subsection{Anscombe: Variance Stabilization Transform}
 
-\section{Algorithms}
+\section{Statistical Learning}
+One can do a lot of different learning approaches. We will build towards the deep learning approach. Networks which can deal with image data are generally Convolutional Neural Networks. Looking at research, UNET has been used for image segmentation and denoising, which combines the concept of autoencoders and convolutional neural networks, along with skip connections.
+We use this approach with the noise2noise framework, which is a deep learning framework for image reconstruction.
 
 ERM 
 Deep learning is just linear sepeartor problem with a non linear function applied to it like RELU
+
+Our aim is to reduce the error between the true image and the reconstructed image. This is a regression problem, where we are trying to learn a function that maps the noisy image to the true image. Mathematically, this can be written as:
+
+ERM: Empirical Risk Minimization
+\begin{equation}
+    \hat{f} = \argmin_f \frac{1}{n} \sum_{i=1}^{n} (f(x_i) - y_i)^{2}
+\end{equation}
+
+Popular loss functions include the mean squared error (MSE), mean absolute error (MAE), and Huber loss. The choice of loss function depends on the noise model and the desired properties of the reconstruction. For example, the MSE is commonly used for Gaussian noise, while the MAE is more robust to outliers.
+
+The MSE is defined as:
+\begin{equation}
+    \text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (f(x_i) - y_i)^{2}
+\end{equation}
+
+MSE is the squared L2 norm of the difference between the predicted and true values. It is sensitive to outliers and can be dominated by large errors. The MAE is defined as:
+
+\begin{equation}
+    \text{MAE} = \frac{1}{n} \sum_{i=1}^{n} \left| f(x_i) - y_i \right|
+\end{equation}
+
+\subsection{Optimal Loss Function}
+Optimal loss can be derived from the distribution model. The Method of Moments and Maximum Likelihood Estimation are two common methods for deriving the optimal loss function. 
+
+For Poisson noise, the optimal loss function is the negative log-likelihood of the Poisson distribution. This is because the Poisson distribution is the maximum entropy distribution for count data, and the negative log-likelihood is the maximum likelihood estimator for the Poisson distribution.
+This can be written as the following optimization problem:
+\begin{equation}
+    \hat{f} = \argmin_f -\sum_{i=1}^{n} \log \left( \frac{e^{-f(x_i)} f(x_i)^{y_i}}{y_i!} \right)
+\end{equation}
+
+
+\subsection{Regularization}
+There are different ways to regularize the loss function to prevent overfitting. This can be done by adding a penalty term to the loss function. Common regularization techniques include L1 and L2 regularization, which add the absolute value of the weights and the square of the weights to the loss function, respectively. This can be written as:
+\begin{equation}
+    \hat{f} = \argmin_f \frac{1}{n} \sum_{i=1}^{n} (f(x_i) - y_i)^{2} + \lambda \sum_{j=1}^{p} \left| \beta_j \right|
+\end{equation}
+
+\subsection{Optimization}
+\section{Noise2Noise: Deep Learning framework}
+Important to take care not to train with empty data. 
+\subsection{Convolutional Neural Networks}
+\subsection{Autoencoder}
