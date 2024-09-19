@@ -5,3 +5,4 @@ denoising
 ARPES
 undersampled
 beamline
+super-Poissonian

@@ -1,21 +1,30 @@
-\section{Poisson Process assumption}
+To attempt at reconstructing the truth from a noisy observation, it is essential to understand the underlying noise statistics. Classical and quantum optics provide a comprehensive theoretical foundation to explain photon statistics. For instance, it is well understood that photons from a coherent light source follow a Poisson distribution, often referred to as shot-noise. Whereas, for chaotic (bunched) light, the variance exceeds that compared to their mean, dubbed super-Poissonian. And finally for a squeezed light source, the distribution is sub-Poissonian \cite[Chapter~5]{foxQuantumOpticsIntroduction2006}.
 
-Poisson distribution is defined as \cite{poissonRecherchesProbabiliteJugements1837}:
+In this chapter, we start with defining the Poisson model for counting photo-electron event data. We examine our data to identify where this model is appropriate and where its limitations become evident. To this end, we introduce some statistical apparatus necessary to estimate parameters and define goodness of model. Further, we explore why the \gls{FEL} light source (see section \ref{section:light-sources}), exhibits over-dispersed statistics, a characteristic necessitating moving beyond the Poisson model. Accounting for this, we transition to using the Negative Binomial distribution as a more suitable model for the count data. Lastly, we acknowledge that theoretically these models primarily address photon statistics and a more sophisticated treatment building on light-matter interaction might be necessary to connect photon statistics with the statistics of the emitted electrons.
 
-\begin{figure}
-    \centering
-    \includegraphics[width=1\linewidth]{images/2024-08-27-15-54-39.png}
-    \caption{Enter Caption}
-    \label{fig:enter-label}
-\end{figure}
+\section{Poisson distribution as a model for counting statistics}
+
+To model counting of independently occurring events, the Poisson distribution is often used. The discrete probability distribution expresses the probability of a given number of events occurring in a fixed interval of time, space or other domains\cite{fellerIntroductionProbabilityTheory1968}:
+\begin{note}
+    {Poisson distribution}
+    The \gls{PMF} for Poisson distribution Poi\((\lambda)\) with \(\lambda > 0\) is defined as
+    \begin{equation}
+        P(n;\lambda) = \frac{\lambda^n e^{-\lambda}}{n!}, \quad n \in \mathbb{N}_0
+    \end{equation}
+    \begin{enumerate}
+        \item $\lambda = E(X) = Var(X)$ 
+        \item Additivity: If $X_1 \sim \text{Poi}(\lambda_1)$ and $X_2 \sim \text{Poi}(\lambda_2)$ are independent Poisson random variables, then the sum $X_1 + X_2$ also follows a Poisson distribution with parameter $\lambda_1 + \lambda_2$
+        \begin{equation}
+            X_1 + X_2 \sim \text{Poi}(\lambda_1 + \lambda_2).
+        \end{equation}
+        
+        This property is useful when considering counts from multiple independent sources.
+    \end{enumerate}
+\end{note}
 
 
-\begin{figure}
-    \centering
-    \includegraphics[width=1\linewidth]{images/JD-54-image.png}
-    \caption{Enter Caption}
-    \label{fig:enterl}
-\end{figure}
+\section{Correlated events in detector}
+
 
 
 There's a lot of parameters that need to be tested to determine what sort of counting statistics the dataset has.
@@ -93,6 +102,14 @@ We simulate the data with Poissonian data.
 
 
 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{images/JD-54-image.png}
+    \caption{Enter Caption}
+    \label{fig:enterl}
+\end{figure}
+
 % \section{Using CLT}
 % Central Limit Theorem (CLT)
 The \textbf{Central Limit Theorem} states that for a sequence of i.i.d. random variables \(X_1, X_2, \ldots, X_n\) with mean \( \mu \) and variance \( \sigma^2 \), the normalized sum of these variables approaches a standard normal distribution as \(n\) tends to infinity:
@@ -136,3 +153,21 @@ where \(O_i\) is the observed frequency and \(E_i\) is the expected frequency. T
 
 For goodness-of-fit tests, small p-values indicate that you can reject the null hypothesis and conclude that your data were not drawn from a population with the specified distribution. Consequently, goodness-of-fit tests are a rare case where you look for high p-values to identify candidate distributions. 
 (From \href{https://statisticsbyjim.com/hypothesis-testing/goodness-fit-tests-discrete-distributions/}{This website})
+
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=1\linewidth]{images/violin_plots_per_pulse.png}
+    \caption{Enter Caption}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1\linewidth]{images/violinplots_per_train.png}
+    \caption{ss}
+    \label{s}   
+\end{figure}
+\section{Modeling over-dispersed count data}
+
+\section{The SASE process as an explanation of over-dispersed statistics}
+
