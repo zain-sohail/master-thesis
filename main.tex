@@ -47,7 +47,7 @@ fonttitle=\bfseries,#1}
 \captionsetup{justification=raggedright, singlelinecheck=false}
 
 % Bibliography
-\usepackage[style=numeric]{biblatex}
+\usepackage[backend=bibtex, style=numeric]{biblatex}
 \addbibresource{references.bib}  % Replace with your .bib file
 \usepackage{tocbibind}  % To include the bibliography in the TOC
 \usepackage{csquotes} 
@@ -94,7 +94,7 @@ fonttitle=\bfseries,#1}
 \makeatother
 
 \begin{document}
-% \bstctlcite{IEEEexample:BSTcontrol}
+\bstctlcite{IEEEexample:BSTcontrol}
 
 % Preliminary pages
 \pagenumbering{roman}
@@ -121,15 +121,16 @@ fonttitle=\bfseries,#1}
 \input{chapters/introduction}
 \pagenumbering{arabic}
 
-\chapter[Photoemission Spectroscopy: Interaction, Light Sources, and Detection]{Photoemission Spectroscopy:\\Interaction, Light Sources, and Detection}
+\part{Multidimensional Photoemission Spectroscopy}
+\chapter{Interaction, Light Sources, and Detection}
 \input{chapters/pes}
 
 
 \chapter{Characterizing Photon and Photoelectron Statistics}
 \input{chapters/statistics}
 
-
-\chapter{Image Reconstruction}
+\part{Image Denoising}
+\chapter{BM3D}
 \input{chapters/reconstruction}
 
 \chapter{Conclusion and Outlook}
@@ -150,9 +151,9 @@ fonttitle=\bfseries,#1}
 \addcontentsline{toc}{chapter}{Contributions}
 \input{contributions}
 
-\chapter*{Declaration}
-\addcontentsline{toc}{chapter}{Declaration}
-\input{declaration}
+% \chapter*{Declaration}
+% \addcontentsline{toc}{chapter}{Declaration}
+% \input{declaration}
 
 \begin{appendices}
   \input{appendix/etl}
