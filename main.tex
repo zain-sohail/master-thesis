@@ -47,11 +47,14 @@ fonttitle=\bfseries,#1}
 \captionsetup{justification=raggedright, singlelinecheck=false}
 
 % Bibliography
-\usepackage[backend=bibtex, style=numeric]{biblatex}
+\usepackage[backend=bibtex, style=ieee, ]{biblatex}
 \addbibresource{references.bib}  % Replace with your .bib file
 \usepackage{tocbibind}  % To include the bibliography in the TOC
 \usepackage{csquotes} 
-% \bibliography{references}
+\AtEveryBibitem{
+    \clearfield{urlyear}
+    \clearfield{urlmonth}
+}
 
 % Hyperlinks
 \usepackage[hidelinks]{hyperref}
@@ -83,24 +86,13 @@ fonttitle=\bfseries,#1}
 \renewcommand{\chaptermark}[1]{\markboth{\chaptername\ \thechapter.\ #1}{}}
 \pagestyle{fancy}
 
-% % IEEEtranN control
-% \makeatletter
-% \def\bstctlcite{\@ifnextchar[{\@bstctlcite}{\@bstctlcite[@auxout]}}
-% \def\@bstctlcite[#1]#2{\@bsphack
-%   \@for\@citeb:=#2\do{%
-%     \edef\@citeb{\expandafter\@firstofone\@citeb}%
-%     \if@filesw\immediate\write\csname #1\endcsname{\string\citation{\@citeb}}\fi}%
-%   \@esphack}
-% \makeatother
-
 \begin{document}
-% \bstctlcite{IEEEexample:BSTcontrol}
 
 % Preliminary pages
 \pagenumbering{roman}
 \input{titlepage.tex}
-\chapter*{Summary}
-\addcontentsline{toc}{chapter}{Summary}
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
 \input{abstract}
 \tableofcontents
 
@@ -121,17 +113,18 @@ fonttitle=\bfseries,#1}
 \input{chapters/introduction}
 \pagenumbering{arabic}
 
-\part{Multidimensional Photoemission Spectroscopy}
-\chapter{Interaction, Light Sources, and Detection}
+\chapter[Photoemission Spectroscopy: Interaction, Light Sources, and Detection]{Photoemission Spectroscopy:\\Interaction, Light Sources, and Detection} 
 \input{chapters/pes}
 
+\chapter{Denoising preliminaries and BM3D}
+\input{chapters/reconstruction}
+% \input{chapters/reconstruction}
 
 \chapter{Characterizing Photon and Photoelectron Statistics}
 \input{chapters/statistics}
 
-\part{Image Denoising}
-\chapter{BM3D}
-\input{chapters/reconstruction}
+\chapter{Deep Learning}
+\input{chapters/deep_learning}
 
 \chapter{Conclusion and Outlook}
 \input{chapters/conclusion}
