@@ -2,9 +2,21 @@ To attempt at reconstructing the truth from a noisy observation, it is essential
 
 In this chapter, we start with defining the Poisson model for counting photo-electron event data. We examine our data to identify where this model is appropriate and where its limitations become evident. To this end, we introduce some statistical apparatus necessary to estimate parameters and define goodness of model. Further, we explore why the \gls{FEL} light source (see section \ref{section:light-sources}), exhibits over-dispersed statistics, a characteristic necessitating moving beyond the Poisson model. Accounting for this, we transition to using the Negative Binomial distribution as a more suitable model for the count data. Lastly, we acknowledge that theoretically these models primarily address photon statistics and a more sophisticated treatment building on light-matter interaction might be necessary to connect photon statistics with the statistics of the emitted electrons.
 
-\section{Poisson distribution as a model for counting statistics}
 
-To model counting of independently occurring events, the Poisson distribution is often used. The discrete probability distribution expresses the probability of a given number of events occurring in a fixed interval of time, space or other domains\cite{fellerIntroductionProbabilityTheory1968}:
+\section{Poisson distribution as a Model for Photon Counting Statistics}\label{section:photon-counting-stats}
+
+Photons are the quantized form of electromagnetic light. They can be thought of as discrete energy packets. The energy of a photon is given by $E = h\nu$, where $h$ is the Planck constant and $\nu$ is the frequency of the light. Due to the discrete nature of photons, it can be shown that the number of photons in a short time interval $\Delta t$ is not constant. These fluctuations are known as photon shot noise.
+
+For a light source with a constant flux\footnote{Flux is the average number of photons passing through the cross-section of a beam per unit time.} $\phi$ such as a single-mode laser, the average number of photons in a beam segment of length is given by $L$, $\lambda = \phi \frac{L}{c}$, where $c$ is the speed of light.
+
+If we subdivide this $L$ into many small intervals  of size $L/N$, where $N$ is large enough so that there is low probability of a photon being in an interval, eventually there will be divisions with no photons, divisions with only single photon, and negligible divisions with multiple photons. For all possible orderings, the probability of finding $n$ subdivisions with a single photon and $(N-n)$ with no photons can be modeled by the Binomial distribution as follows, with $p=\frac{\lambda}{N}$ being the probability of a photon being in a segment:
+
+\begin{equation}
+    P(n) = \binom{N}{n} p^n (1 - p)^{N - n}
+\end{equation}
+
+Using the Poisson Limit Theorem \cite{fellerIntroductionProbabilityTheory1968}, it can be shown that as $N \to \infty$, and the probability $p \to 0$ such that $Np = \lambda$ remains constant, there is a convergence in distribution to the Poisson distribution.
+
 \begin{note}
     {Poisson distribution}
     The \gls{PMF} for Poisson distribution Poi\((\lambda)\) with \(\lambda > 0\) is defined as
@@ -22,10 +34,36 @@ To model counting of independently occurring events, the Poisson distribution is
     \end{enumerate}
 \end{note}
 
+Hence, the Poisson distribution is a suitable model for counting statistics of photons from a coherent light source.
+
+\section{Poisson distribution as a Model for Photoelectron Counting Statistics}\label{section:photoelectron-counting-stats}
+
+Through usage of only classical arguments, \citeauthor{mandelFluctuationsPhotonBeams1958} \cite{mandelFluctuationsPhotonBeams1958,mandelFluctuationsPhotonBeams1959} derived the probability distribution for photoelectron statistics. We assume that every photoelectron counts is a statistically independent event. And for the photoelectron to be ejected in a very short time interval $\Delta t$, the probability should be directly proportional to the intensity of light falling on the detector.
+
+Since the derivation is lengthy, the reader is referred to \cite{mehtaVIIITheoryPhotoelectron1970}, and the results are directly presented.
+\begin{note}
+    {Probablity distribution of Photoelectron counting}
+    \begin{equation}\label{eq:mandel-photo-electron}
+        P(n, t, T) = \int_{0}^{\infty} \frac{\alpha W^n}{n!} e^{-\alpha W} P(W) \, dW
+    \end{equation}
+    with $\alpha$ being the quantum efficiency, with $W$ being the integrated light intensity ($I$) over the time interval $\Delta t$:
+    \begin{equation}
+        W = \int_{t}^{t+T} I(t') dt'
+    \end{equation}
+    and $P(W)$ being the probability density of the random variable $W$.
+
+    For a constant intensity light source, the probability distribution simplifies to the Poisson distribution:
+    \begin{equation}
+        P(n, t, T) = \frac{W^n e^{-W}}{n!} 
+    \end{equation}
+\end{note}
+
+We can see from \ref{eq:mandel-photo-electron} that even with intensity of light being constant, there are random fluctuations. However, it also implies that if there are fluctuations in the intensity of light, the photoelectron counting statistics will not be Poissonian. We shall later see that this is an important argument to go beyond the Poissonian model for \gls{FEL} light sources.
 
 \section{Correlated events in detector}
 Owing to the 2-layered \gls{DLD} in our experimental setup, measuring two electrons impinging on locations nearby to one another can be detected. In a single layer \gls{DLD}, due to the dead-time experienced by each sector after recording, only a single event can be recorded. However, the multi-layer detection scheme comes with a caveat: the layers must be calibrated appropriately otherwise the electron counting routines can report two events for the same electron. 
 
+For reconstructing multi-hit events in the detector, method such as deep learning have been used in \cite{knipferDeepLearningbasedSpatiotemporal2024}
 
 
 There's a lot of parameters that need to be tested to determine what sort of counting statistics the dataset has.
