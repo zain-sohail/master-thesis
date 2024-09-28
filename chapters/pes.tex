@@ -12,10 +12,10 @@ It is then apparent that the binding energy of electrons can be found by irradia
 
 A complete treatment of photoemission process needs the quantum theory of light-matter interaction, and this shall be introduced where necessary. 
 
-\section{Light-Matter Interaction}\label{subsection:light-matter-interaction}
+\section{Light-Matter Interaction}\label{section:light-matter-interaction}
 Where a complete description is not always necessary.
 
-\section{Light Sources}\label{subsection:light-sources}
+\section{Light Sources}\label{section:light-sources}
 To perform \gls{PES}, it is imperative to first look at what the source of the electromagnetic radiation is necessary. The source needs to be monochromatic\footnote{Truly monochromatic radiation is physically impossible, and generally a range is considered.} and tunable, so that the only specific electrons are excited, allowing for precise measurement. Many materials of interest have binding energies lying in the UV to X-ray range. To measure not only the electronic states but also their dynamics, it becomes necessary to have a temporally coherent source.
 
 
@@ -28,18 +28,19 @@ Particle accelerators, initially used for high energy physics experiments, which
 There are several synchrotron facilities around the world, and in Germany such as BESSY II in Berlin, PETRA III at DESY campus in Hamburg.
 
 \subsection{Free-Electron Laser}
+TODO: Add more details about FELs
 \begin{figure}
     \includegraphics[width=1\linewidth]{images/flash_fel.png}
     \caption{Schematic view of \gls{FLASH} taken from \cite{faatzSimultaneousOperationTwo2016}.}
 \end{figure}
 
-While Synchrotrons are excellent sources of light for a multitude of experiments, they have limitations in terms of the temporal coherence of the light produced. \glspl{FEL} are a class of light sources that overcome this limitation. \glspl{FEL} are linear particle accelerators that produce radiation through spontaneous emission, an effect explainable only through quantizing light. 
+While Synchrotrons are excellent sources of light for a multitude of experiments, they have limitations in terms of the temporal coherence of the light produced. \glspl{FEL} are a class of light sources that overcome this limitation. \glspl{FEL} are linear particle accelerators that produce radiation through spontaneous emission (see \cite[Chapters 5 and 10]{foxQuantumOpticsIntroduction2006} for a detailed explanation of spontaneous emission).
 
 Unlike traditional lasers, FELs do not require a traditional optical cavity or gain medium. Instead, they use a linear particle accelerator to produce a bunched electron beam, which is then passed through an undulator. The undulator is a series of magnets that produce a periodic magnetic field, causing the electrons to oscillate and emit radiation. The emitted radiation interacts with the electrons, leading to microbunching, which produces coherent radiation.
 
 The light produced is of high peak brightness and can be compressed to femtosecond pulse durations, making it an ideal source for studying ultrafast phenomena.
 
-\gls{DESY} is a national research center in Germany that operates the \gls{FLASH} facility, which is a \gls{FEL} that produces soft X-ray radiation. The facility is used for a variety of experiments, including time-resolved studies of materials, and is equipped with a variety of end-stations to perform these experiments.
+\gls{DESY} is a national research center in Germany that operates the \gls{FLASH} facility \cite{ackermannOperationFreeelectronLaser2007,tiedtkeSoftXrayFreeelectron2009}, which is a \gls{FEL} that produces soft X-ray radiation. The facility is used for a variety of experiments, including time-resolved studies of materials, and is equipped with a variety of end-stations to perform these experiments.
 
 
 \begin{figure}
@@ -47,7 +48,7 @@ The light produced is of high peak brightness and can be compressed to femtoseco
 \end{figure}
 
 
-\subsection{HEXTOF instrument at FLASH}
+\section{HEXTOF instrument at FLASH}
 A variety of photoemission spectrometers can be devised depending on which parameters are varied and what is measured. Naturally, the most basic setup would measure the energy of the emitted electron as described in equation \ref{eq:photoelectric}, but it is also common to measure the surface parallel momentum ($k_x$, $k_y$)
 
 the whole process of excitation, transport, and emission is treated as a single coherent process using the formalism of quantum mechanics. This approach incorporates the electronic structure, electron-electron interactions, and the surface barrier in a unified way, and describes the photoemission intensity  I(E, $k_x$, $k_y$)  as:
@@ -69,7 +70,7 @@ The \gls{HEXTOF} instrument is capable of performing time- and momentum-resolved
     % \label{fig:enter-label}
 \end{figure}
 
-\subsubsection{Delay Line Detectors}
+\subsection{Delay Line Detectors}
 The 3D detection scheme used in the \gls{HEXTOF} instrument consists of a \gls{DLD} and a \gls{TOF} tube. The \gls{DLD} is made of a \gls{MCP} for electron amplification and meanders to 
 
 A Delayline Detector (DLD) operates by using a serpentine wire arrangement (meanders) positioned behind a micro-channel plate (MCP) for electron amplification. When particles (photons, ions, electrons) hit the MCP, they generate an electron cloud that induces electrical pulses in the meanders, allowing for precise time measurement of the hit position. This enables the reconstruction of the impact location and provides absolute time measurements relative to an external clock signal, processed by fast electronics and a time-to-digital converter (TDC).
@@ -86,18 +87,21 @@ A Delayline Detector (DLD) operates by using a serpentine wire arrangement (mean
     \includegraphics[width=1\linewidth]{images/chessy_deblurring_merged_events.png}
 \end{figure}
 
-\subsection{Binning as means of Imaging}
+\section{Binning as means of Imaging}
 digital imaging from lecture
 sampling etc
 Binning is a way to find underlying distribution.
 
 
-\subsection{Describing the data GdW, WSe2, GrIr, and new one}
+\section{Describing the data GdW, WSe2, GrIr, and new one}
 
-\subsection{Creating the dataset Corrections Calibrations etc}
+\section{Creating the dataset Corrections Calibrations etc}\label{section:datasets}
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{images/2024-08-25-22-36-44.png}
     \caption{MPES taken from \cite{xianOpensourceEndtoendWorkflow2020}}
     % \label{fig:enter-label}
 \end{figure}
+
+
+Since the \gls{GrIr} dataset has the highest counts recorded compared ($\approx$186 M) to all our datasets, we will use the full dataset as ground truth and subsets of the single event data as noisy observations.
