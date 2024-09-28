@@ -11,3 +11,10 @@ undulators
 Synchrotron
 Synchrotrons
 beamlines
+Poissonian
+denoised
+adaptively
+thresholding
+Anscombe
+denoise
+microbunched

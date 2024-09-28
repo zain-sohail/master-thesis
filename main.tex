@@ -23,6 +23,8 @@ fonttitle=\bfseries,#1}
 \usepackage{amsmath}
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 
 % Language and encoding
 \usepackage[utf8]{inputenc}
@@ -47,7 +49,7 @@ fonttitle=\bfseries,#1}
 \captionsetup{justification=raggedright, singlelinecheck=false}
 
 % Bibliography
-\usepackage[backend=bibtex, style=ieee, ]{biblatex}
+\usepackage[backend=bibtex, style=ieee]{biblatex}
 \addbibresource{references.bib}  % Replace with your .bib file
 \usepackage{tocbibind}  % To include the bibliography in the TOC
 \usepackage{csquotes} 
@@ -123,7 +125,7 @@ fonttitle=\bfseries,#1}
 \chapter{Characterizing Photon and Photoelectron Statistics}
 \input{chapters/statistics}
 
-\chapter{Deep Learning}
+\chapter{Learning from Noise}\label{ch:deep_learning}
 \input{chapters/deep_learning}
 
 \chapter{Conclusion and Outlook}
