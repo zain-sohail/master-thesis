@@ -1,5 +1,5 @@
-\chapter{Transforming Raw Data to structured format}
-\section*{Extract, Load, Transform}
+\chapter{Data Loading and Comparison}
+\section{Transforming Raw Data to structured format: Extract, Load, Transform}
 Raw data from the experiment is stored in \gls{HDF5} files. This includes many \gls{beamline} diagnostic information such as \gls{BAM}, \gls{GMD}, the delay stage readings, the monochromator energy, sample specific information such as extractor voltage, and the electron counting in the 3 detector dimensions corresponding to the \gls{DLD} spatial X and Y axes and the temporal time axis. This information is resolved at each bunch of electrons coming from the accelerator called a \gls{train}, which are further microbunched into \glsplural{pulse}.
 
 The \gls{OpenCOMPES} was established to develop tools and infrastructure to make analysis easier. To this end, a modular Python library called \texttt{\gls{SED}} was created that provides the entire pipeline from easy data ingestion to common calibration and corrections, multidimensional binning to create images, and saving the images to standard formats, with proper care of data provenance.
@@ -19,38 +19,75 @@ Once this cleaning process is completed, electron-resolved channels are combined
 
 The electron dataframe contains only rows where electron events have been detected, with any missing data in non-electron channels forward-filled to ensure completeness. This dataframe serves as the main source of electron-specific data for further analyses. However, given that not all pulses or trains may produce electron events, a separate pulse-resolved dataframe is generated to capture all available train and pulse data, independent of electron detections. This pulse-resolved dataframe is essential for normalization steps involving time-resolved channels, such as those related to the delay axis.
 
-The pipeline also includes validation steps for auxiliary channels, particularly those containing multi-dimensional data (e.g., 4D arrays), ensuring that all required channels exist within the files before proceeding with further transformations.
+The pipeline also includes validation steps for auxiliary channels, particularly those containing multidimensional data (e.g., 4D arrays), ensuring that all required channels exist within the files before proceeding with further transformations.
 
 After this initial transformation and extraction, the buffer files are saved in \texttt{Parquet} format, chosen for its efficiency in storage and speed of access during future computations. The final stage involves the loading of all these buffer files into a unified dataframe using \texttt{Dask}, a distributed computing library that enables scalable processing of large datasets. At this stage, forward-filling is again applied to non-electron channels, ensuring that missing values between files are handled consistently. However, care must be taken when forward-filling across different runs, as this could introduce inter-run inconsistencies.
 
 Finally, the schema of the buffer files is cross-validated against the predefined list of channels to ensure consistency and completeness prior to loading the data into \texttt{Dask}.
 
-
-% At \gls{FLASH}, the data \gls{trARPES}
-% Each file:
-% Train indexed data is stored in HDF5 files. Index and data itself are stored in two separate HDF groups.
-% Each pair is called channel. Load relevant channels. ~500 pulses each train. Some data is stored as pulse resolved but each index has an array
-% so pandas Multiindex is used to create heirarchy. Detector measurements such as the X Y and TOF are electron resolved. So they are a 3d array and that can have another level of index then. There is an offset in pulseId so that no measurements are missed. This offset is first corrected. All data is below pulse 0 is removed as it is invalid. All nan pulses are also dropped. We do not filter above 500 even though those might also be invalid but leave that to end analysis. Pulses are sorted as due to machine, they might have bits moved around.
-% Electron resolved channels are then combined together as they have the same index. THese channels are outer joined with the pulse and train resolved data (the slower frequency channels) to create a dataframe. 
-
-% Two dataframes from this are created, an electron dataframe and a pulse resolved dataframe.
-% All non-electron channels are forward filled. After this, all rows without an electron event are dropped. This is the electorn dataframe.
-
-% It's possible that not all pulses/trains produce an electron and hence the pulse and train resolved channels with that information would not be available in the electron dataframe. So another dataframe that is containing all trains and pulses but is not electron reolsved is created called the timed dataframe. This is used to normalize by the delay axis for example
-% Aux channel treatment (4d array)
-
-% Channels groups are first validated if they exist in the file.
-
-
-% This reduction process is done for all files and they are saved as parquet (buffer) since it is storage efficient and fast to read.
-
-% We load all these files as one dataframe dask, a distributed computing python library. These files are again forward filled for each dataframe (only non-electron channels) to fill the interfile values. Probably wrong to fill different runs.
-
-% The schema of the buffer files is checked against the list of channels before loading the data to dask.
-
-\begin{figure}
+\begin{figure}[H]
     \label{fig:elt}
     \centering
-    \includegraphics[width=1\linewidth]{images/elt_cropped.png}
+    \includegraphics[width=0.7\linewidth]{images/elt_cropped.png}
     \caption{Complete \gls{ELT} pipeline for the data from \gls{HEXTOF} at \gls{FLASH}}
+\end{figure}
+
+\section{Experiment: Metric Comparison}\label{sec:metric_comparison_experiment}
+
+The objective of this experiment is to evaluate the effectiveness of various image quality metrics (\gls{MSE}, \gls{PSNR}, \gls{SSIM}, and \gls{MSSSIM}) when the provided reference is noisy. Specifically, reconstructed images from a trained neural network, that has shown clear improvements in perpetual quality, are compared against the high-count but noisy reference. Examples of such images at different counts can be seen in Figure~\ref{fig:images-noisy-denoised}, which shows how the noisy images are devoid of any features at low counts, while the denoised images show clear features similar to the target. For this analysis, it is not relevant if the high quality reconstructions are due to overfitting or not, but rather that they produce perpetually better quality images (sometimes even compared to the target). So the hope is that the metrics acknowledge this improvement.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\linewidth]{images/images_noisy_denoised_with_target.pdf}
+    \caption{The low-count noisy images and the perpetually better denoised images shown for different electron counts (in Millions) and the noisy target images (single slice and window-averaged 15 slices). Below \num{8}M counts, none of the features are discernable for noisy images, while the denoised images show clear features similar to the target.}
+    \label{fig:images-noisy-denoised}
+\end{figure}
+
+The \gls{GrIr} dataset is used, with electron counts ranging from \numrange{1e6}{3.2e7}. For each total count, a set of 2D noisy images (referred to as noisy slices) is extracted from the dataset. Corresponding high-count 2D slices (referred to as target slices) are used as reference images for comparison (from the dataset with \num{1.86e8} counts). Likewise, reconstructed images from the neural network are also compared against the target slices.
+
+\begin{table}[h]
+    \centering
+    \caption{Comparison Types and Metrics}
+    \begin{tabular}{p{0.24\linewidth} | p{0.49\linewidth} | p{0.19\linewidth}}
+        \hline
+        \textbf{Comparison Type} & \textbf{Description} & \textbf{Metrics Evaluated} \\
+        \hline
+        Noisy & Input image is a noisy realization of target & MSE, PSNR, SSIM, MS-SSIM \\
+        \hline
+        Denoised & Input image is perpetually of better quality & MSE, PSNR, SSIM, MS-SSIM \\
+        \hline
+    \end{tabular}
+    \caption{Comparison types and metrics evaluated in the experiment. This is repeated for single slice and window-averaged images.}
+    \label{tab:comparison_types}
+\end{table}
+
+The metric evaluation procedure involves a data loader, implemented using the \texttt{PyTorch Dataset} class, which iterates through the different datasets and extracts noisy and target 2D image slices (window-averaged or single slice). For each pair of noisy and target slices, the metrics are computed. The comparison results are then grouped by acquisition count and type (noisy vs. denoised).
+
+This metric comparison is performed with \texttt{1638} images sliced along each dimension of the dataset. The results are aggregated and a 95\% confidence interval is calculated for each metric to assess the reliability of the comparison. Table~\ref{tab:comparison_types} summarizes the comparison types and metrics evaluated in this experiment, repeated for both single slice and window-averaged images.
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\linewidth]{images/metrics_comparison_same_target.pdf}
+    \caption{Comparison of image quality metrics (\gls{MSE}, \gls{PSNR}, \gls{SSIM}, \gls{MSSSIM}) with noisy realization of a noisy target. The metrics show improved results with increased electron counts, as noise levels decrease. \gls{MSSSIM} shows the best relative improvement in metrics lower counts below \num{e7}.}
+    \label{fig:metrics-comparison-noisy}
+\end{figure}
+
+Comparing the noisy images with target, all metrics trivially show an improvement with increased counts (less noise) (see Figure~\ref{fig:metrics-comparison-noisy}). However, \gls{MSE}, \gls{PSNR} and \gls{SSIM} show deteriorated metrics when comparing against perpetually high quality images (Figure~\ref{fig:metrics-comparison}). This can be attributed to the presence of noise in the reference image. For higher counts, \gls{SSIM} manages to show improved results, whereas \gls{MSE} report \gls{PSNR} consistently worse results compared to the noisy images. \gls{MSSSIM} consistently reports better results with the higher quality images, making it the most reliable metric for evaluation.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{images/metrics_comparison_denoised_noisy.pdf}
+    \caption{Shows comparison of evaluating metrics (\gls{MSE}, \gls{PSNR}, \gls{SSIM}, \gls{MSSSIM}) with the input being a noisy realization of target or denoised version of that realization. Both are compared to a high-count target that is also noisy. Trivially, all metrics show an improvement when the counts increase. However, \gls{MSE} and \gls{PSNR} evaluate better when the input is noisy, while \gls{SSIM} and \gls{MSSSIM} show better results when the input is denoised. The gap between noisy and denoised is more pronounced for \gls{MSSSIM} than \gls{SSIM}, hence the better metric. }
+   \label{fig:metrics-comparison}
+\end{figure}
+
+Additionally, we investigate the effect of window-averaged reference images on the metrics. Results indicate that the window-averaged references improve metric outcomes, as the gap between the metrics calculated with noisy and high quality images split up further. Consequently, we adopt the single slice image as the reference for the denoising evaluation.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{images/metrics_comparison_denoised_noisy_averaged.pdf}
+    \caption{Metrics comparison for noisy 2D slices against a window-averaged target slice. The window-averaged target does not significantly improve the reported metrics, showing that averaging over neighboring slices reduces resolution and does not offer a superior reference for denoising evaluation.}
+    \label{fig:metrics-comparison-averaged-target}
 \end{figure}
