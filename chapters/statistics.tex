@@ -61,7 +61,7 @@ Since the derivation is lengthy, the reader is referred to \cite{mehtaVIIITheory
 We can see from \ref{eq:mandel-photo-electron} that even with intensity of light being constant, there are random fluctuations. However, it also implies that if there are fluctuations in the intensity of light, the photoelectron counting statistics will not be Poissonian. We shall later see that this is an important argument to go beyond the Poissonian model for \gls{FEL} light sources.
 
 \section{Correlated events in detector}
-Owing to the 2-layered \gls{DLD} in our experimental setup, measuring two electrons impinging on locations nearby to one another can be detected. In a single layer \gls{DLD}, due to the dead-time experienced by each sector after recording, only a single event can be recorded. However, the multi-layer detection scheme comes with a caveat: the layers must be calibrated appropriately otherwise the electron counting routines can report two events for the same electron. 
+Owing to the 2-layered \gls{DLD} in our experimental setup (Figure~\ref{fig:sectors}), measuring two electrons impinging on locations nearby to one another can be detected. In a single layer \gls{DLD}, due to the dead-time experienced by each sector after recording, only a single event can be recorded. However, the multi-layer detection scheme comes with a caveat: the layers must be calibrated appropriately otherwise the electron counting routines can report two events for the same electron. 
 
 For reconstructing multi-hit events in the detector, method such as deep learning have been used in \cite{knipferDeepLearningbasedSpatiotemporal2024}
 
@@ -164,7 +164,7 @@ This convergence is in distribution.
     Shot noise exists because phenomena such as light and electric current consist of the movement of discrete (also called "quantized") 'packets'.
 \end{quotation}
 
-Can't correlate FEL intensity with electron counts per pulse as the GMD is before the monochromator. 
+Can't correlate FEL intensity with electron counts per pulse as the GMD is before the monochromator.  \href{https://photon-science.desy.de/facilities/flash/photon_diagnostics/gmd_intensity_and_position/index_eng.html}{description about gmd}
 
 \begin{quotation}
     The physical assumptions which we want to express mathematically are that the \textbf{conditions of the experiment remain constant} in time*, and that non-overlapping time intervals are stochastically independent in the sense that information concerning the number of events in one interval reveals nothing about the other. The theory of probabilities in a continuum makes it possible to express these statements directly, but being restricted to discrete probabilities, we have to use an approximate finite model and pass to the limit.

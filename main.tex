@@ -25,6 +25,9 @@ fonttitle=\bfseries,#1}
 \DeclareMathOperator*{\argmin}{arg\,min}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\usepackage{siunitx}
+\sisetup{range-phrase=\,--\,}  
+\sisetup{range-units=single}  
 
 % Language and encoding
 \usepackage[utf8]{inputenc}
@@ -63,11 +66,12 @@ fonttitle=\bfseries,#1}
 \usepackage{url}
 
 % Acronyms and glossaries
-\usepackage[toc, acronym]{glossaries}
+\usepackage[toc, acronym, symbols, automake]{glossaries-extra}
 \makeglossaries
-\setacronymstyle{long-short}
+\setabbreviationstyle{long-short}
 \input{acronyms.tex}
 \input{glossary.tex}
+\input{symbols.tex}
 \setlength{\glsdescwidth}{0.8\hsize}
 
 % Other utilities
@@ -100,6 +104,7 @@ fonttitle=\bfseries,#1}
 
 % Acronyms
 \printglossary[style=tree, type=\acronymtype, title=List of Acronyms]
+\printglossary[type=symbols, style=tree, title=List of Symbols]
 % \addcontentsline{toc}{chapter}{List of Acronyms}
 
 \printglossary
