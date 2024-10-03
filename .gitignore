@@ -17,7 +17,6 @@
 *.pdfsync
 *.dvi
 *.ps
-*.pdf
 *.spl
 *.run.xml
 *.bcf
