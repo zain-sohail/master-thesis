@@ -64,11 +64,14 @@ fonttitle=\bfseries,#1}
 % Hyperlinks
 \usepackage[hidelinks]{hyperref}
 \usepackage{url}
+\usepackage[capitalise, noabbrev]{cleveref}
 
 % Acronyms and glossaries
 \usepackage[toc, acronym, symbols, automake]{glossaries-extra}
 \makeglossaries
 \setabbreviationstyle{long-short}
+\setabbreviationstyle[acronym]{long-short}
+\setabbreviationstyle[symbols]{long-short}
 \input{acronyms.tex}
 \input{glossary.tex}
 \input{symbols.tex}
@@ -120,14 +123,14 @@ fonttitle=\bfseries,#1}
 \input{chapters/introduction}
 \pagenumbering{arabic}
 
-\chapter[Photoemission Spectroscopy: Interaction, Light Sources, and Detection]{Photoemission Spectroscopy:\\Interaction, Light Sources, and Detection} 
+\chapter[Photoemission Spectroscopy: Interaction, Light Sources, and Detection]{Photoemission Spectroscopy:\\Interaction, Light Sources, and Detection}
 \input{chapters/pes}
 
 \chapter{Denoising preliminaries and BM3D}
 \input{chapters/reconstruction}
 % \input{chapters/reconstruction}
 
-\chapter{Characterizing Photon and Photoelectron Statistics}
+\chapter{Characterizing Photon and Photoelectron Statistics}\label{ch:pes-statistics}
 \input{chapters/statistics}
 
 \chapter{Learning from Noise}\label{ch:deep_learning}
