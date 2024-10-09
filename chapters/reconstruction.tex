@@ -1,10 +1,10 @@
-Detached from the noise model, the goal of image reconstruction is to estimate the true image $X$ from an incomplete or corrupted (noisy) observation $Y$. Let $\mathbf{i} = [i_1, i_2, \dots, i_d]^T$ be a column vector that defines the coordinates of each voxel in a \textit{d}-dimensional image space. In the most general form, the observation model can be defined as $Y_{\mathbf{i}}$ being a mapping of $X_{\mathbf{i}}$ through a function $\mathcal{F}$:
-\begin{equation}
-    Y_{\mathbf{i}} = \mathcal{F} (X_{\mathbf{i}})
+Detached from the noise model, the goal of image restoration is to estimate the true image $X$ from an incomplete or corrupted (noisy) observation $Y$. Let $\mathbf{i} = [i_1, i_2, \dots, i_d]^T$ be a column vector that defines the coordinates of each voxel in a \textit{d}-dimensional image space. In the most general form, the observation model can be defined as $y_{\mathbf{i}}$ being a mapping of $x_{\mathbf{i}}$ through a function $\mathcal{F}$:
+\begin{equation}\label{eq:observation-model}
+    y_{\mathbf{i}} = \mathcal{F} (x_{\mathbf{i}})
 \end{equation}
-where $Y_{\mathbf{i}}$ and $X_{\mathbf{i}}$ represent the noisy observation and the corresponding true image value at voxel $\mathbf{i}$, respectively. And the function $\mathcal{F}$ can vary depending on the noise model (e.g., additive or multiplicative noise, etc.).
+where $y_{\mathbf{i}}$ and $x_{\mathbf{i}}$ represent the incomplete observation and the corresponding true image value at voxel $\mathbf{i}$, respectively; the entire image can be represented as $Y = [y_{\mathbf{i}}]$ and $X = [x_{\mathbf{i}}]$, respectively. And the function $\mathcal{F}$ can vary depending on the noise model (e.g., additive or multiplicative noise, etc.).
 
-This mapping, however, is not injective and therefore, the inverse problem\footnote{Referred to as image restoration, reconstruction or denoising} to estimate $X$ from $Y$, is an ill-posed problem, meaning that there are multiple possible solutions for $X$ that could generate $Y$.
+This mapping, however, is not injective and therefore, the inverse problem\footnote{Referred to as image restoration, reconstruction or denoising} to estimate $x_{\mathbf{i}}$ from $y_{\mathbf{i}}$, is an ill-posed problem, meaning that there are multiple possible solutions for $x_{\mathbf{i}}$ that could generate $y_{\mathbf{i}}$.
 
 Image restoration techniques have been explored in both the spatial and transform domains. In the spatial domain, several linear and nonlinear filtering techniques exist, utilizing different kernels to perform direct manipulation on pixel values. Linear filters, such as the mean filter, compute the average of pixel values in a neighborhood and, in doing so, smooth the image but usually result in edge blurring.
 
@@ -70,21 +70,21 @@ In the Grouping step, blocks who are the least dissimilar to the reference block
 The \gls{BM3D} algorithm had showed one of the best denoising performances and can only be contested by the recent deep-learning based denoising methods. 
 
 \section{Poisson Noise Model}\label{sec:poisson-noise-model}
-In the case of photoelectron counting, the observed intensity $Z_{\mathbf{i}} \in \mathbb{Z}_{\geq 0}$ at each voxel (with $\mathbf{i} = [i_1, i_2, \dots, i_d]^T$ the coordinate vector in $d$-dimensional space) can be modeled as an independent Poisson \gls{rv} with parameter $X_{\mathbf{i}}$--the true intensity. This is shown in Section~\ref{section:photoelectron-counting-stats} to be true for a constant intensity light source. The relation can be expressed as: $Z_{\mathbf{i}} \sim \text{Poi}(X_{\mathbf{i}})$
+In the case of photoelectron counting, the observed intensity $z_{\mathbf{i}} \in \mathbb{Z}_{\geq 0}$ at each voxel (with $\mathbf{i} = [i_1, i_2, \dots, i_d]^T$ the coordinate vector in $d$-dimensional space) can be modeled as an independent Poisson \gls{rv} with parameter $x_{\mathbf{i}}$--the true intensity. This is shown in Section~\ref{section:photoelectron-counting-stats} to be true for a constant intensity light source. The relation can be expressed as: $z_{\mathbf{i}} \sim \text{Poi}(x_{\mathbf{i}})$
 
 \begin{equation}
-    P(Z_{\mathbf{i}} = z| X_{\mathbf{i}} = x) = \frac{x^z e^{-x}}{z!}
+    P(z_{\mathbf{i}} = z| x_{\mathbf{i}} = x) = \frac{x^z e^{-x}}{z!}
 \end{equation}
 
 
-Here, $z$ represents the observation at voxel $i$, while $x$ corresponds to the expected number of detected electrons, the underlying intensity that we aim to recover. Formally $\mathbb{E}[Z_{\mathbf{i}} | X_{\mathbf{i}}] = X_{\mathbf{i}}$
+Here, $z$ represents the observation at voxel $i$, while $x$ corresponds to the expected number of detected electrons, the underlying intensity that we aim to recover. Formally $\mathbb{E}[z_{\mathbf{i}} | x_{\mathbf{i}}] = x_{\mathbf{i}}$
 
 The Poisson noise can then be written as:
 \begin{equation}
-    N_{\mathbf{i}} = Z_{\mathbf{i}} - \mathbb{E}[Z_{\mathbf{i}} | X_{\mathbf{i}}]
+    N_{\mathbf{i}} = z_{\mathbf{i}} - \mathbb{E}[z_{\mathbf{i}} | x_{\mathbf{i}}]
 \end{equation}
 
-This noise is signal dependent as the variance is dependent on the true signal $Var[N_{\mathbf{i}} | X_{\mathbf{i}}] = [Z_{\mathbf{i}} | X_{\mathbf{i}}] = X_{\mathbf{i}}$ and hence it can be seen that the with decreasing intensity, the noise increases.
+This noise is signal dependent as the variance is dependent on the true signal $Var[N_{\mathbf{i}} | x_{\mathbf{i}}] = [z_{\mathbf{i}} | x_{\mathbf{i}}] = x_{\mathbf{i}}$ and hence it can be seen that the with decreasing intensity, the noise increases.
 
 \section{Variance Stabilization Transform: Anscombe}
 
@@ -134,14 +134,14 @@ As described in section~\ref{section:datasets}, a 3D image is constructed by bin
     \label{fig:slices}
 \end{figure}
 
-Given the low counts in the dataset, a possible method to create a high quality reference image is to window-average with neighboring slices. Figure~\ref{fig:slices} illustrates such a case, where noise is progressively reduced by averaging across windows of increasing size, at the cost of feature blurring. Even with a large window size, an ideal, noise-free reference image is not obtainable.
+Given the low counts in the dataset, a possible method to create a high quality reference image is to window-average with neighboring slices. \cref{fig:slices} illustrates such a case, where noise is progressively reduced by averaging across windows of increasing size, at the cost of feature blurring. Even with a large window size, an ideal, noise-free reference image is not obtainable.
 
 To address this, we assess metrics that are more resilient to noisy reference images. In Appendix~\ref{sec:metric_comparison_experiment}, we compare the performance of different metrics (\gls{PSNR}, \gls{SSIM}, \gls{MSE} and \gls{MSSSIM}) for evaluating the denoising performance. It is found that the \gls{MSSSIM} metric is particularly well-suited for evaluating the denoising performance of images, when comparing against a noisy reference image. The \gls{MSSSIM} metric, conceived by \citeauthor{wangMultiscaleStructuralSimilarity2003} \cite{wangMultiscaleStructuralSimilarity2003}, extends SSIM by incorporating multiple scales. 
 
 With the ideal denoising producing distortion-free images, one free from artifacts and removing all unwanted signal, it makes sense to target structural similarity rather than relative intensity values against the reference. Hence, throughout the text, the images are normalized by their maximum value to the [\num{0}, \num{1}] range. This normalization ensures that comparisons focus on relative differences in image structures and features, rather than on absolute intensity values.
 
 \section{Denoising Evaluation: Single and Window-Averaged Images}
-Let us start with attempting to denoise the noisy realization with \num{1.6e7} electron counts of the $k_y$-$k_x$ images shown in Figure~\ref{fig:slices}, as the target has clear features to compare against. We use the Anscombe--\gls{BM3D}--Inverse Anscombe scheme described above. Single slice and window-averaged images \numlist{1;5;10;15} are compared against the reference (single slice and window-averaged of the \num{1.86e8} counts dataset) using the \gls{MSSSIM} metric. The value of $\sigma$ is arbitrarily set to \num{0.2}. One example of noisy, denoised, and target images is shown in Figure~\ref{fig:noisy-denoised-ref-16M-avg-bm3d}, with the noisy image formed by averaging 5 $k_y$-$k_x$ slices and the target image formed by averaging 15 $k_y$-$k_x$ slices.
+Let us start with attempting to denoise the noisy realization with \num{1.6e7} electron counts of the $k_y$-$k_x$ images shown in \cref{fig:slices}, as the target has clear features to compare against. We use the Anscombe--\gls{BM3D}--Inverse Anscombe scheme described above. Single slice and window-averaged images \numlist{1;5;10;15} are compared against the reference (single slice and window-averaged of the \num{1.86e8} counts dataset) using the \gls{MSSSIM} metric. The value of $\sigma$ is arbitrarily set to \num{0.2}. One example of noisy, denoised, and target images is shown in \cref{fig:noisy-denoised-ref-16M-avg-bm3d}, with the noisy image formed by averaging 5 $k_y$-$k_x$ slices and the target image formed by averaging 15 $k_y$-$k_x$ slices.
 
 \begin{figure}[h]
     \centering
@@ -151,7 +151,7 @@ Let us start with attempting to denoise the noisy realization with \num{1.6e7} e
 \end{figure}
 
 
-Using a confusion matrix, Figure~\ref{fig:confusion_matrix_msssim_window_avg} shows how the metric changes when varying window sizes. It becomes evident that a larger window size yields a better comparison for denoising. This is because the larger window size reduces the noise in the target image, making the comparison more accurate. Denoising single slice images leads to generally poor results, highlighting that for low count images, this scheme is insufficient.
+Using a confusion matrix, \cref{fig:confusion_matrix_msssim_window_avg} shows how the metric changes when varying window sizes. It becomes evident that a larger window size yields a better comparison for denoising. This is because the larger window size reduces the noise in the target image, making the comparison more accurate. Denoising single slice images leads to generally poor results, highlighting that for low count images, this scheme is insufficient.
 
 \begin{figure}[h]
     \centering
@@ -161,7 +161,7 @@ Using a confusion matrix, Figure~\ref{fig:confusion_matrix_msssim_window_avg} sh
 \end{figure}
 
 \section{Finding the Optimal Sigma}
-Till now, we only looked at a single count rate and denoising with a single $\sigma$ value. However, considering that the noise decreases with increased electron counts, the expectation would be that the level of denoising required also decreases. One way would be to estimate the noise level and use that estimate as the $\sigma$ for denoising. A different approach would be to perform a constrained optimization to find optimal $\sigma$ denoted $\sigma_{\text{oo}}$, such that the metric \gls{MSSSIM} is maximized. For user defined parameters to an algorithm, this sort of optimization is known as a hyperparameter search. An exhaustive grid search is the simplest method, but it is computationally expensive. Therefore, we use \texttt{optuna} \cite{akibaOptunaNextgenerationHyperparameter2019}, which performs Bayesian optimization to find the optimal parameters, optimizing for \num{50} trials. The search is performed on \num{10} window-averaged 2D image slices (same as in Figure~\ref{fig:noisy-denoised-ref-16M-avg-bm3d}) with 5 different noisy realizations for each count.
+Till now, we only looked at a single count rate and denoising with a single $\sigma$ value. However, considering that the noise decreases with increased electron counts, the expectation would be that the level of denoising required also decreases. One way would be to estimate the noise level and use that estimate as the $\sigma$ for denoising. A different approach would be to perform a constrained optimization to find optimal $\sigma$ denoted $\sigma_{\text{oo}}$, such that the metric \gls{MSSSIM} is maximized. For user defined parameters to an algorithm, this sort of optimization is known as a hyperparameter search. An exhaustive grid search is the simplest method, but it is computationally expensive. Therefore, we use \texttt{optuna} \cite{akibaOptunaNextgenerationHyperparameter2019}, which performs Bayesian optimization to find the optimal parameters, optimizing for \num{50} trials. The search is performed on \num{10} window-averaged 2D image slices (same as in \cref{fig:noisy-denoised-ref-16M-avg-bm3d}) with 5 different noisy realizations for each count.
 
 
 \begin{figure}[h]
@@ -185,9 +185,9 @@ Till now, we only looked at a single count rate and denoising with a single $\si
     \label{fig:hyperparameter-averaged-10-images}
 \end{figure}
 
-The results in Figure~\ref{fig:hyperparameter-averaged-10-images} corroborate the hypothesis that the optimal $\sigma$ for denoising decreases with increasing electron counts, a linearly decreasing trend.
+The results in \cref{fig:hyperparameter-averaged-10-images} corroborate the hypothesis that the optimal $\sigma$ for denoising decreases with increasing electron counts, a linearly decreasing trend.
 
-While using \gls{MSSSIM} as the objective function for optimization is good at showing the denoising performance improvement, it leads to more cautious results (low $\sigma_{\text{oo}}$ values) as those fare better against the target, which has the relevant features but is also noisy. To counter that, we scale the optimum $\sigma_{\text{oo}}$ values by a factor of 2 to get a more aggressive denoising and denote that as $\sigma_{\text{o}}$ and use this for denoising. A comparison of the denoised image using the optimal $\sigma_{\text{o}}$ and the adjusted optimal $\sigma_{\text{oo}}$ is shown in Figure~\ref{fig:denoised-optimal-sigma}.
+While using \gls{MSSSIM} as the objective function for optimization is good at showing the denoising performance improvement, it leads to more cautious results (low $\sigma_{\text{oo}}$ values) as those fare better against the target, which has the relevant features but is also noisy. To counter that, we scale the optimum $\sigma_{\text{oo}}$ values by a factor of 2 to get a more aggressive denoising and denote that as $\sigma_{\text{o}}$ and use this for denoising. A comparison of the denoised image using the optimal $\sigma_{\text{o}}$ and the adjusted optimal $\sigma_{\text{oo}}$ is shown in \cref{fig:denoised-optimal-sigma}.
 
 \begin{figure}[h]
     \centering
@@ -214,7 +214,7 @@ The denoising performance below \num{4e6} is poor, with or without the optimal v
 \end{figure}
 
 \section{Denoising with Varied Counts}
-We now evaluate the denoising performance of the \gls{BM3D} algorithm using the optimal $\sigma_{\text{o}}$ values determined through hyperparameter search. A total of \num{1847} images were extracted from two datasets, each with counts of \numlist{1e6;2e6;4e6;8e6;1.6e7;3.2e7;4.8e7}. These images are window-averaged over 10 slices for both the noisy and target images. The baseline \gls{MSSSIM} metric was computed using the noisy images. As shown in Figure~\ref{fig:bm3d-msssim}, there is a noticeable improvement in image quality with denoising up to \num{4e7} counts, with \gls{MSSSIM} values increasing from \num{0.6} to \num{0.83}. Beyond this count, visual inspection reveals that the denoised images appear better than the noisy target, which would explain the lower \gls{MSSSIM} values.
+We now evaluate the denoising performance of the \gls{BM3D} algorithm using the optimal $\sigma_{\text{o}}$ values determined through hyperparameter search. A total of \num{1847} images were extracted from two datasets, each with counts of \numlist{1e6;2e6;4e6;8e6;1.6e7;3.2e7;4.8e7}. These images are window-averaged over 10 slices for both the noisy and target images. The baseline \gls{MSSSIM} metric was computed using the noisy images. As shown in \cref{fig:bm3d-msssim}, there is a noticeable improvement in image quality with denoising up to \num{4e7} counts, with \gls{MSSSIM} values increasing from \num{0.6} to \num{0.83}. Beyond this count, visual inspection reveals that the denoised images appear better than the noisy target, which would explain the lower \gls{MSSSIM} values.
 
 \begin{figure}[h]
     \centering
