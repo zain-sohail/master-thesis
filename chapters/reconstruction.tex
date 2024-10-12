@@ -1,10 +1,10 @@
-Detached from the noise model, the goal of image restoration is to estimate the true image $X$ from an incomplete or corrupted (noisy) observation $Y$. Let $\mathbf{i} = [i_1, i_2, \dots, i_d]^T$ be a column vector that defines the coordinates of each voxel in a \textit{d}-dimensional image space. In the most general form, the observation model can be defined as $y_{\mathbf{i}}$ being a mapping of $x_{\mathbf{i}}$ through a function $\mathcal{F}$:
+Detached from the noise model, the goal of image restoration is to estimate the true image $Y$ from an incomplete or corrupted (noisy) observation $X$. Let $\mathbf{i} = [i_1, i_2, \dots, i_d]^T$ be a column vector that defines the coordinates of each voxel in a \textit{d}-dimensional image space. In the most general form, the observation model can be defined as $x_{\mathbf{i}}$ being a mapping of $y_{\mathbf{i}}$ through a function $\mathcal{F}$:
 \begin{equation}\label{eq:observation-model}
-    y_{\mathbf{i}} = \mathcal{F} (x_{\mathbf{i}})
+    x_{\mathbf{i}} = \mathcal{F} (y_{\mathbf{i}})
 \end{equation}
-where $y_{\mathbf{i}}$ and $x_{\mathbf{i}}$ represent the incomplete observation and the corresponding true image value at voxel $\mathbf{i}$, respectively; the entire image can be represented as $Y = [y_{\mathbf{i}}]$ and $X = [x_{\mathbf{i}}]$, respectively. And the function $\mathcal{F}$ can vary depending on the noise model (e.g., additive or multiplicative noise, etc.).
+where $x_{\mathbf{i}}$ and $y_{\mathbf{i}}$ represent the incomplete observation and the corresponding true image value at voxel $\mathbf{i}$, respectively; the entire image can be represented as $X = [x_{\mathbf{i}}]$ and $Y = [y_{\mathbf{i}}]$, respectively. And the function $\mathcal{F}$ can vary depending on the noise model (e.g., additive or multiplicative noise, etc.).
 
-This mapping, however, is not injective and therefore, the inverse problem\footnote{Referred to as image restoration, reconstruction or denoising} to estimate $x_{\mathbf{i}}$ from $y_{\mathbf{i}}$, is an ill-posed problem, meaning that there are multiple possible solutions for $x_{\mathbf{i}}$ that could generate $y_{\mathbf{i}}$.
+This mapping, however, is not injective and therefore, the inverse problem\footnote{Referred to as image restoration, reconstruction or denoising} to estimate $y_{\mathbf{i}}$ from $x_{\mathbf{i}}$, is an ill-posed problem, meaning that there are multiple possible solutions for $y_{\mathbf{i}}$ that could generate $x_{\mathbf{i}}$.
 
 Image restoration techniques have been explored in both the spatial and transform domains. In the spatial domain, several linear and nonlinear filtering techniques exist, utilizing different kernels to perform direct manipulation on pixel values. Linear filters, such as the mean filter, compute the average of pixel values in a neighborhood and, in doing so, smooth the image but usually result in edge blurring.
 
@@ -16,7 +16,7 @@ The principle behind \gls{NLM} denoising also builds on the redundancy of simila
 
 A lot of the mentioned algorithm assume the noise prior to be additive. This can be written as:
 \begin{equation}
-    Y = X + N
+    X = Y + N
 \end{equation}
 and many more assume the noise to be \gls{AWGN} with noise of form in equation~\ref{eq:awgn}. This is because the normal distribution has nice mathematical properties, allowing to derive theoretical guarantees.
 
@@ -70,21 +70,21 @@ In the Grouping step, blocks who are the least dissimilar to the reference block
 The \gls{BM3D} algorithm had showed one of the best denoising performances and can only be contested by the recent deep-learning based denoising methods. 
 
 \section{Poisson Noise Model}\label{sec:poisson-noise-model}
-In the case of photoelectron counting, the observed intensity $z_{\mathbf{i}} \in \mathbb{Z}_{\geq 0}$ at each voxel (with $\mathbf{i} = [i_1, i_2, \dots, i_d]^T$ the coordinate vector in $d$-dimensional space) can be modeled as an independent Poisson \gls{rv} with parameter $x_{\mathbf{i}}$--the true intensity. This is shown in Section~\ref{section:photoelectron-counting-stats} to be true for a constant intensity light source. The relation can be expressed as: $z_{\mathbf{i}} \sim \text{Poi}(x_{\mathbf{i}})$
+In the case of photoelectron counting, the observed intensity $z_{\mathbf{i}} \in \mathbb{Z}_{\geq 0}$ at each voxel (with $\mathbf{i} = [i_1, i_2, \dots, i_d]^T$ the coordinate vector in $d$-dimensional space) can be modeled as an independent Poisson \gls{rv} with parameter $y_{\mathbf{i}}$--the true intensity. This is shown in Section~\ref{section:photoelectron-counting-stats} to be true for a constant intensity light source. The relation can be expressed as: $z_{\mathbf{i}} \sim \text{Poi}(y_{\mathbf{i}})$
 
 \begin{equation}
-    P(z_{\mathbf{i}} = z| x_{\mathbf{i}} = x) = \frac{x^z e^{-x}}{z!}
+    P(z_{\mathbf{i}} = z| y_{\mathbf{i}} = y) = \frac{y^z e^{-y}}{z!}
 \end{equation}
 
 
-Here, $z$ represents the observation at voxel $i$, while $x$ corresponds to the expected number of detected electrons, the underlying intensity that we aim to recover. Formally $\mathbb{E}[z_{\mathbf{i}} | x_{\mathbf{i}}] = x_{\mathbf{i}}$
+Here, $z$ represents the observation at voxel $i$, while $y$ corresponds to the expected number of detected electrons, the underlying intensity that we aim to recover. Formally $\mathbb{E}[z_{\mathbf{i}} | y_{\mathbf{i}}] = y_{\mathbf{i}}$
 
 The Poisson noise can then be written as:
 \begin{equation}
-    N_{\mathbf{i}} = z_{\mathbf{i}} - \mathbb{E}[z_{\mathbf{i}} | x_{\mathbf{i}}]
+    N_{\mathbf{i}} = z_{\mathbf{i}} - \mathbb{E}[z_{\mathbf{i}} | y_{\mathbf{i}}]
 \end{equation}
 
-This noise is signal dependent as the variance is dependent on the true signal $Var[N_{\mathbf{i}} | x_{\mathbf{i}}] = [z_{\mathbf{i}} | x_{\mathbf{i}}] = x_{\mathbf{i}}$ and hence it can be seen that the with decreasing intensity, the noise increases.
+This noise is signal dependent as the variance is dependent on the true signal $Var[N_{\mathbf{i}} | y_{\mathbf{i}}] = [z_{\mathbf{i}} | y_{\mathbf{i}}] = y_{\mathbf{i}}$ and hence it can be seen that the with decreasing intensity, the noise increases.
 
 \section{Variance Stabilization Transform: Anscombe}
 
@@ -94,15 +94,15 @@ This noise is signal dependent as the variance is dependent on the true signal $
 \end{equation}
 
 Applying this transformation to a Poisson distributed \gls{rv} maps the data such that the variance becomes approximately constant. $T(Z)$ can then be denoised using \gls{AWGN} denoising techniques such as \gls{BM3D}. 
-The denoised signal $\mathbb{Z}$ as is an estimate of expected value of $T(Z)$ conditioned on the true signal $X$ we aim to recover.
+The denoised signal $\mathbb{Z}$ as is an estimate of expected value of $T(Z)$ conditioned on the true signal $Y$ we aim to recover.
 \begin{equation}
-    \mathbb{Z} = \mathbb{E}[T(Z) | X]
+    \mathbb{Z} = \mathbb{E}[T(Z) | Y]
 \end{equation}
-Hence, the final estimate for the true signal $X$ can be obtained by applying the inverse Anscombe transform to $\mathbb{Z}$.
+Hence, the final estimate for the true signal $Y$ can be obtained by applying the inverse Anscombe transform to $\mathbb{Z}$.
 \begin{equation}
-    \hat{X} = T^{-1}(\mathbb{Z}) = \mathbb{E}[Z | T(Z) = \mathbb{Z}]
+    \hat{Y} = T^{-1}(\mathbb{Z}) = \mathbb{E}[Z | T(Z) = \mathbb{Z}]
 \end{equation}
-Since the transformation is non-linear, an algebraic inverse is asymptotically biased. \citeauthor{makitaloOptimalInversionAnscombe2011} \cite{makitaloOptimalInversionAnscombe2011} proposed an exact unbiased inverse of $\mathbb{Z}$ giving the denoised estimate $\hat{X}$. This method performs better than methods based on explicit Poisson noise removal. Therefore, in the next few sections we make use of the scheme described in Algorithm~\ref{alg:anscombe-bm3d} to denoise 2D image slices from the \gls{MPES} data.
+Since the transformation is non-linear, an algebraic inverse is asymptotically biased. \citeauthor{makitaloOptimalInversionAnscombe2011} \cite{makitaloOptimalInversionAnscombe2011} proposed an exact unbiased inverse of $\mathbb{Z}$ giving the denoised estimate $\hat{Y}$. This method performs better than methods based on explicit Poisson noise removal. Therefore, in the next few sections we make use of the scheme described in Algorithm~\ref{alg:anscombe-bm3d} to denoise 2D image slices from the \gls{MPES} data.
 
 \begin{algorithm}
     \caption{Algorithm to Denoise Poisson Corrupted Images}\label{alg:anscombe-bm3d}
@@ -113,7 +113,7 @@ Since the transformation is non-linear, an algebraic inverse is asymptotically b
     \Procedure{AnscombeBM3D}{$I$, $\sigma^2$}
         \State $I_{\text{anscombe}} \gets \textsc{AnscombeTransform}(I)$
         
-        \State $I_{\text{bm3d}} \gets \textsc{BM3D}(I_{\text{anscombe}}, \sigma^2, b, W, \tau)$
+        \State $I_{\text{bm3d}} \gets \textsc{BM3D}(I_{\text{anscombe}}, \sigma^2, b, Y, \tau)$
         
         \State $I_{\text{denoised}} \gets \textsc{InverseAnscombeTransform}(I_{\text{bm3d}})$
         
@@ -161,7 +161,7 @@ Using a confusion matrix, \cref{fig:confusion_matrix_msssim_window_avg} shows ho
 \end{figure}
 
 \section{Finding the Optimal Sigma}
-Till now, we only looked at a single count rate and denoising with a single $\sigma$ value. However, considering that the noise decreases with increased electron counts, the expectation would be that the level of denoising required also decreases. One way would be to estimate the noise level and use that estimate as the $\sigma$ for denoising. A different approach would be to perform a constrained optimization to find optimal $\sigma$ denoted $\sigma_{\text{oo}}$, such that the metric \gls{MSSSIM} is maximized. For user defined parameters to an algorithm, this sort of optimization is known as a hyperparameter search. An exhaustive grid search is the simplest method, but it is computationally expensive. Therefore, we use \texttt{optuna} \cite{akibaOptunaNextgenerationHyperparameter2019}, which performs Bayesian optimization to find the optimal parameters, optimizing for \num{50} trials. The search is performed on \num{10} window-averaged 2D image slices (same as in \cref{fig:noisy-denoised-ref-16M-avg-bm3d}) with 5 different noisy realizations for each count.
+Till now, we only looked at a single count rate and denoising with a single $\sigma$ value. However, considering that the noise decreases with increased electron counts, the expectation would be that the level of denoising required also decreases. One way would be to estimate the noise level and use that estimate as the $\sigma$ for denoising. A different approach would be to perform a constrained optimization to find optimal $\sigma$ denoted $\sigma_{\text{oo}}$, such that the metric \gls{MSSSIM} is maximized. For user defined parameters to an algorithm, this sort of optimization is known as a hyperparameter search. An exhaustive grid search is the simplest method, but it is computationally expensive. Therefore, we use \texttt{optuna}, which performs Bayesian optimization to find the optimal parameters, optimizing for \num{50} trials. The search is performed on \num{10} window-averaged 2D image slices (same as in \cref{fig:noisy-denoised-ref-16M-avg-bm3d}) with 5 different noisy realizations for each count.
 
 
 \begin{figure}[h]
