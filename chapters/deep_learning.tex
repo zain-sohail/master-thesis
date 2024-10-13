@@ -16,10 +16,10 @@ Much of the foundational concepts discussed are based on \cite{shalev-shwartzUnd
 
 \section{Foundations of Learning}
 Statistical regression is a classical example of a learning algorithm, where the goal of regression is to learn a function that maps the input data to the output data.
-Let us approach the image restoration problem from this perspective. Using the general observation model defined in \cref{eq:observation-model}, the learning problem is then to find a hypothesis $\mathcal{h}$ that maps the degraded image $X$ to the true image $Y$ that generalizes well.
+Let us approach the image restoration problem from this perspective. Using the general observation model defined in \cref{eq:observation-model}, the learning problem is then to find a hypothesis $h$ that maps the degraded image $X$ to the true image $Y$ that generalizes well.
 
 \begin{equation}
-    \mathcal{h}: X \mapsto Y
+    h: X \mapsto Y
 \end{equation}
 
 In Machine Learning, we do not make any explicit assumption of the \textit{data generating distribution} except that all instances of the data are \textit{\gls{iid}} and generated according to a distribution $\mathcal{D}$ i.e. $Y, X \sim \mathcal{D}$.
