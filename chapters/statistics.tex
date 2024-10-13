@@ -1,6 +1,6 @@
 To attempt at reconstructing the truth from a noisy observation, it is essential to understand the underlying noise statistics. Classical and quantum optics provide a comprehensive theoretical foundation to explain photon statistics. For instance, it is well understood that photons from a coherent light source follow a Poisson distribution, often referred to as shot-noise. Whereas, for chaotic (bunched) light, the variance exceeds that compared to their mean, dubbed super-Poissonian. And finally for a squeezed light source, the distribution is sub-Poissonian \cite[Chapter~5]{foxQuantumOpticsIntroduction2006}.
 
-In this chapter, we start with defining the Poisson model for counting photo-electron event data. We examine our data to identify where this model is appropriate and where its limitations become evident. To this end, we introduce some statistical apparatus necessary to estimate parameters and define goodness of model. Further, we explore why the \gls{FEL} light source (see section \ref{section:light-sources}), exhibits over-dispersed statistics, a characteristic necessitating moving beyond the Poisson model. Accounting for this, we transition to using the Negative Binomial distribution as a more suitable model for the count data. Lastly, we acknowledge that theoretically these models primarily address photon statistics and a more sophisticated treatment building on light-matter interaction might be necessary to connect photon statistics with the statistics of the emitted electrons.
+In Section~\ref{sec:poisson-noise-model}, we introduced the assumption that the noise is Poisson distributed. In this chapter, we begin by formally defining the Poisson model for counting photo-electron event data. We examine our data to identify where this model is appropriate and where its limitations become evident. To this end, we introduce some statistical apparatus necessary to estimate parameters and define goodness of model. Further, we explore why the \gls{FEL} light source, as described in Section~\ref{section:light-sources}, exhibits over-dispersed statistics, a characteristic necessitating moving beyond the Poisson model. Accounting for this, we transition to using the Negative Binomial distribution as a more suitable model for the count data.
 
 
 \section{Poisson distribution as a Model for Photon Counting Statistics}\label{section:photon-counting-stats}
@@ -60,72 +60,74 @@ Since the derivation is lengthy, the reader is referred to \cite{mehtaVIIITheory
 
 We can see from \ref{eq:mandel-photo-electron} that even with intensity of light being constant, there are random fluctuations. However, it also implies that if there are fluctuations in the intensity of light, the photoelectron counting statistics will not be Poissonian. We shall later see that this is an important argument to go beyond the Poissonian model for \gls{FEL} light sources.
 
-\section{Correlated events in detector}
-Owing to the 2-layered \gls{DLD} in our experimental setup (Figure~\ref{fig:sectors}), measuring two electrons impinging on locations nearby to one another can be detected. In a single layer \gls{DLD}, due to the dead-time experienced by each sector after recording, only a single event can be recorded. However, the multi-layer detection scheme comes with a caveat: the layers must be calibrated appropriately otherwise the electron counting routines can report two events for the same electron. 
 
-For reconstructing multi-hit events in the detector, method such as deep learning have been used in \cite{knipferDeepLearningbasedSpatiotemporal2024}
+The assumption is restrictive because it assumes that the voxels are uncorrelated but in fact thats not the case. this model relies on only counting the electrons but not based on energies and so on.
+
+In this description, it is assumed a radition field is on detector system that detects by releases electrons. This is not the case for PES, where the material work function and etc. would make the process dependent on the material.
+
+\section{Poisson Point Process}
+\section{Testing}
+
+% There's a lot of parameters that need to be tested to determine what sort of counting statistics the dataset has.
+
+% Controls for the test:
+% lets see
+% \begin{itemize}
+%     \item Total time being looked at (like 1000 s or 20 hours)
+%     \begin{itemize}
+%         \item distribution might change due to overtime FEL intensity changes
+%     \end{itemize}
+%     \item Time bins being used (like 2 s vs 20 s and so on).
+%     \begin{itemize}
+%         \item Seems like distribution changes based on that too
+%     \end{itemize}
+%     \item Looking at individual pixels on X and Y
+%     \item Looking at Energy axis as it behaves weirder
+%     \item Looking at a larger region in X and Y 
+%     \begin{itemize}
+%         \item should follow same statisitics as single pixels
+%     \end{itemize}
+%     \item Check after removing correlated electrons within each pulse
+%     \begin{itemize}
+%         \item It is possible that electrons are correlated between different pulses because the time delay is long enough. But seems highly unlikely!
+%     \end{itemize}
+%     \begin{itemize}
+%         \item 
+%     \end{itemize}
+% \end{itemize}
 
 
-There's a lot of parameters that need to be tested to determine what sort of counting statistics the dataset has.
+% \subsection{Before filtering}
 
-Controls for the test:
-lets see
-\begin{itemize}
-    \item Total time being looked at (like 1000 s or 20 hours)
-    \begin{itemize}
-        \item distribution might change due to overtime FEL intensity changes
-    \end{itemize}
-    \item Time bins being used (like 2 s vs 20 s and so on).
-    \begin{itemize}
-        \item Seems like distribution changes based on that too
-    \end{itemize}
-    \item Looking at individual pixels on X and Y
-    \item Looking at Energy axis as it behaves weirder
-    \item Looking at a larger region in X and Y 
-    \begin{itemize}
-        \item should follow same statisitics as single pixels
-    \end{itemize}
-    \item Check after removing correlated electrons within each pulse
-    \begin{itemize}
-        \item It is possible that electrons are correlated between different pulses because the time delay is long enough. But seems highly unlikely!
-    \end{itemize}
-    \begin{itemize}
-        \item 
-    \end{itemize}
-\end{itemize}
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=1\linewidth]{images/image.png}
+%     \caption{Enter Caption}
+%     \label{Image at one 2D pixel but summed over energy}
+% \end{figure}
 
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=1\linewidth]{images/summed.png}
+%     \caption{Image over 40 pixels and summed over energy}
+%     % \label{fig:enter-label}
+% \end{figure}
 
-\subsection{Before filtering}
+% \subsection{After filtering}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=1\linewidth]{images/image.png}
-    \caption{Enter Caption}
-    \label{Image at one 2D pixel but summed over energy}
-\end{figure}
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=1\linewidth]{images/poisson_stats/after_filtering_region_1000s.png}
+%     \caption{Data is filtered here with the KNN and looking at small region}
+%     % \label{fig:enter-label}
+% \end{figure}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=1\linewidth]{images/summed.png}
-    \caption{Image over 40 pixels and summed over energy}
-    % \label{fig:enter-label}
-\end{figure}
-
-\subsection{After filtering}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=1\linewidth]{images/poisson_stats/after_filtering_region_1000s.png}
-    \caption{Data is filtered here with the KNN and looking at small region}
-    % \label{fig:enter-label}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=1\linewidth]{images/poisson_stats/filtered_allY_singleX.png}
-    \caption{Enter Caption}
-    % \label{fig:enter-label}
-\end{figure}
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=1\linewidth]{images/poisson_stats/filtered_allY_singleX.png}
+%     \caption{Enter Caption}
+%     % \label{fig:enter-label}
+% \end{figure}
 
 
 Taken from \cite{berteroImageDeblurringPoisson2009} which cites \cite{fellerIntroductionProbabilityTheory1968}
@@ -133,21 +135,22 @@ Taken from \cite{berteroImageDeblurringPoisson2009} which cites \cite{fellerIntr
 We simulate the data with Poissonian data.
 \section{Statistical testing}
 
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=1\linewidth]{images/2024-08-27-15.11.15.png}
-    \caption{Enter Caption}
-\end{figure}
+% \begin{figure}[t]
+%     \centering
+%     \includegraphics[width=1\linewidth]{images/2024-08-27-15.11.15.png}
+%     \caption{Enter Caption}
+% \end{figure}
 
 
 
 
-\begin{figure}
-    \centering
-    \includegraphics[width=1\linewidth]{images/JD-54-image.png}
-    \caption{Enter Caption}
-    \label{fig:enterl}
-\end{figure}
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=1\linewidth]{images/JD-54-image.png}
+%     \caption{Enter Caption}
+%     \label{fig:enterl}
+% \end{figure}
+
 
 % \section{Using CLT}
 % Central Limit Theorem (CLT)
@@ -172,7 +175,7 @@ Can't correlate FEL intensity with electron counts per pulse as the GMD is befor
     Imagine a unit time interval partitioned into n subintervals of length 1/n. A given collection of finitely many points in the interval may be regarded as the result of a chance process such that each subinterval has the same probability $P_{n}$ to contain one or more points of the collection. A subinterval is then either occupied or empty, and the assumed independence of non-overlapping time intervals implies that we are dealing with Bernoulli trials: We assume that the probability for exactly k occupied subintervals is given by $b(k;n,P_{n})$. We now refine this discrete model indefinitely by letting n→inf. The probability that the whole interval contains no point of the collection must tend to a finite limit. But this is the event that no cell is occupied, and its probability is $(1-p_{n})^{n}$. Passing to logarithms it is seen that this quantity approaches a limit only if $np_{n}$
     from book \cite{fellerIntroductionProbabilityTheory1968}
 \end{quotation}
-
+\section{Poisson Process testing}
 \section{Chi-squared Goodness of Fit Test}
 We hypothesize that the data follows a certain distribution e.g. Poisson, Normal, Negative Binomial The Chi-squared Goodness of Fit Test is used to determine if the observed data is consistent with the expected distribution.
 

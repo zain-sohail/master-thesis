@@ -65,6 +65,8 @@ fonttitle=\bfseries,#1}
 \usepackage[hidelinks]{hyperref}
 \usepackage{url}
 \usepackage[capitalise, noabbrev]{cleveref}
+% \usepackage{makeidx}
+% \makeindex
 
 % Acronyms and glossaries
 \usepackage[toc, acronym, symbols, automake]{glossaries-extra}
@@ -158,9 +160,11 @@ fonttitle=\bfseries,#1}
 % \addcontentsline{toc}{chapter}{Declaration}
 % \input{declaration}
 
+% \printindex
+
 \begin{appendices}
   \input{appendix/etl}
-  \input{appendix/math_notation.tex}
+  % \input{appendix/math_notation.tex}
   \input{appendix/deep_learning.tex}
   % \input{jupyter_notebooks/notebooks.tex}
 \end{appendices}
