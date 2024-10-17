@@ -1,12 +1,11 @@
 
-\glsxtrnewsymbol[description={Surface parallel momentum in the x-direction}]{kx}{\ensuremath{k_x}}
-\glsxtrnewsymbol[description={Surface parallel momentum in the y-direction}]{ky}{\ensuremath{k_y}}
-\glsxtrnewsymbol[description={Surface perpendiclar momentum component}]{kz}{\ensuremath{k_z}}
-\glsxtrnewsymbol[description={Fermi level energy}]{EF}{\ensuremath{E_F}}
-\glsxtrnewsymbol[description={Energy of the emitted electron}]{E}{\ensuremath{E}}
-\glsxtrnewsymbol[description={Pump-probe time}]{tpp}{\ensuremath{t_{pp}}}
-\glsxtrnewsymbol[description={Spin polarization}]{Sz}{\ensuremath{S_z}}
-\glsxtrnewsymbol[description={Intensity}]{I}{\ensuremath{I}}
+\glsxtrnewsymbol[description={surface parallel momentum in the x-direction}]{kx}{\ensuremath{k_x}}
+\glsxtrnewsymbol[description={surface parallel momentum in the y-direction}]{ky}{\ensuremath{k_y}}
+\glsxtrnewsymbol[description={surface perpendiclar momentum component}]{kz}{\ensuremath{k_z}}
+\glsxtrnewsymbol[description={fermi level energy}]{EF}{\ensuremath{E_F}}
+\glsxtrnewsymbol[description={energy of the emitted electron}]{E}{\ensuremath{E}}
+\glsxtrnewsymbol[description={pump-probe time}]{tpp}{\ensuremath{t_{pp}}}
+\glsxtrnewsymbol[description={intensity}]{I}{\ensuremath{I}}
 
 % Define datasets GrIr, NiW, WSe2, GdW
 \glsxtrnewsymbol[description={Graphene on Iridium(111)}]{GrIr}{\ensuremath{\mathbf{Gr/Ir(110)}}}
@@ -14,79 +13,51 @@
 \glsxtrnewsymbol[description={Tungsten Diselenide}]{WSe2}{\ensuremath{\mathbf{WSe_2}}}
 \glsxtrnewsymbol[description={Gadolinium on Tungsten(110)}]{GdW}{\ensuremath{\mathbf{Gd/W(110)}}}
 
-% Symbols List for Deep Learning
+% True and Noisy image
+\glsxtrnewsymbol[description={true inaccessible image}]{Y}{\ensuremath{Y}}
+\glsxtrnewsymbol[description={noisy/corrupted/incomplete image}]{X}{\ensuremath{X}}
+\glsxtrnewsymbol[description={denoised/restored/reconstructed image}]{Xh}{\ensuremath{X_h}}
 
-% Learning rate
-\glsxtrnewsymbol[description={Learning rate, controls the step size of gradient descent.}]{lr}{\ensuremath{\eta}}
-
-% Weight vector
-\glsxtrnewsymbol[description={Weight vector of a learner.}]{wvec}{\ensuremath{\mathbf{w}}}
-
-% Bias term
-\glsxtrnewsymbol[description={Bias term of a learner.}]{bias}{\ensuremath{b}}
-
-% Gradient
-\glsxtrnewsymbol[description={Gradient of the loss function with respect to model parameters.}]{grad}{\ensuremath{\nabla}}
-
-% Loss function
-\glsxtrnewsymbol[description={Loss function, a measure of prediction error.}]{loss}{\ensuremath{\mathcal{L}}}
-
-% Regularization term
-\glsxtrnewsymbol[description={Regularization term added to the loss function to penalize complexity.}]{reg}{\ensuremath{\Omega}}
-
-% L2 Regularization (Weight decay)
-\glsxtrnewsymbol[description={L2 regularization, also known as weight decay.}]{l2}{\ensuremath{\lambda \|\mathbf{w}\|_2^2}}
-
-% L1 Regularization
-\glsxtrnewsymbol[description={L1 regularization, encourages sparsity in the model.}]{l1}{\ensuremath{\lambda \|\mathbf{w}\|_1}}
-
-% Epoch
-\glsxtrnewsymbol[description={One full pass over the training dataset.}]{epoch}{\ensuremath{\text{epoch}}}
-
-% Batch size
-\glsxtrnewsymbol[description={The number of samples processed before the model is updated.}]{batch}{\ensuremath{B}}
-
-% Activation function
-\glsxtrnewsymbol[description={Activation function applied to neuron outputs.}]{act}{\ensuremath{\sigma}}
-
-% Input vector
-\glsxtrnewsymbol[description={Input feature vector to the model.}]{xvec}{\ensuremath{\mathbf{x}}}
-
-% Output vector
-\glsxtrnewsymbol[description={Output vector or prediction of the model.}]{yhat}{\ensuremath{\hat{\mathbf{y}}}}
-
-% True output
-\glsxtrnewsymbol[description={True output label or ground truth.}]{ytrue}{\ensuremath{\mathbf{y}}}
-
-% Weight matrix
-\glsxtrnewsymbol[description={Weight matrix in a neural network.}]{wmat}{\ensuremath{\mathbf{W}}}
-
-% Jacobian matrix
-\glsxtrnewsymbol[description={Jacobian matrix of partial derivatives.}]{jacobian}{\ensuremath{\mathbf{J}}}
-
-% Hessian matrix
-\glsxtrnewsymbol[description={Hessian matrix of second-order partial derivatives.}]{hessian}{\ensuremath{\mathbf{H}}}
-
+% BM3D sigma for noise level
+\glsxtrnewsymbol[description={noise level parameter for BM3D denoising.}]{sigma}{\ensuremath{\sigma}}
 % Poisson noise
 \glsxtrnewsymbol[description={Poisson noise present in imaging processes.}]{poisson}{\ensuremath{\lambda}}
 
-% Model parameters (weights and biases)
-\glsxtrnewsymbol[description={Model parameters, typically referring to weights and biases.}]{params}{\ensuremath{\theta}}
+% Symbols List for Deep Learning
+% Learning rate
+% \glsxtrnewsymbol[description={learning rate, controls the step size of gradient descent.}]{lr}{\ensuremath{\eta}}
 
-% Maximum Likelihood Estimation (MLE)
-\glsxtrnewsymbol[description={Maximum Likelihood Estimation.}]{mle}{\ensuremath{\hat{\theta}_{MLE}}}
+% Weight vector
+\glsxtrnewsymbol[description={weight vector of a learner.}]{wvec}{\ensuremath{\mathbf{w}}}
 
-% Method of Moments
-\glsxtrnewsymbol[description={Method of Moments estimator.}]{moments}{\ensuremath{\hat{\theta}_{MoM}}}
+% Bias term
+% \glsxtrnewsymbol[description={bias term of a learner.}]{bias}{\ensuremath{b}}
+% Loss function
+\glsxtrnewsymbol[description={loss function, a measure of prediction error.}]{loss}{\ensuremath{\ell}}
+
+% % Input vector
+% \glsxtrnewsymbol[description={Input feature vector to the model.}]{xvec}{\ensuremath{\mathbf{x}}}
+
+% % Output vector
+% \glsxtrnewsymbol[description={Output vector or prediction of the model.}]{yhat}{\ensuremath{\hat{\mathbf{y}}}}
+
+% % True output
+% \glsxtrnewsymbol[description={True output label or ground truth.}]{ytrue}{\ensuremath{\mathbf{y}}}
+
+% % Weight matrix
+% \glsxtrnewsymbol[description={Weight matrix in a neural network.}]{wmat}{\ensuremath{\mathbf{W}}}
+
+
+% % Model parameters (weights and biases)
+% \glsxtrnewsymbol[description={Model parameters, typically referring to weights and biases.}]{params}{\ensuremath{\theta}}
 
 % Hypothesis class
-\glsxtrnewsymbol[description={Set of candidate functions or models.}]{hypo}{\ensuremath{\mathcal{H}}}
+\glsxtrnewsymbol[description={set of functions accessible to the learner}]{hypo}{\ensuremath{\mathcal{H}}}
 
 % Generalization error
-\glsxtrnewsymbol[description={Generalization error of the model on unseen data.}]{generr}{\ensuremath{\mathcal{E}_{\text{gen}}}}
-
+\glsxtrnewsymbol[description={generalization error, the expected error on unseen data.}]{generr}{\ensuremath{\mathcal{R}}}
 % Train error
-\glsxtrnewsymbol[description={Training error or empirical risk.}]{trainerr}{\ensuremath{\mathcal{E}_{\text{train}}}}
+\glsxtrnewsymbol[description={training error/Empirical risk.}]{trainerr}{\ensuremath{\mathcal{L}}}
 
-% Learning algorithm
-\glsxtrnewsymbol[description={Learning algorithm that produces a model from data.}]{algo}{\ensuremath{\mathcal{A}}}
+% hypothesis
+\glsxtrnewsymbol[description={hypothesis of a model.}]{hypothesis}{\ensuremath{h}}

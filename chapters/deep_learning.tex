@@ -8,9 +8,9 @@ Conversely, in the unsupervised setting, the model is exposed to the data withou
 
 This chapter, we will discuss the foundations of learning, covering the elements of how and why learning works. This is general to both the supervised and unsupervised setting. There the concepts of \textit{hypothesis class}, \textit{capacity}, \textit{realizability}, and the concept of \textit{generalization} capability are discussed. Then we take a look at a statistical learning\footnote{Machine learning and statistical learning are many times used interchangeably but the latter places more emphasis on the statistical properties of the learning algorithms.} paradigm known as \textit{\gls{ERM}}, aiming to minimize the training error/empirical risk. \Gls{ERM} comes with its own set of challenges, such as overfitting in hypothesis spaces with high \textit{capacity}, which can be mitigated by \textit{regularization}. 
 
-We discuss the combination of \textit{\gls{CNN}} and \textit{Autoencoders}, commonly used in image restoration tasks. Later, \textit{Noise2Noise}, a learning framework for image restoration not requiring clean images, introduced by \citeauthor{lehtinenNoise2NoiseLearningImage2018}, is discussed. To fully explain this framework, we look at the \textit{loss function} that allows this paradigm to work. We use the concrete realization using the \texttt{UNET} architecture, introduced \citeauthor{ronnebergerUNetConvolutionalNetworks}, and its 3D variant, \texttt{UNET3D}.
+We discuss the combination of \textit{\gls{CNN}} and \textit{Autoencoders}, commonly used in image restoration tasks. Later, \textit{Noise2Noise}, a learning framework for image restoration not requiring clean images, introduced by \citeauthor{lehtinenNoise2NoiseLearningImage2018}, is discussed. To fully explain this framework, we look at the \textit{loss function} that allows this paradigm to work. We use the concrete realization using the \texttt{UNET} architecture, introduced by \citeauthor{ronnebergerUNetConvolutionalNetworks}, and its 3D variant, \texttt{UNET3D}.
 
-These methods are then applied to train a model that maps incomplete observations from \gls{PES} to the true multidimensional image, with $N=3$. The aspects of data generation, training, and evaluation are henceforth, discussed in detail.
+These methods are then applied to train a model that maps incomplete observations from \gls{PES} to the true multidimensional image, with $N=3$ dimensions. The aspects of data generation, training, and evaluation are henceforth, discussed in detail.
 
 Much of the foundational concepts discussed are based on \cite{shalev-shwartzUnderstandingMachineLearning2014a,jamesIntroductionStatisticalLearning2013,tibshiraniElementsStatisticalLearning,goodfellowDeepLearning2016}.
 
@@ -27,7 +27,7 @@ In Machine Learning, we do not make any explicit assumption of the \textit{data 
 \subsection{Generalization}
 \textit{Generalization} refers to the ability of a learning algorithm to perform well on new, unseen data. The goal of learning is to find a hypothesis $h$ that generalizes well to new data. 
 
-If the data generating distribution $\mathcal{D}$ is \gls{iid} and known, the \textit{generalization error}/\textit{population risk} $\mathcal{R}(\theta)$ with model parameters $\theta$ can be minimized to find the optimal hypothesis $\hat{h}^*$. This is often the case in classical regression 
+If the data generating distribution $\mathcal{D}$ is \gls{iid} and known, the \textit{generalization error}/\textit{population risk} $\mathcal{R}(\theta)$, with model parameters $\theta$, can be minimized to find the optimal hypothesis $\hat{h}^*$. This is often the case in classical regression.
 
 $\mathcal{R}(\theta)$ is defined as expectation taken across the data generating distribution $\mathcal{D}$, with the predicted output of a hypothesis $h(x; \theta)$ and the true output $y$:
 
@@ -99,7 +99,7 @@ Regularization can also be seen as a way of restricting the hypothesis space $\m
 
 
 \subsection{Uniform Convergence}
-It is always possible that with a small probability, the training data is not representative of the data distribution $\mathcal{D}$. Hence, every learning algorithm has a confidence and accuracy level that, in practice, is hard to quantify. For simpler cases, these bounds can be theoretically proven but practically, other evaluation methods are assumed e.g. by empirically evaluating some test data, we can ascertain the if the learned model generalizes well.
+It is always possible that with a small probability, the training data is not representative of the data distribution $\mathcal{D}$. Hence, every learning algorithm has a confidence and accuracy level that, in practice, is hard to quantify. For simpler cases, these bounds can be theoretically proven but practically, other evaluation methods are assumed e.g. by empirically evaluating some test data, we can ascertain if the learned model generalizes well.
 
 For a hypothesis space $\mathcal{H}$ that is finite, and \gls{iid} training data all drawn from the same distribution $\mathcal{D}$, the \gls{ERM} algorithm can be shown to have a generalization error that converges to zero as the number of training samples $n$ goes to infinity. This is known as the \textit{uniform convergence} property of the \gls{ERM} algorithm. This can further be generalized to infinite hypothesis spaces.
 
@@ -108,20 +108,20 @@ The finite hypothesis space assumption makes sense, considering that we learn th
 
 
 \section{Noise2Noise: Deep Learning framework}
-One can do a lot of different learning approaches. We will build towards the deep learning approach. Networks which can deal with image data are generally Convolutional Neural Networks. Looking at research, UNET has been used for image segmentation and denoising, which combines the concept of autoencoders and convolutional neural networks, along with skip connections.
-We use this approach with the noise2noise framework, which is a deep learning framework for image reconstruction.
+% One can do a lot of different learning approaches. We will build towards the deep learning approach. Networks which can deal with image data are generally Convolutional Neural Networks. Looking at research, UNET has been used for image segmentation and denoising, which combines the concept of autoencoders and convolutional neural networks, along with skip connections.
+% We use this approach with the noise2noise framework, which is a deep learning framework for image reconstruction.
 
-For classical learning algorithms, the learning problem is not always realizable, meaning that not always is the 
-ERM 
-Linear separators are restrictive
-Deep learning is just linear sepeartor problem with a non linear function applied to it like RELU
+% For classical learning algorithms, the learning problem is not always realizable, meaning that not always is the 
+% ERM 
+% Linear separators are restrictive
+% Deep learning is just linear sepeartor problem with a non linear function applied to it like RELU
 
 
 
-Important to take care not to train with empty data. \cite{lehtinenNoise2NoiseLearningImage2018}
+% Important to take care not to train with empty data. \cite{lehtinenNoise2NoiseLearningImage2018}
 
-Here we take care of data generation. Finite Capture Budget. We use the Graphene on Iridium dataset. The Noisy realizations are just less counts binned. 
-E.g. 96M counts as Noisy and 186M counts as Target. Or 8M counts as Noisy and 96M counts as Target.
+% Here we take care of data generation. Finite Capture Budget. We use the Graphene on Iridium dataset. The Noisy realizations are just less counts binned. 
+% E.g. 96M counts as Noisy and 186M counts as Target. Or 8M counts as Noisy and 96M counts as Target.
 \subsection{Convolutional Neural Networks}
 \subsection{Autoencoder}
 \cite{goodfellowDeepLearning2016}
@@ -137,4 +137,12 @@ The benefits of 3D network can be explained by access to more correlations in th
     \includegraphics[width=1\linewidth]{images/training_flowchart.pdf}
     \caption{Flowchart illustrating the input-target dataset pairs used for neural network training, derived from subsets of the \gls{GrIr} dataset. A total of \num{34} unique noisy subsets are represented, with each dataset corresponding to one blue box in the chart. The different combinations shown in the chart generate \num{51} input-target pairs across various counts, including \numlist{1e6;2e6;4e6;8e6;1.6e7;3.2e7;4.8e7;9.6e7}. Notably, the \num{4.8e7} and \num{9.6e7} counts serve as the target datasets, with \num{9.6e7} additionally functioning as the target for the \num{4.8e7} datasets.}
     \label{fig:training-data}
+\end{figure}
+
+\section{Testing}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\linewidth]{images/nn_gdw_msssim.pdf}
+    \caption{\num{1e6} counts take approximately \qty{11.5}{min} to acquire. \gls{GdW} dataset.}
+    \label{fig:gdw-test-metirc}
 \end{figure}
