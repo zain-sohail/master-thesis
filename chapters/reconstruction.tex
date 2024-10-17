@@ -1,57 +1,57 @@
-Detached from a noise model, the goal of image restoration is to estimate the true image $Y$ \todo{It's always good to state where objects come from, i.e., in which spaces they are. Here it could be $Y\in\mathbb{R}^{n_1\times\cdot\times n_d}$ if $Y$ is a $d$-dimensional discrete real valued image.} from an incomplete or corrupted (noisy) observation $X$\todo{$\in$?}. Let $\mathbf{i} = [i_1, i_2, \dots, i_d]^T$\todo{$\in$? In any case, the set of all possible indices should have a name, e.g., $\mathcal{I}$.} be a column vector that defines the coordinates of each voxel in a \textit{d}-dimensional image space. In the most general form, the observation model can be defined as $x_{\mathbf{i}}$ being a mapping of $y_{\mathbf{i}}$ through a function $\mathcal{F}$\todo{From where to where does $\mathcal{F}$ map? Also, this does not seem very general, since this $\mathcal{F}$ is limited to operate pixel-wise and cannot take into account the position $\mathbf{i}$ at all. It still may be general enough for what you need though. I don't know yet, since I just started reading.}:
+Detached from a noise model, the goal of image restoration is to estimate the true image $Y$ from an incomplete or corrupted (noisy) observation $X$. Let $\mathbf{i} = [i_1, i_2, \dots, i_d]^T$ be a column vector that defines the coordinates of each voxel in a \textit{d}-dimensional image space. Then $x_{\mathbf{i}}$ and $y_{\mathbf{i}}$ represent the incomplete observation and the corresponding true image value at voxel $\mathbf{i}$, respectively; and the entire image can be represented as $X = [x_{\mathbf{i}}]$ and $Y = [y_{\mathbf{i}}]$, respectively.
+
+In the most general form, the observation model can be defined as $X$ being a mapping of $Y$ through a function $\mathcal{F}$:
 \begin{equation}\label{eq:observation-model}
-    x_{\mathbf{i}} = \mathcal{F} (y_{\mathbf{i}})
+    X = \mathcal{F} (Y)
 \end{equation}
-where $x_{\mathbf{i}}$ and $y_{\mathbf{i}}$ represent the incomplete observation and the corresponding true image value at voxel $\mathbf{i}$, respectively; the entire image can be represented as $X = [x_{\mathbf{i}}]$ \todo{This kinds of reverses the logic. Before you can connect the observation $X$ to the true image $Y$, you first need to define exactly what the true image $X$ is supposed to be. From the above I would say it's a d-array of real values.} and $Y = [y_{\mathbf{i}}]$, respectively. And the function $\mathcal{F}$ can vary depending on the noise model (e.g., additive or multiplicative noise, etc.)\todo{Will you give examples for $\mathcal{F}$ later? I think it would already be a good place to have a very simple example right here, e.g. additive noise. Then we probably see, that this is not truly a function, but involves a random variable.}.
+ And the function $\mathcal{F}$ can vary depending on the noise model (e.g., additive or multiplicative noise, etc.).
 
-This mapping, however, is not injective \todo{To understand that, you should put an example $\mathcal{F}$ here. I'm not completely sure how you mean this exactly.} and therefore, the inverse problem\footnote{Referred to as image restoration, reconstruction or denoising} to estimate $y_{\mathbf{i}}$ from $x_{\mathbf{i}}$, is an \textit{ill-posed} problem, meaning that there are multiple possible solutions for $y_{\mathbf{i}}$ that could generate $x_{\mathbf{i}}$.
+This mapping, however, is not injective and therefore, the inverse problem\footnote{Referred to as image restoration, reconstruction or denoising} to estimate $Y$ from $X$, is an \textit{ill-posed} problem, meaning that there are multiple possible solutions for $Y$ that could generate $X$.
 
-\todo{This short literature overview needs references that back your statements.}%
-Image restoration techniques have been explored in both the spatial and transform domains\todo{Directly give an example for what transform domains are, e.g., the frequency domain.}. In the spatial domain, several linear and nonlinear filtering techniques exist, utilizing different kernels to perform direct manipulation on pixel values. Linear filters, such as the mean filter, compute the \todo{inserted ``weighted''} average of pixel values in a neighborhood and, in doing so, smooth the image but usually result in edge blurring.
+Image restoration techniques have been explored in both the spatial and transform domains. In the spatial domain, several linear and nonlinear filtering techniques exist, utilizing different kernels to perform direct manipulation on pixel values. Linear filters, such as the mean filter, compute the average of pixel values in a neighborhood and, in doing so, smooth the image but usually result in edge blurring.
 
-Non-linear filters, like the median filter, replace each pixel with the median value of its neighbors and are much better at removing salt-and-pepper noise. Wiener filtering is another example, operating on statistical principles. The mean squared error between the estimated and true image is minimized; that is, the filter response is adjusted against the local image variance\todo{Would be nice to have more details on the Wiener filter here. This is used in BM3D, so it's highly relevant.}. This makes Wiener filtering particularly effective for Gaussian noise, as it may adaptively filter based on the estimated noise level and characteristics of the signal and often results in better denoising performance compared to linear methods. Other non-linear approaches, such as bilateral filtering, combine spatial proximity and intensity similarity, allowing for selective smoothing that  preserves sharpness around edges. 
+Non-linear filters, like the median filter, replace each pixel with the median value of its neighbors and are much better at removing salt-and-pepper noise. Wiener filtering is another example, operating on statistical principles. The mean squared error between the estimated and true image is minimized; that is, the filter response is adjusted against the local image variance. This makes Wiener filtering particularly effective for Gaussian noise, as it may adaptively filter based on the estimated noise level and characteristics of the signal and often results in better denoising performance compared to linear methods. Other non-linear approaches, such as bilateral filtering, combine spatial proximity and intensity similarity, allowing for selective smoothing that  preserves sharpness around edges. 
 
 Besides these filtering techniques, many algorithms make great use of prior knowledge about image characteristics. Standard priors might include sparsity, smoothness, and texture assumptions. For instance, the model of TV denoising assumes natural images are piece-wise smooth, allowing the algorithm to preserve edges while smoothing out flat regions. This method minimizes the global intensity variation of the image, resulting in a denoised image preserving important structural information.
 
-The principle behind \gls{NLM} \todo{Since NLM is quite related to BM3D, it would also be helpful to define this in detail here. The definition is not that involved and I would say quite instructive to understand the non-locality.} denoising also \todo{``also''? What else uses this redundancy? BM3D, but you haven't mentioned that one yet. At leae not in this chapter.} builds on the redundancy of similar patches in the image and estimates a pixel value by taking a weighted average over other pixels with a similar local structure, regardless of their spatial distance. By utilizing these priors, denoising algorithms can indeed aggressively use the intrinsic properties of the images and thereby enhance the visual quality and provide estimates closer to the true image.
+The principle behind \gls{NLM} denoising also builds on the redundancy of similar patches in the image and estimates a pixel value by taking a weighted average over other pixels with a similar local structure, regardless of their spatial distance. By utilizing these priors, denoising algorithms can indeed aggressively use the intrinsic properties of the images and thereby enhance the visual quality and provide estimates closer to the true image.
 
 A lot of the mentioned algorithm assume the noise prior to be additive. This can be written as:
 \begin{equation}
     X = Y + N
 \end{equation}
-\todo{This does not fit into your framework for the mapping $\mathcal{F}$, because this does not do the same at every pixel: At pixel $\mathbf{i}$, the noise $n_\mathbf{i}$ is added, but this depends on $\mathbf{i}$.}%
 and many more assume the noise to be \gls{AWGN} with noise of form in \cref{eq:awgn}. This is because the normal distribution has nice mathematical properties, allowing to derive theoretical guarantees.
-\todo{This equation seems to be incomplete, $\mathcal{N}(0, \sigma^2)$ (make sure you have defined this notation) is a scalar valued distribution, but the way you use $N$, it must be a matrix, where every entry of that matrix is drawn independently from $\mathcal{N}(0, \sigma^2)$.}
+
 \begin{equation}\label{eq:awgn}
     N \sim \mathcal{N}(0, \sigma^2)
 \end{equation}
 
-In the following, we shall look at one such \gls{AWGN} denoising algorithm--the celebrated \gls{BM3D} algorithm, introduced first by \citeauthor{dabovImageDenoisingSparse2007} in \cite{dabovImageDenoisingSparse2007}, building upon many of the classical denoising techniques such as the \todo{drop ``the''} transform domain denoising, non-local means and filtering methods (such as the Wiener filter). We will look at its application to the \todo{drop ``the''} \gls{MPES} data, by first defining a noise model for the data, discussing the Anscombe \gls{VST}, finding optimal denoising level for different noise levels and evaluating its performance using the \gls{MSSSIM} metric.
+In the following, we shall look at one such \gls{AWGN} denoising algorithm--the celebrated \gls{BM3D} algorithm, introduced first by \citeauthor{dabovImageDenoisingSparse2007} in \cite{dabovImageDenoisingSparse2007}, building upon many of the classical denoising techniques such as the transform domain denoising, non-local means and filtering methods (such as the Wiener filter). We will look at its application to the \gls{MPES} data, by first defining a noise model for the data, discussing the Anscombe \gls{VST}, finding optimal denoising level for different noise levels and evaluating its performance using the \gls{MSSSIM} metric.
 
 \section{BM3D: Denoising in Sparse Domain}
-As shown in \cref{alg:bm3d}\todo{This needs more details. Try to provide the essential formulas of what is actually computed for all steps. You don't need to put those details into the algorithm, it's better to add them to the main text.}, the \gls{BM3D} scheme works by grouping similar patches in a 2D image and applying a 3D transform\footnote{This algorithm has also been proposed for 3D images, dubbed BM4D.}. This leads to an enhanced sparse representation of the image which after filtering is transformed back to the spatial domain.
+As shown in \cref{alg:bm3d}, the \gls{BM3D} scheme works by grouping similar patches in a 2D image and applying a 3D transform\footnote{This algorithm has also been proposed for 3D images, dubbed BM4D.}. This leads to an enhanced sparse representation of the image which after filtering is transformed back to the spatial domain.
 % Main BM3D Algorithm
 \begin{algorithm}
     \caption{BM3D Denoising Algorithm}\label{alg:bm3d}
     \begin{algorithmic}[1]
     \Require Noisy image $X$
-    \Ensure Denoised image $X_{\text{denoised}}$
+    \Ensure Denoised image $X_h$
     \Statex
     \Procedure{BM3D}{$X$, $\sigma^2$}
-        \State $X_{\text{denoised}} \gets I$
+        \State $X_h \gets I$
         
         \For{each reference block $B_r$ in $X$}
             \State $B \gets \textsc{Grouping}(B_r)$
             \State $B_{\text{filtered}} \gets \textsc{CollaborativeFiltering}(B)$
-            \State Aggregate $B_{\text{filtered}}$ into $X_{\text{denoised}}$
+            \State Aggregate $B_{\text{filtered}}$ into $X_h$
         \EndFor
         
-        \State \textbf{return} $X_{\text{denoised}}$
+        \State \textbf{return} $X_h$
     \EndProcedure
     \end{algorithmic}
 \end{algorithm}
 
-In the Grouping step, blocks which are the least dissimilar to a reference block $B_r$ are grouped together. The dissimilarity measure used is the $l^2$-distance. The Collaborative Filtering\footnote{Interestingly, collaborative filtering has been the backbone of recommendation systems such as by Netflix and Spotify.}\todo{Reference for the Netfilx/Spotify statement?} shown in \cref{alg:collaborativefiltering} is then applied to the grouped blocks. This step consists of a 3D transform such as the discrete cosine transform (or the wavelet transform can be used)\todo{This 3D stacking and 3D filtering is a crucial component, which should be elaborated / illustrated more.}. A filter is applied to the transformed blocks to remove noise, initially by hard thresholding and in the second run by Wiener filtering. The inverse 3D transform is then applied to the filtered blocks, and the filtered blocks are aggregated to form the estimate. The first run is considered the basic estimate, and it is only after Collaborative Wiener filtering that the final estimate is obtained.\todo{One a coarse level, this is all correct, but I would put much more detail. Also a sketch would be helpful.}
+In the Grouping step, blocks which are the least dissimilar to a reference block $B_r$ are grouped together. The dissimilarity measure used is the $l^2$-distance. The Collaborative Filtering\footnote{Interestingly, collaborative filtering has been the backbone of recommendation systems such as by Netflix and Spotify.} shown in \cref{alg:collaborativefiltering} is then applied to the grouped blocks. This step consists of a 3D transform such as the discrete cosine transform (or the wavelet transform can be used). A filter is applied to the transformed blocks to remove noise, initially by hard thresholding and in the second run by Wiener filtering. The inverse 3D transform is then applied to the filtered blocks, and the filtered blocks are aggregated to form the estimate. The first run is considered the basic estimate, and it is only after Collaborative Wiener filtering that the final estimate is obtained.
     
 % Collaborative Filtering Algorithm
 \begin{algorithm}
@@ -101,21 +101,21 @@ The \gls{BM3D} algorithm had showed one of the best denoising performances and c
     \label{fig:combined-noisy-denoised}
 \end{figure}
 
-For low count settings, the observed intensity $z_{\mathbf{i}} \in \mathbb{Z}_{\geq 0}$ at each voxel (with $\mathbf{i} = [i_1, i_2, \dots, i_d]^T$ the coordinate vector in $d$-dimensional space) can be modeled as an independent Poisson \gls{rv} with parameter $y_{\mathbf{i}}$--the true intensity \cite{makitaloOptimalInversionAnscombe2011,kimDeepLearningbasedStatistical2021}. This is shown in \cref{section:photoelectron-counting-stats} to be true for a constant intensity light source. The relation can be expressed as: $z_{\mathbf{i}} \sim \text{Poi}(y_{\mathbf{i}})$
+For low count settings, the observed intensity $x_{\mathbf{i}} \in \mathbb{Z}_{\geq 0}$ at each voxel (with $\mathbf{i} = [i_1, i_2, \dots, i_d]^T$ the coordinate vector in $d$-dimensional space) can be modeled as an independent Poisson \gls{rv} with parameter $y_{\mathbf{i}}$--the true intensity \cite{makitaloOptimalInversionAnscombe2011,kimDeepLearningbasedStatistical2021}. This is shown in \cref{section:photoelectron-counting-stats} to be true for a constant intensity light source. The relation can be expressed as: $x_{\mathbf{i}} \sim \text{Poi}(y_{\mathbf{i}})$
 
 \begin{equation}
-    P(z_{\mathbf{i}} = z| y_{\mathbf{i}} = y) = \frac{y^z e^{-y}}{z!}
+    P(x_{\mathbf{i}} = x| y_{\mathbf{i}} = y) = \frac{y^x e^{-y}}{x!}
 \end{equation}
 
 
-Here, $z$ represents the observation at voxel $X$, while $y$ corresponds to the expected number of detected electrons, the underlying intensity that we aim to recover. Formally $\mathbb{E}[z_{\mathbf{i}} | y_{\mathbf{i}}] = y_{\mathbf{i}}$
+Here, $x$ represents the observation at voxel $X$, while $y$ corresponds to the expected number of detected electrons, the underlying intensity that we aim to recover. Formally $\mathbb{E}[x_{\mathbf{i}} | y_{\mathbf{i}}] = y_{\mathbf{i}}$
 
 The Poisson noise can then be written as:
 \begin{equation}
-    N_{\mathbf{i}} = z_{\mathbf{i}} - \mathbb{E}[z_{\mathbf{i}} | y_{\mathbf{i}}]
+    N_{\mathbf{i}} = x_{\mathbf{i}} - \mathbb{E}[x_{\mathbf{i}} | y_{\mathbf{i}}]
 \end{equation}
 
-This noise is signal dependent as the variance is dependent on the true signal $Var[N_{\mathbf{i}} | y_{\mathbf{i}}] = [z_{\mathbf{i}} | y_{\mathbf{i}}] = y_{\mathbf{i}}$ and hence it can be seen that the with decreasing intensity, the noise increases.
+This noise is signal dependent as the variance is dependent on the true signal $Var[N_{\mathbf{i}} | y_{\mathbf{i}}] = [x_{\mathbf{i}} | y_{\mathbf{i}}] = y_{\mathbf{i}}$ and hence it can be seen that the with decreasing intensity, the noise increases.
 
 \section{Variance Stabilization Transform: Anscombe}
 
@@ -139,16 +139,16 @@ Since the transformation is non-linear, an algebraic inverse is asymptotically b
     \caption{Algorithm to Denoise Poisson Corrupted Images}\label{alg:anscombe-bm3d}
     \begin{algorithmic}[1]
     \Require Noisy image $X$
-    \Ensure Denoised image $X_{\text{denoised}}$
+    \Ensure Denoised image $X_h$
     \Statex
     \Procedure{AnscombeBM3D}{$X$, $\sigma^2$}
         \State $X_{\text{anscombe}} \gets \textsc{AnscombeTransform}(I)$
         
         \State $X_{\text{bm3d}} \gets \textsc{BM3D}(I_{\text{anscombe}}, \sigma^2, b, Y, \tau)$
         
-        \State $X_{\text{denoised}} \gets \textsc{InverseAnscombeTransform}(I_{\text{bm3d}})$
+        \State $X_h \gets \textsc{InverseAnscombeTransform}(I_{\text{bm3d}})$
         
-        \State \textbf{return} $X_{\text{denoised}}$
+        \State \textbf{return} $X_h$
     \EndProcedure
     \end{algorithmic}
 \end{algorithm}
