@@ -1,12 +1,10 @@
-Detached from a noise model, the goal of image restoration is to estimate the true image $Y$ from an incomplete or corrupted (noisy) observation $X$. Let $\mathbf{i} = [i_1, i_2, \dots, i_d]^T$ be a column vector that defines the coordinates of each voxel in a \textit{d}-dimensional image space. Then $x_{\mathbf{i}}$ and $y_{\mathbf{i}}$ represent the incomplete observation and the corresponding true image value at voxel $\mathbf{i}$, respectively; and the entire image can be represented as $X = [x_{\mathbf{i}}]$ and $Y = [y_{\mathbf{i}}]$, respectively.
-
-In the most general form, the observation model can be defined as $X$ being a mapping of $Y$ through a function $\mathcal{F}$:
+Detached from a noise model, the goal of image restoration is to estimate the true image $Y$ from an incomplete or corrupted (noisy) observation $X$. Let $\mathbf{i} = [i_1, i_2, \dots, i_d]^T$ be a column vector that defines the coordinates of each voxel in a \textit{d}-dimensional image space. In the most general form, the observation model can be defined as $x_{\mathbf{i}}$ being a mapping of $y_{\mathbf{i}}$ through a function $\mathcal{F}$:
 \begin{equation}\label{eq:observation-model}
-    X = \mathcal{F} (Y)
+    x_{\mathbf{i}} = \mathcal{F} (y_{\mathbf{i}})
 \end{equation}
- And the function $\mathcal{F}$ can vary depending on the noise model (e.g., additive or multiplicative noise, etc.).
+where $x_{\mathbf{i}}$ and $y_{\mathbf{i}}$ represent the incomplete observation and the corresponding true image value at voxel $\mathbf{i}$, respectively; the entire image can be represented as $X = [x_{\mathbf{i}}]$ and $Y = [y_{\mathbf{i}}]$, respectively. And the function $\mathcal{F}$ can vary depending on the noise model (e.g., additive or multiplicative noise, etc.).
 
-This mapping, however, is not injective and therefore, the inverse problem\footnote{Referred to as image restoration, reconstruction or denoising} to estimate $Y$ from $X$, is an \textit{ill-posed} problem, meaning that there are multiple possible solutions for $Y$ that could generate $X$.
+This mapping, however, is not injective and therefore, the inverse problem\footnote{Referred to as image restoration, reconstruction or denoising} to estimate $y_{\mathbf{i}}$ from $x_{\mathbf{i}}$, is an \textit{ill-posed} problem, meaning that there are multiple possible solutions for $y_{\mathbf{i}}$ that could generate $x_{\mathbf{i}}$.
 
 Image restoration techniques have been explored in both the spatial and transform domains. In the spatial domain, several linear and nonlinear filtering techniques exist, utilizing different kernels to perform direct manipulation on pixel values. Linear filters, such as the mean filter, compute the average of pixel values in a neighborhood and, in doing so, smooth the image but usually result in edge blurring.
 
@@ -35,18 +33,18 @@ As shown in \cref{alg:bm3d}, the \gls{BM3D} scheme works by grouping similar pat
     \caption{BM3D Denoising Algorithm}\label{alg:bm3d}
     \begin{algorithmic}[1]
     \Require Noisy image $X$
-    \Ensure Denoised image $X_h$
+    \Ensure Denoised image $X_{\text{denoised}}$
     \Statex
     \Procedure{BM3D}{$X$, $\sigma^2$}
-        \State $X_h \gets I$
+        \State $X_{\text{denoised}} \gets I$
         
         \For{each reference block $B_r$ in $X$}
             \State $B \gets \textsc{Grouping}(B_r)$
             \State $B_{\text{filtered}} \gets \textsc{CollaborativeFiltering}(B)$
-            \State Aggregate $B_{\text{filtered}}$ into $X_h$
+            \State Aggregate $B_{\text{filtered}}$ into $X_{\text{denoised}}$
         \EndFor
         
-        \State \textbf{return} $X_h$
+        \State \textbf{return} $X_{\text{denoised}}$
     \EndProcedure
     \end{algorithmic}
 \end{algorithm}
@@ -101,21 +99,21 @@ The \gls{BM3D} algorithm had showed one of the best denoising performances and c
     \label{fig:combined-noisy-denoised}
 \end{figure}
 
-For low count settings, the observed intensity $x_{\mathbf{i}} \in \mathbb{Z}_{\geq 0}$ at each voxel (with $\mathbf{i} = [i_1, i_2, \dots, i_d]^T$ the coordinate vector in $d$-dimensional space) can be modeled as an independent Poisson \gls{rv} with parameter $y_{\mathbf{i}}$--the true intensity \cite{makitaloOptimalInversionAnscombe2011,kimDeepLearningbasedStatistical2021}. This is shown in \cref{section:photoelectron-counting-stats} to be true for a constant intensity light source. The relation can be expressed as: $x_{\mathbf{i}} \sim \text{Poi}(y_{\mathbf{i}})$
+For low count settings, the observed intensity $z_{\mathbf{i}} \in \mathbb{Z}_{\geq 0}$ at each voxel (with $\mathbf{i} = [i_1, i_2, \dots, i_d]^T$ the coordinate vector in $d$-dimensional space) can be modeled as an independent Poisson \gls{rv} with parameter $y_{\mathbf{i}}$--the true intensity \cite{makitaloOptimalInversionAnscombe2011,kimDeepLearningbasedStatistical2021}. This is shown in \cref{section:photoelectron-counting-stats} to be true for a constant intensity light source. The relation can be expressed as: $z_{\mathbf{i}} \sim \text{Poi}(y_{\mathbf{i}})$
 
 \begin{equation}
-    P(x_{\mathbf{i}} = x| y_{\mathbf{i}} = y) = \frac{y^x e^{-y}}{x!}
+    P(z_{\mathbf{i}} = z| y_{\mathbf{i}} = y) = \frac{y^z e^{-y}}{z!}
 \end{equation}
 
 
-Here, $x$ represents the observation at voxel $X$, while $y$ corresponds to the expected number of detected electrons, the underlying intensity that we aim to recover. Formally $\mathbb{E}[x_{\mathbf{i}} | y_{\mathbf{i}}] = y_{\mathbf{i}}$
+Here, $z$ represents the observation at voxel $X$, while $y$ corresponds to the expected number of detected electrons, the underlying intensity that we aim to recover. Formally $\mathbb{E}[z_{\mathbf{i}} | y_{\mathbf{i}}] = y_{\mathbf{i}}$
 
 The Poisson noise can then be written as:
 \begin{equation}
-    N_{\mathbf{i}} = x_{\mathbf{i}} - \mathbb{E}[x_{\mathbf{i}} | y_{\mathbf{i}}]
+    N_{\mathbf{i}} = z_{\mathbf{i}} - \mathbb{E}[z_{\mathbf{i}} | y_{\mathbf{i}}]
 \end{equation}
 
-This noise is signal dependent as the variance is dependent on the true signal $Var[N_{\mathbf{i}} | y_{\mathbf{i}}] = [x_{\mathbf{i}} | y_{\mathbf{i}}] = y_{\mathbf{i}}$ and hence it can be seen that the with decreasing intensity, the noise increases.
+This noise is signal dependent as the variance is dependent on the true signal $Var[N_{\mathbf{i}} | y_{\mathbf{i}}] = [z_{\mathbf{i}} | y_{\mathbf{i}}] = y_{\mathbf{i}}$ and hence it can be seen that the with decreasing intensity, the noise increases.
 
 \section{Variance Stabilization Transform: Anscombe}
 
@@ -139,16 +137,16 @@ Since the transformation is non-linear, an algebraic inverse is asymptotically b
     \caption{Algorithm to Denoise Poisson Corrupted Images}\label{alg:anscombe-bm3d}
     \begin{algorithmic}[1]
     \Require Noisy image $X$
-    \Ensure Denoised image $X_h$
+    \Ensure Denoised image $X_{\text{denoised}}$
     \Statex
     \Procedure{AnscombeBM3D}{$X$, $\sigma^2$}
         \State $X_{\text{anscombe}} \gets \textsc{AnscombeTransform}(I)$
         
         \State $X_{\text{bm3d}} \gets \textsc{BM3D}(I_{\text{anscombe}}, \sigma^2, b, Y, \tau)$
         
-        \State $X_h \gets \textsc{InverseAnscombeTransform}(I_{\text{bm3d}})$
+        \State $X_{\text{denoised}} \gets \textsc{InverseAnscombeTransform}(I_{\text{bm3d}})$
         
-        \State \textbf{return} $X_h$
+        \State \textbf{return} $X_{\text{denoised}}$
     \EndProcedure
     \end{algorithmic}
 \end{algorithm}
