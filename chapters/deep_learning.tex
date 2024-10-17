@@ -27,7 +27,7 @@ In Machine Learning, we do not make any explicit assumption of the \textit{data 
 \subsection{Generalization}
 \textit{Generalization} refers to the ability of a learning algorithm to perform well on new, unseen data. The goal of learning is to find a hypothesis $h$ that generalizes well to new data. 
 
-If the data generating distribution $\mathcal{D}$ is \gls{iid} and known, the \textit{generalization error}/\textit{population risk} $\mathcal{R}(\theta)$ with model parameters $\theta$ can be minimized to find the optimal hypothesis $h^*$. This is often the case in classical regression 
+If the data generating distribution $\mathcal{D}$ is \gls{iid} and known, the \textit{generalization error}/\textit{population risk} $\mathcal{R}(\theta)$ with model parameters $\theta$ can be minimized to find the optimal hypothesis $\hat{h}^*$. This is often the case in classical regression 
 
 $\mathcal{R}(\theta)$ is defined as expectation taken across the data generating distribution $\mathcal{D}$, with the predicted output of a hypothesis $h(x; \theta)$ and the true output $y$:
 
@@ -37,10 +37,10 @@ $\mathcal{R}(\theta)$ is defined as expectation taken across the data generating
 
 where the loss $\ell$ measures the difference between two quantities, such as of $h(x; \theta)$ and $y$.
 
-Through optimization, the optimal hypothesis $h^*$ can be found that minimizes the expected risk $\mathcal{R}$:
+Through optimization, the optimal hypothesis $\hat{h}^*$ can be found that minimizes the expected risk $\mathcal{R}$:
 
 \begin{equation}
-    h^* = \argmin_{h \in \mathcal{H}} \mathcal{R}(\mathcal{D}; \theta)
+    \hat{h}^* = \argmin_{h \in \mathcal{H}} \mathcal{R}(\mathcal{D}; \theta)
 \end{equation}
 
 \subsection{Hypothesis Class, Capacity and Realizability}
@@ -101,7 +101,7 @@ Regularization can also be seen as a way of restricting the hypothesis space $\m
 \subsection{Uniform Convergence}
 It is always possible that with a small probability, the training data is not representative of the data distribution $\mathcal{D}$. Hence, every learning algorithm has a confidence and accuracy level that, in practice, is hard to quantify. For simpler cases, these bounds can be theoretically proven but practically, other evaluation methods are assumed e.g. by empirically evaluating some test data, we can ascertain the if the learned model generalizes well.
 
-For a hypothesis space $\mathcal{H}$ that is finite, and \gls{iid} training data all drawn from the same distribution $\mathcal{D}$, the \gls{ERM} algorithm can be shown to have a generalization error that converges to zero as the number of training samples $n$ goes to infinity. This is known as the \textit{uniform convergence} property of the \gls{ERM} algorithm. This can further be generalized to infinite hypothesis spaces 
+For a hypothesis space $\mathcal{H}$ that is finite, and \gls{iid} training data all drawn from the same distribution $\mathcal{D}$, the \gls{ERM} algorithm can be shown to have a generalization error that converges to zero as the number of training samples $n$ goes to infinity. This is known as the \textit{uniform convergence} property of the \gls{ERM} algorithm. This can further be generalized to infinite hypothesis spaces.
 
 
 The finite hypothesis space assumption makes sense, considering that we learn through discrete data, and infinite hypothesis spaces become finite. 
@@ -129,3 +129,12 @@ E.g. 96M counts as Noisy and 186M counts as Target. Or 8M counts as Noisy and 96
 
 
 The benefits of 3D network can be explained by access to more correlations in the data. maybe blessing of dimensionality.
+
+\section{Training}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\linewidth]{images/training_flowchart.pdf}
+    \caption{Flowchart illustrating the input-target dataset pairs used for neural network training, derived from subsets of the \gls{GrIr} dataset. A total of \num{34} unique noisy subsets are represented, with each dataset corresponding to one blue box in the chart. The different combinations shown in the chart generate \num{51} input-target pairs across various counts, including \numlist{1e6;2e6;4e6;8e6;1.6e7;3.2e7;4.8e7;9.6e7}. Notably, the \num{4.8e7} and \num{9.6e7} counts serve as the target datasets, with \num{9.6e7} additionally functioning as the target for the \num{4.8e7} datasets.}
+    \label{fig:training-data}
+\end{figure}
