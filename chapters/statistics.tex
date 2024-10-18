@@ -16,26 +16,7 @@ If we subdivide this $L$ into many small intervals  of size $L/N$, where $N$ is 
     P(n) = \binom{N}{n} p^n (1 - p)^{N - n}
 \end{equation}
 
-Using the Poisson Limit Theorem \cite{fellerIntroductionProbabilityTheory1968}, it can be shown that as $N \to \infty$, and the probability $p \to 0$ such that $Np = \lambda$ remains constant, there is a convergence in distribution to the Poisson distribution.
-
-\begin{note}
-    {Poisson distribution}
-    The \gls{PMF} for Poisson distribution Poi\((\lambda)\) with \(\lambda > 0\) is defined as
-    \begin{equation}
-        P(n;\lambda) = \frac{\lambda^n e^{-\lambda}}{n!}, \quad n \in \mathbb{N}_0
-    \end{equation}
-    \begin{enumerate}
-        \item $\lambda = E(X) = Var(X)$ 
-        \item Additivity: If $X_1 \sim \text{Poi}(\lambda_1)$ and $X_2 \sim \text{Poi}(\lambda_2)$ are independent Poisson random variables, then the sum $X_1 + X_2$ also follows a Poisson distribution with parameter $\lambda_1 + \lambda_2$
-        \begin{equation}
-            X_1 + X_2 \sim \text{Poi}(\lambda_1 + \lambda_2).
-        \end{equation}
-        
-        This property is useful when considering counts from multiple independent sources.
-    \end{enumerate}
-\end{note}
-
-Hence, the Poisson distribution is a suitable model for counting statistics of photons from a coherent light source.
+Using the Poisson Limit Theorem \cite{fellerIntroductionProbabilityTheory1968}, it can be shown that as $N \to \infty$, and the probability $p \to 0$ such that $Np = \lambda$ remains constant, there is a convergence in distribution to the Poisson distribution (\cref{{eq:poisson-pmf}} in \cref{note:poisson-distribution}). Hence, the Poisson distribution is a suitable model for counting statistics of photons from a coherent light source.
 
 \section{Modelling Photoelectron Statistics}\label{section:photoelectron-counting-stats}
 Statistically, a point process is a random collection of points defined on a measure space $(\Omega, \mathcal{A}, \mu)$

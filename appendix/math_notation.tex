@@ -63,6 +63,58 @@ The \textit{Bayesian} interpretation, on the other hand, views probability as a 
     
 \end{note}
 
+\subsection{Distributions}
+\begin{note}
+    {Poisson distribution}\label{note:poisson-distribution}
+    The \gls{PMF} for Poisson distribution Poi\((\lambda)\) with \(\lambda > 0\) is defined as
+    \begin{equation}\label{eq:poisson-pmf}
+        P(n;\lambda) = \frac{\lambda^n e^{-\lambda}}{n!}, \quad n \in \mathbb{N}_0
+    \end{equation}
+    \begin{enumerate}
+        \item $\lambda = E(X) = Var(X)$ 
+        \item Additivity: If $X_1 \sim \text{Poi}(\lambda_1)$ and $X_2 \sim \text{Poi}(\lambda_2)$ are independent Poisson random variables, then the sum $X_1 + X_2$ also follows a Poisson distribution with parameter $\lambda_1 + \lambda_2$
+        \begin{equation}
+            X_1 + X_2 \sim \text{Poi}(\lambda_1 + \lambda_2).
+        \end{equation}
+        
+        This property is useful when considering counts from multiple independent sources.
+    \end{enumerate}
+\end{note}
+
+For overdispersed count data, the \gls{NB} is suitable. 
+
+\begin{note}
+    {Negative Binomial Distribution}
+    The \gls{PMF} for the \gls{NB} distribution, denoted $\text{NB}(r, p)$, where:
+    \begin{itemize}
+        \item $r > 0$ is the number of successes,
+        \item $p \in (0, 1)$ is the probability of success on each trial,
+    \end{itemize}
+    is defined as:
+    \begin{equation}\label{eq:nb-pmf}
+        P(k; r, p) = \binom{k+r-1}{r-1} (1-p)^k p^r, \quad k \in \mathbb{N}_0
+    \end{equation}
+    where $k$ is the number of failures that occur before the $r$-th success.
+
+    \begin{enumerate}
+        \item For $X \sim \text{NB}(r, p)$, the mean is given by:
+        \begin{equation}
+            E(X) = \frac{r(1-p)}{p}
+        \end{equation}
+        and the variance is:
+        \begin{equation}
+            Var(X) = \frac{r(1-p)}{p^2}
+        \end{equation}
+        
+        \item Additivity: Similar to the Poisson distribution, if $X_1 \sim \text{NB}(r_1, p)$ and $X_2 \sim \text{NB}(r_2, p)$, then the sum $X_1 + X_2$ follows a \gls{NB} distribution with parameter $r_1 + r_2$ and the same probability of success $p$:
+        \begin{equation}
+            X_1 + X_2 \sim \text{NB}(r_1 + r_2, p).
+        \end{equation}
+    \end{enumerate}
+\end{note}
+
+
+For relation between Poisson, \gls{NB} and Gamma distributions, see \cite{barry2020gamma}. It can be shown that \gls{NB} converges to Poisson as $r \to \infty$. The \gls{NB} distribution can also be considered as a mixture of Poisson distributions with a Gamma prior on the rate parameter $\lambda$.
 % \begin{note}{Conditional Probability}
 %     Conditional probability quantifies the probability of an event occurring given that another event has already occurred. If $A$ and $B$ are two events in a probability space with $P(B) > 0$, the \textit{conditional probability} of $A$ given $B$ is defined as:
     
