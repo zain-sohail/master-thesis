@@ -98,7 +98,7 @@ The objective of this experiment is to evaluate the effectiveness of various ima
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\linewidth]{images/images_noisy_denoised_with_target.pdf}
-    \caption{The low-count noisy images and the perpetually better denoised images shown for different electron counts (in Millions) and the noisy target images (single slice and window-averaged 15 slices). Below \num{8}M counts, none of the features are discernable for noisy images, while the denoised images show clear features similar to the target.}
+    \caption{Noisy and denoised \gls{ky}-\gls{kx} cuts with window size $w=1$ shown for \gls{GrIr} dataset. Each column corresponds to \numlist{1e6;2e6;4e6;8e6;1.6e7;3.2e7;1.86e8} counts, respectively; where the last column is the target image with $w=1$ in row 1 and $w=15$ in row 2. Below \num{8e6} counts, none of the features are discernible for noisy images, while the denoised images show clear features similar to the target.}
     \label{fig:images-noisy-denoised}
 \end{figure}
 
@@ -127,7 +127,7 @@ This metric comparison is performed with \texttt{1638} images sliced along each 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1\linewidth]{images/metrics_comparison_same_target.pdf}
+    \includegraphics[width=0.7\linewidth]{images/metrics_comparison_same_target.pdf}
     \caption{Comparison of image quality metrics (\gls{MSE}, \gls{PSNR}, \gls{SSIM}, \gls{MSSSIM}) with noisy realization of a noisy target. The metrics show improved results with increased electron counts, as noise levels decrease. \gls{MSSSIM} shows the best relative improvement in metrics lower counts below \num{e7}.}
     \label{fig:metrics-comparison-noisy}
 \end{figure}
@@ -136,7 +136,7 @@ Comparing the noisy images with target, all metrics trivially show an improvemen
 
 \begin{figure}
     \centering
-    \includegraphics[width=1\linewidth]{images/metrics_comparison_denoised_noisy.pdf}
+    \includegraphics[width=0.7\linewidth]{images/metrics_comparison_denoised_noisy.pdf}
     \caption{Shows comparison of evaluating metrics (\gls{MSE}, \gls{PSNR}, \gls{SSIM}, \gls{MSSSIM}) with the input being a noisy realization of target or denoised version of that realization. Both are compared to a high-count target that is also noisy. Trivially, all metrics show an improvement when the counts increase. However, \gls{MSE} and \gls{PSNR} evaluate better when the input is noisy, while \gls{SSIM} and \gls{MSSSIM} show better results when the input is denoised. The gap between noisy and denoised is more pronounced for \gls{MSSSIM} than \gls{SSIM}, hence the better metric. }
    \label{fig:metrics-comparison}
 \end{figure}
@@ -146,7 +146,7 @@ Additionally, we investigate the effect of window-averaged reference images on t
 
 \begin{figure}
     \centering
-    \includegraphics[width=1\linewidth]{images/metrics_comparison_denoised_noisy_averaged.pdf}
+    \includegraphics[width=0.7\linewidth]{images/metrics_comparison_denoised_noisy_averaged.pdf}
     \caption{Metrics comparison for noisy 2D slices against a window-averaged target slice. The window-averaged target does not significantly improve the reported metrics, showing that averaging over neighboring slices reduces resolution and does not offer a superior reference for denoising evaluation.}
     \label{fig:metrics-comparison-averaged-target}
 \end{figure}
