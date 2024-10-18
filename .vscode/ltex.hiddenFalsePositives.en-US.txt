@@ -1,0 +1,6 @@
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QAnd finally for a squeezed light source, the distribution is sub-Poissonian \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q.\\E$"}
+{"rule":"MISSING_GENITIVE","sentence":"^\\QPoisson distribution as a model for counting statistics.\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QWith an average pulse energy of 1 500 , and pulse durations <10 , peak powers of 1 5 can be reached.\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\Q\\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q is a national research center in Germany that operates the \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q facility \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q that produces ultrashort \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q and soft X-ray radiation in the wavelength range of 4 50 in the fundamental, and as low as 1.7 in the third harmonic, corresponding to a total photon energy range of 25 830 .\\E$"}
+{"rule":"ATD_VERBS_TO_COLLOCATION","sentence":"^\\QResults indicate that window-averaged references improve metric outcomes.\\E$"}
+{"rule":"ATD_VERBS_TO_COLLOCATION","sentence":"^\\QResults indicate that the window-averaged references improve metric outcomes.\\E$"}
