@@ -16,7 +16,11 @@
 % True and Noisy image
 \glsxtrnewsymbol[description={true inaccessible image}]{Y}{\ensuremath{Y}}
 \glsxtrnewsymbol[description={noisy/corrupted/incomplete image}]{X}{\ensuremath{X}}
-\glsxtrnewsymbol[description={denoised/restored/reconstructed image}]{Xh}{\ensuremath{X_h}}
+\glsxtrnewsymbol[description={denoised/restored/reconstructed image}]{y_hat}{\ensuremath{\hat{Y}}}
+% single slice and window averaged
+\glsxtrnewsymbol[description={window size for averaging along an axis}]{wsize}{\ensuremath{w}}
+% \glsxtrnewsymbol[description={window averaging along an axis, forming a 2D image e.g. average over 15 slices as $X_{15}$, and single slice image as $X_1$}]{Xw}{\ensuremath{X_w}}
+
 
 % BM3D sigma for noise level
 \glsxtrnewsymbol[description={noise level parameter for BM3D denoising.}]{sigma}{\ensuremath{\sigma}}
@@ -57,7 +61,7 @@
 % Generalization error
 \glsxtrnewsymbol[description={generalization error, the expected error on unseen data.}]{generr}{\ensuremath{\mathcal{R}}}
 % Train error
-\glsxtrnewsymbol[description={training error/Empirical risk.}]{trainerr}{\ensuremath{\mathcal{L}}}
+\glsxtrnewsymbol[description={training error/empirical risk.}]{trainerr}{\ensuremath{\mathcal{L}}}
 
 % hypothesis
 \glsxtrnewsymbol[description={hypothesis of a model.}]{hypothesis}{\ensuremath{h}}
