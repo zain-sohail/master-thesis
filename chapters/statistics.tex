@@ -1,12 +1,11 @@
-To attempt at reconstructing the truth from incomplete observations, it is essential to understand the underlying statistics.   Classical and quantum optics provide a comprehensive theoretical foundation to explain photon statistics. For instance, it is well understood that photons from a coherent light source follow a Poisson distribution, often referred to as shot-noise. Whereas, for chaotic (bunched) light, the variance exceeds that compared to their mean, dubbed super-Poissonian. And finally for a squeezed light source, the distribution is sub-Poissonian \cite[Chapter~5]{foxQuantumOpticsIntroduction2006}.
+To attempt at reconstructing the truth from incomplete observations, it is generally of interest to understand the underlying statistics. Classical and quantum optics provide a comprehensive theoretical foundation to explain photon statistics. For instance, it is well understood that photons from a coherent light source follow a Poisson distribution, often referred to as shot-noise. Whereas, for chaotic (bunched) light, the variance exceeds that compared to their mean, dubbed super-Poissonian. And finally for a squeezed light source, the distribution is sub-Poissonian \cite[Chapter~5]{foxQuantumOpticsIntroduction2006}.
 
 The same principle can be extended to photoelectron emission. For the case of emission events when photons impinge on a material, \citeauthor{mandelFluctuationsPhotonBeams1958} \cite{mandelFluctuationsPhotonBeams1958,mandelFluctuationsPhotonBeams1959} showed that the probability distribution of photoelectron counting follows the photon statistics.
 
-In Section~\ref{sec:poisson-noise-model}, we introduced the assumption that the noise is Poisson distributed. In this chapter, we begin by formally defining the Poisson model for counting photoelectron event data. We examine our data to identify where this model is appropriate and where its limitations become evident. To this end, we introduce some statistical apparatus necessary to estimate parameters and define goodness of model. Further, we explore why the \gls{FEL} light source, as described in Section~\ref{section:light-sources}, exhibits over-dispersed statistics, a characteristic necessitating moving beyond the Poisson model. Accounting for this, we transition to using the Negative Binomial distribution as a more suitable model for the count data.
+In Section~\ref{sec:poisson-noise-model}, we introduced the assumption that the noise is Poisson distributed. In this chapter, we begin by formally defining a general model for counting photoelectron event data using point processes, that includes the Poisson distribution for coherent light sources and \gls{NB} distribution for \gls{SASE} \gls{FEL}. These are specifically We then test the hypothesis on data generated from a pulsed coherent light source and an \gls{FEL}
 
-\section{Theoretical Basis for Poisson Modeling of Photon Detection}\label{section:photon-counting-stats}
-
-Photons are the quantized form of electromagnetic light. They can be thought of as discrete energy packets. The energy of a photon is given by $E = h\nu$, where $h$ is the Planck constant and $\nu$ is the frequency of the light. Due to the discrete nature of photons, it can be shown that the number of photons in a short time interval $\Delta t$ is not constant. These fluctuations are known as photon shot noise.
+\section{Modelling Photoelectron Statistics}\label{section:photoelectron-counting-stats}
+Let us start by developing an intuition for why photons exhibit stochastic behavior. Photons are the quantized form of electromagnetic light and can be thought of as discrete energy packets. The energy of a photon is given by $E = h\nu$, where $h$ is the Planck constant and $\nu$ is the frequency of the light. Due to the discrete nature of photons, it can be shown that the number of photons in a short time interval $\Delta t$ is not constant. These fluctuations are known as photon shot noise.
 
 For a light source with a constant flux\footnote{Flux is the average number of photons passing through the cross-section of a beam per unit time.} $\phi$ such as a single-mode laser, the average number of photons in a beam segment of length is given by $L$, $\lambda = \phi \frac{L}{c}$, where $c$ is the speed of light.
 
@@ -16,164 +15,50 @@ If we subdivide this $L$ into many small intervals  of size $L/N$, where $N$ is 
     P(n) = \binom{N}{n} p^n (1 - p)^{N - n}
 \end{equation}
 
-Using the Poisson Limit Theorem \cite{fellerIntroductionProbabilityTheory1968}, it can be shown that as $N \to \infty$, and the probability $p \to 0$ such that $Np = \lambda$ remains constant, there is a convergence in distribution to the Poisson distribution (\cref{{eq:poisson-pmf}} in \cref{note:poisson-distribution}). Hence, the Poisson distribution is a suitable model for counting statistics of photons from a coherent light source.
+Using the Poisson Limit Theorem \cite{fellerIntroductionProbabilityTheory1968}, it can be shown that as $N \to \infty$, and the probability $p \to 0$ such that $Np = \lambda$ remains constant, there is a convergence in distribution to the Poisson distribution (\cref{note:poisson-distribution}). Hence, the Poisson distribution is a suitable model for counting statistics of photons from a coherent light source.
 
-\section{Modelling Photoelectron Statistics}\label{section:photoelectron-counting-stats}
-Statistically, a point process is a random collection of points defined on a measure space $(\Omega, \mathcal{A}, \mu)$
+\subsection{Photoelectron Counting}
+\citeauthor{mandelFluctuationsPhotonBeams1958} \cite{mandelFluctuationsPhotonBeams1958,mandelFluctuationsPhotonBeams1959} and others have shown that the transition probability of an electron from its ground state to an unbounded state at the surface of a photodetector is directly proportional to both the duration of the time interval $\Delta t$ and the instantaneous light intensity $I(t)$. This suggests that the rate density of photoelectrons is proportional to the light intensity $\lambda(t) \propto \int_{A} I(t)$, where $A$ is the detector area.
 
-\subsection{Doubly stochastic Poisson point process}
-Let us define a point process. 
+The aforementioned can be mathematically formalized through one-dimensional stochastic process known as a \gls{PP}\footnote{For a more generalized description of \gls{PP}, the reader is referred to \cite{chiuStochasticGeometryIts2013}.}. A \gls{PP} is used to model occurrences of stochastic events that happen in some space. If we look at the time domain, the \gls{PP} allows us to the model the occurrence of events in time. The process generates a series of time points $\{t_1, t_2, \dots, t_n\}$ where the events occur, within a time interval $[0, T]$.
 
-Then poisson point process and inhomogenous poisson point process.
+A \gls{PP} often used to model events is the \gls{PPP}, describable by the rate density function $\Lambda(t)$ (also known as the intensity function). The key property of such a process is that the events are statistically independent:
 
-Then cox process or doubly stochastic poisson point process
+\begin{equation}
+    \Lambda(t_1, t_2, \dots, t_n) = \prod_{i=1}^{n} \Lambda(t_i)
+\end{equation}
+
+If the rate density function is constant, $\Lambda(t) = \Lambda$, the process is known as a homogeneous (or stationary) \gls{PPP}, such as the case with a coherent laser light source \cite{salehPhotoelectronStatistics1978}. If the rate function is time-dependent and deterministic $\Lambda(t)$, it is known as the inhomogeneous \gls{PPP}. Such a situation could occur when the intensity of light is modulated, as is the case with a pulsed laser source.
+
+In a situation such as where the $\Lambda(t)$ itself is a stochastic variable, the process is known as the doubly stochastic \gls{PPP}, or Cox process. Such is the case if the light source is a \gls{FEL}, where the intensity of light fluctuates stochastically. The photoelectron counting statistics in this case deviate from the Poisson distribution, as we shall see later in this chapter.
+
+Integrating light intensity $I(t)$ over the time interval $\Delta t$ can be treated as a \gls{rv} with probability density $P(W)$, with $W$ as:
+\begin{equation}
+    W = \int_{\Delta t}^{t+\Delta t} I(t') dt
+\end{equation}
+
+The probability of detecting $n$ photoelectrons in that time interval is then given by the Poisson transform relation \cite{mehtaVIIITheoryPhotoelectron1970} (a realization of the doubly stochastic \gls{PPP}):
+\begin{equation}\label{eq:mandel-photo-electron}
+    P(n, t, \Delta t) = \int_{0}^{\infty} \frac{\alpha W^n}{n!} e^{-\alpha W} P(W) \, dW
+\end{equation}
+
+With a constant intensity light source, $W$ becomes deterministic and \cref{eq:mandel-photo-electron} simplifies to a Poisson distribution:
+\begin{equation}
+    P(n, t, \Delta t) = \frac{W^n e^{-W}}{n!} 
+\end{equation}
+
+Due to the \gls{SASE} process of an \gls{FEL} light, discussed briefly in \cref{section:light-sources}, the light intensity fluctuates stochastically. This leads to the photoelectron counting statistics being overdispersed and deviating from the Poisson distribution. \citeauthor{saldinStatisticalPropertiesRadiation1998} have shown in \cite{saldinStatisticalPropertiesRadiation1998} that the photoelectron counting statistics from a \gls{SASE} \gls{FEL} light source can be modeled by a Negative Binomial distribution (\cref{note:negative-binomial-distribution}), a realization of the Cox process. And due to the light and photoelectron statistics relation, the photoelectron counting statistics also follow the same distribution.
+
+The important thing to note here is that this discussion is about the statistics of photoelectrons from photon detection. Whereas, our experiment is of \gls{PES}, where we are then interested in the emitted electrons (electron count distributions). \citeauthor{heimerlMultiphotonElectronEmission2024} \cite{heimerlMultiphotonElectronEmission2024} have recently showed that the emitted electrons show a Poisson distribution with a coherent light source. 
+
+\section{Statistical Testing of Counting Statistics}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.7\linewidth]{images/2024-08-16-13-56-32.png}
-    \caption{Intensity measurements from the \gls{GMD} over a \qty{30}{hour} time period, window-averaged at \qty{1}{min} intervals. The fluctuations in intensity can be seen, an intrinsic property of the \gls{SASE} process.}
+    \includegraphics[width=1\linewidth]{images/gmd_grir.pdf}
+    \caption{Beam intensity measurements, using the \gls{GMD} over the time period $T=\qty{30}{hour}$, with data window-averaged at \qty{1}{min} intervals. The fluctuations in intensity can be observed, an intrinsic property of the \gls{SASE} process. Other notable observations are the long-term drifts in intensity, and the beam interruptions (no recorded values). The orange, green and red spans indicate the time periods used for other analyses.}
     \label{fig:gmd-intensity}
 \end{figure}
-
-\subsection{Photoelectron Counting}
-Through usage of only classical arguments, \citeauthor{mandelFluctuationsPhotonBeams1958} \cite{mandelFluctuationsPhotonBeams1958,mandelFluctuationsPhotonBeams1959} derived the probability distribution for photoelectron statistics. We assume that every photoelectron count is a statistically independent event. And for the photoelectron to be ejected in a very short time interval $\Delta t$, the probability should be directly proportional to the intensity of light falling on the detector.
-
-Since the derivation is lengthy, the reader is referred to \cite{mehtaVIIITheoryPhotoelectron1970}, and the results are directly presented.
-\begin{note}
-    {Probablity distribution of photoelectron counting}
-    For a photoelectron detector, the probability of detecting $n$ photoelectrons in a time interval $T$ is given by
-    \begin{equation}\label{eq:mandel-photo-electron}
-        P(n, t, T) = \int_{0}^{\infty} \frac{\alpha W^n}{n!} e^{-\alpha W} P(W) \, dW
-    \end{equation}
-    with $\alpha$ being the quantum efficiency, with $W$ being the integrated light intensity ($I$) over the time interval $\Delta t$:
-    \begin{equation}
-        W = \int_{t}^{t+T} I(t') dt'
-    \end{equation}
-    and $P(W)$ being the probability density of the random variable $W$.
-\end{note}
-
-We can see from \ref{eq:mandel-photo-electron} that even with intensity of light being constant, there are random fluctuations. For a constant intensity light source, the probability distribution simplifies to the Poisson distribution:
-\begin{equation}
-    P(n, t, T) = \frac{W^n e^{-W}}{n!} 
-\end{equation}
-
-This also implies that if there are fluctuations in the intensity of light, the photoelectron counting statistics will deviate from the Poisson distribution. We shall later see that this observation is important to go beyond the Poissonian model in the context of \gls{FEL} light sources.
-
-% Furthermore, in this description, it is assumed a radiation field is on detector system that detects by releases electrons. This is not the case for PES, where the material work function and etc. would make the process dependent on the material.
-
-
-% The assumption is restrictive because it assumes that the voxels are uncorrelated but in fact thats not the case. this model relies on only counting the electrons but not based on energies and so on.
-
-% There's a lot of parameters that need to be tested to determine what sort of counting statistics the dataset has.
-
-% Controls for the test:
-% lets see
-% \begin{itemize}
-%     \item Total time being looked at (like 1000 s or 20 hours)
-%     \begin{itemize}
-%         \item distribution might change due to overtime FEL intensity changes
-%     \end{itemize}
-%     \item Time bins being used (like 2 s vs 20 s and so on).
-%     \begin{itemize}
-%         \item Seems like distribution changes based on that too
-%     \end{itemize}
-%     \item Looking at individual pixels on X and Y
-%     \item Looking at Energy axis as it behaves weirder
-%     \item Looking at a larger region in X and Y 
-%     \begin{itemize}
-%         \item should follow same statisitics as single pixels
-%     \end{itemize}
-%     \item Check after removing correlated electrons within each pulse
-%     \begin{itemize}
-%         \item It is possible that electrons are correlated between different pulses because the time delay is long enough. But seems highly unlikely!
-%     \end{itemize}
-%     \begin{itemize}
-%         \item 
-%     \end{itemize}
-% \end{itemize}
-
-
-% \subsection{Before filtering}
-
-% \begin{figure}
-%     \centering
-%     \includegraphics[width=1\linewidth]{images/image.png}
-%     \caption{Enter Caption}
-%     \label{Image at one 2D pixel but summed over energy}
-% \end{figure}
-
-% \begin{figure}
-%     \centering
-%     \includegraphics[width=1\linewidth]{images/summed.png}
-%     \caption{Image over 40 pixels and summed over energy}
-%     % \label{fig:enter-label}
-% \end{figure}
-
-% \subsection{After filtering}
-
-% \begin{figure}
-%     \centering
-%     \includegraphics[width=1\linewidth]{images/poisson_stats/after_filtering_region_1000s.png}
-%     \caption{Data is filtered here with the KNN and looking at small region}
-%     % \label{fig:enter-label}
-% \end{figure}
-
-% \begin{figure}
-%     \centering
-%     \includegraphics[width=1\linewidth]{images/poisson_stats/filtered_allY_singleX.png}
-%     \caption{Enter Caption}
-%     % \label{fig:enter-label}
-% \end{figure}
-
-
-
-% \section{Simulate Noise}
-% We simulate the data with Poissonian data.
-\section{Statistical testing}
-
-% \begin{figure}
-%     \centering
-%     \includegraphics[width=1\linewidth]{images/JD-54-image.png}
-%     \caption{Enter Caption}
-%     \label{fig:enterl}
-% \end{figure}
-% Taken from \cite{berteroImageDeblurringPoisson2009} which cites \cite{fellerIntroductionProbabilityTheory1968}
-
-
-Can't correlate FEL intensity with electron counts per pulse as the GMD is before the monochromator.  \href{https://photon-science.desy.de/facilities/flash/photon_diagnostics/gmd_intensity_and_position/index_eng.html}{description about gmd}
-
-\begin{quotation}
-    The physical assumptions which we want to express mathematically are that the \textbf{conditions of the experiment remain constant} in time*, and that non-overlapping time intervals are stochastically independent in the sense that information concerning the number of events in one interval reveals nothing about the other. The theory of probabilities in a continuum makes it possible to express these statements directly, but being restricted to discrete probabilities, we have to use an approximate finite model and pass to the limit.
-
-    Imagine a unit time interval partitioned into n subintervals of length 1/n. A given collection of finitely many points in the interval may be regarded as the result of a chance process such that each subinterval has the same probability $P_{n}$ to contain one or more points of the collection. A subinterval is then either occupied or empty, and the assumed independence of non-overlapping time intervals implies that we are dealing with Bernoulli trials: We assume that the probability for exactly k occupied subintervals is given by $b(k;n,P_{n})$. We now refine this discrete model indefinitely by letting n→inf. The probability that the whole interval contains no point of the collection must tend to a finite limit. But this is the event that no cell is occupied, and its probability is $(1-p_{n})^{n}$. Passing to logarithms it is seen that this quantity approaches a limit only if $np_{n}$
-    from book \cite{fellerIntroductionProbabilityTheory1968}
-\end{quotation}
-
-
-
-\section{Poisson Process testing}
-
-\begin{figure}[h]
-    \centering
-    % First subfigure (Hyperparameter Search with Averaged 10 Images using MS-SSIM)
-    \begin{subfigure}[t]{0.49\linewidth}
-        \centering
-        \includegraphics[width=\linewidth]{images/hist_counts_per_train.pdf}
-        \caption{}
-        \label{fig:hist-grir-flash}
-    \end{subfigure}
-    \hfill
-    % Second subfigure (Hyperparameter Search with Averaged 10 Images using Sigma)
-    \begin{subfigure}[t]{0.49\linewidth}
-        \centering
-        \includegraphics[width=\linewidth]{images/hist_counts_per_train.pdf}
-        \caption{}
-        \label{fig:hist-wse2-laser}
-    \end{subfigure}
-    \caption{}
-    \label{fig:}
-\end{figure}
-
 
 We test with two datasets, measured with different light sources: \gls{WSe2} measured with a pulsed laser, and \gls{GrIr} measured with an \gls{FEL}. As seen from the theoretical standing, the statistics from a laser source should be explainable using a homogenous poisson point process, and temporally they should follow a Poisson distribution.
 Whereas, the \gls{FEL} source has intensity fluctuations and the expectation is that the statistics should be over-dispersed. Since the intensity variations are themselves random, the cox process is an appropriate model.
@@ -183,12 +68,45 @@ However, due to sparse data, it becomes necessary to look at small regions, hopi
 
 The ideal situation would be specially designed experiment that exhibits no spatial correlations and with long enough acquisition time to get a good estimate of the statistics at different time windows.
 
-There are two ways to test the point process. One is to look at the time intervals between events, and the other is to look at the number of events in a fixed time interval. While the light sources give timing information coarser than the electron detection time, the \gls{DLD} detector provides the exact time of arrival of each electron. Hence, the independence of the events can be tested by looking at the time intervals between events.
+There are two ways to test the point process. One is to look at the time intervals between events, and the other is to look at the number of events in a fixed time interval. While the light sources give timing information coarser than the electron detection time, the \gls{DLD} detector measures the \gls{TOF} of each electron. Nonetheless, measuring the time intervals between events is not possible due to the dead-time of the detector, after event detection. Hence, we look at the number of events in a fixed time interval.
 
-\subsection{Time intervals between events}
-
+Specialized tests do exist to directly test for a homogenous Poisson process, hypothesizing complete spatial randomness, Ripley's K-function can be used as a goodness of fit test \cite[Section~2.6.4]{chiuStochasticGeometryIts2013}.
 
 \subsection{Number of events in a fixed time interval}
+% \begin{figure}[h]
+%     \centering
+%     \begin{subfigure}[t]{0.49\linewidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{images/hist_counts_per_train.pdf}
+%         \caption{}
+%         \label{fig:hist-grir-flash}
+%     \end{subfigure}
+%     \hfill
+%     \begin{subfigure}[t]{0.49\linewidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{images/hist_counts_per_train.pdf}
+%         \caption{}
+%         \label{fig:hist-wse2-laser}
+%     \end{subfigure}
+%     \caption{}
+%     \label{fig:}
+% \end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{images/hist_counts_facetgrid_1_wse2.pdf}
+    \caption{Distribution of photoelectron counts at time intervals $\Delta t =$ \qtylist{2;10;20;50}{ms} for a selected volumetric subset of the full \gls{WSe2} dataset. Poisson statistics are observed at smaller time intervals, but as the time window increases ($\Delta t = \qty{50}{ms}$), the data starts to deviate from the Poisson distribution, as spatial correlations become apparent. The total counts in this selected region are $\gls{ncounts}=\num{4.7e4}$ with total observation time $T=\qty{126}{s}$.}
+    \label{fig:wse2-stats}
+\end{figure}
+
+
+
+The Poisson Process can be tested by looking at the number of events in a fixed time interval.
+
+To not induce any spatial correlation effects, that would skew the statistics, we look at a small region in the image space.
+
+Let us look at the dataset using laser first: \gls{WSe2}. \cref{fig:wse2-stats} shows the count distribution at $\Delta t =$ \qtylist{2;10;20;50}{ms}
+
 Testing with small time intervals, we can see that the data follows a Poisson distribution.
 
 However, as we increase the time window, the data starts to deviate from the Poisson distribution. As more events accumulate in the region, the underlying spatial correlations become apparent and start to affect the statistics. The spatial intensity variantions. Then we could describe the process as an inhomogenous poisson process with the spatial intensity determined by the material properties
@@ -205,25 +123,15 @@ To make sure spatial correlations don't impact the statistics, we can look at a 
 
 Also interesting to see two pixels at different locations
 
-\section{Chi-squared Goodness of Fit Test}
-We hypothesize that the data follows a certain distribution e.g. Poisson, Normal, Negative Binomial The Chi-squared Goodness of Fit Test is used to determine if the observed data is consistent with the expected distribution.
+We hypothesize that the data follows a certain distribution based on theoretical grounding and visualize analysis. Specifically, that data from a laser follows a Poisson distribution and from an \gls{FEL} a \gls{NB} distribution. 
 
-Let \( X_1, X_2, \ldots, X_n \sim \text{i.i.d. } F \) and \( Y_1, Y_2, \ldots, Y_m \sim \text{i.i.d. } G \), where \( F \) and \( G \) are strictly increasing continuous \glsplural{CDF}.
+We have seen from \cref{note:poisson-distribution} that the mean and variance of a Poisson distribution are equal. Hence, the simplest way to test if the data follows a Poisson distribution or a \gls{NB} distribution is to compare the sample mean and variance. If the sample mean and variance are equal, then the data follows a Poisson distribution. If the sample mean is greater than the sample variance, then the data follows a \gls{NB} distribution.
 
-The hypotheses for the chi-square test are:
+For a Poisson distribution, the sample mean is equivalent to the  MLE of the parameter $\lambda$. For a \gls{NB} distribution, the sample mean is not equivalent to the parameter $\lambda$.
 
-\begin{equation}
-    H_0: F = G \leftrightarrow   H_1: F \neq G
-\end{equation}
-The hypothesis test for the Poisson distribution is the Chi-squared Goodness of Fit Test. The test statistic is given by:
+Using Chi-Square test, on all points shown in \cref{fig:wse2-stats}, the test shows that the data is better explained by NB. However, on a temporal subset, it's different. This suggests there is some intensity drift in the laser
 
-\begin{equation}
-    \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i}
-\end{equation}
-where \(O_i\) is the observed frequency and \(E_i\) is the expected frequency. The degrees of freedom are given by \(k-1\), where \(k\) is the number of bins.
-
-For goodness-of-fit tests, small p-values indicate that you can reject the null hypothesis and conclude that your data were not drawn from a population with the specified distribution. Consequently, goodness-of-fit tests are a rare case where you look for high p-values to identify candidate distributions. 
-(From \href{https://statisticsbyjim.com/hypothesis-testing/goodness-fit-tests-discrete-distributions/}{This website})
+% The first step in this process is to find the optimal parameters for the Poisson and \gls{NB} distributions. This can be done by fitting the data to the distributions and finding the parameters that minimize the difference between the data and the distribution. The \gls{MLE} is a common method used to estimate the parameters of a distribution. The \gls{MLE} is the value of the parameter that maximizes the likelihood of the data given the distribution. The likelihood is the probability of observing the data given the distribution. The \gls{MLE} is the value of the parameter that makes the data most likely given the distribution.
 
 
 \begin{figure}[t]
@@ -238,6 +146,3 @@ For goodness-of-fit tests, small p-values indicate that you can reject the null 
     \caption{ss}
     \label{s}   
 \end{figure}
-\section{Modeling over-dispersed count data}
-
-\section{The SASE process as an explanation of over-dispersed statistics}
