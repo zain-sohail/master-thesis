@@ -93,7 +93,7 @@ fonttitle=\bfseries,#1}
 
 % Fancyhdr settings
 \fancyhead{}
-\fancyfoot{}
+\fancyfoot[C]{\thepage}
 \fancyhead[LE]{\leftmark}
 \fancyhead[RO]{\rightmark}
 \renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}
@@ -166,10 +166,13 @@ fonttitle=\bfseries,#1}
 
 % \printindex
 
+\clearpage
+\pagenumbering{Roman}
+
 \begin{appendices}
   \input{appendix/etl}
   \input{appendix/math_notation.tex}
-  \input{appendix/deep_learning.tex}
+  \input{appendix/supplementary_figures.tex}
   % \input{jupyter_notebooks/notebooks.tex}
 \end{appendices}
 
