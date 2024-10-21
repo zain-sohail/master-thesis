@@ -19,7 +19,7 @@ Consider a sequence of \gls{iid} \glspl{rv} $X_1, X_2, \dots, X_n$ defined on th
 \footnote{Since the \gls{rv} are \gls{iid}, the expected value $\mu$ of each $X_i$ is the same.} 
 and variance as $\sigma^2 = Var(X_1)$.
 
-Formally, by the \gls{LLN}\footnote{Specifically, the weak \gls{LLN}, which also has a stronger variant proving almost surely (a.s.) convergence.}, the sample mean $\bar{X_n} = \frac{1}{n} \sum_{i=1}^{n} X_i$ converges in probability to the expected value $\mu$ as $n \to \infty$ \cite{fellerIntroductionProbabilityTheory1968}:
+Formally, by the \gls{LLN}\footnote{Specifically, the weak \gls{LLN}, which also has a stronger variant proving \gls{as} convergence.}, the sample mean $\bar{X_n} = \frac{1}{n} \sum_{i=1}^{n} X_i$ converges in probability to the expected value $\mu$ as $n \to \infty$ \cite{fellerIntroductionProbabilityTheory1968}:
 \begin{equation}
     \lim_{n \to \infty} P(|\bar{X_n} - \mu| > \epsilon) = 0
 \end{equation}
@@ -31,7 +31,8 @@ The rate of convergence to $\bar{X_n}$ is of practical importance, as it indicat
     \left|\bar{X_n} - \mu\right| = \mathcal{O}\left(\frac{1}{\sqrt{n}}\right)
 \end{equation}
 
-indicating that the relative fluctuations decrease with an increased number of observations $n$.  Since $n \propto T$, increasing $T$ reduces the sample mean fluctuations. While convergence rate described by $\mathcal{O}\left(\frac{1}{\sqrt{n}}\right)$ is a fundamental result, the constant that accompanies this rate is distribution dependent, and can affect the convergence rate.
+indicating that the relative fluctuations decrease with an increased number of observations $n$.  Since $n \propto T$, increasing $T$ reduces the sample mean fluctuations. While convergence rate described by $\mathcal{O}\left(\frac{1}{\sqrt{n}}\right)$
+\footnote{Big O notation, denoted as $\mathcal{O}(g(n))$, describes an upper bound on the time complexity of an algorithm or the growth rate of a function.} is a fundamental result, the constant that accompanies this rate is distribution dependent, and can affect the convergence rate.
 
 In experiments such as \gls{MPES}, the number of detected events is often limited due to a variety of reasons, either because the events themselves are rare, such as when probing certain non-linear processes or material dynamics, or due to limitations in the detection scheme, such as the detector efficiency or range. This limitation becomes especially relevant when studying transient processes, where system changes happen on ultrashort timescales, constraining the data acquisition time-window.  Added to this the multidimensional nature of the experiment, where increasing the dimensionality leads to the sample space becoming sparser, and exponentially more data is needed to fill the space.
 
