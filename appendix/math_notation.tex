@@ -1,6 +1,21 @@
 \chapter{Mathematical Background}
 \label{appendix:mathematical-notation}
 
+\section{Law of Large Numbers}\label{section:law-of-large-numbers}
+Consider a sequence of \gls{iid} \glspl{rv} $X_1, X_2, \dots, X_n$ defined on the probability space $(\Omega, \mathcal{A}, P)$ (see \cref{section:probability-notation}), representing the number of detected events in different intervals. Since the \gls{rv} are \gls{iid}, the expected value $\mu$ of each $X_i$ is the same. The true mean (or expected value) of these \glspl{rv} can be defined as $\mu = \mathbb{E}(X_1)$, and the variance as $\sigma^2 = Var(X_1)$.
+
+Formally, by the \gls{LLN}\footnote{Specifically, the weak \gls{LLN}, which also has a stronger variant proving \gls{as} convergence.}, the sample mean $\bar{X_n} = \frac{1}{n} \sum_{i=1}^{n} X_i$ converges in probability to the expected value $\mu$ as $n \to \infty$ \cite{fellerIntroductionProbabilityTheory1968}:
+\begin{equation}
+    \lim_{n \to \infty} P(|\bar{X_n} - \mu| > \epsilon) = 0
+\end{equation}
+
+The rate of convergence to $\bar{X_n}$ is of practical importance, as it indicates how quickly the sample statistics approximate the true distribution:
+\begin{equation}
+    \left|\bar{X_n} - \mu\right| = \mathcal{O}\left(\frac{1}{\sqrt{n}}\right)
+\end{equation}
+
+indicating that the relative fluctuations decrease with an increased number of observations $n$.  Since $n \propto T$, increasing $T$ reduces the sample mean fluctuations. While convergence rate described by $\mathcal{O}\left(\frac{1}{\sqrt{n}}\right)$ is a fundamental result, the constant that accompanies this rate is distribution dependent, and can affect the convergence rate. The Big O notation, denoted as $\mathcal{O}(g(n))$, describes an upper bound on the time complexity of an algorithm or the growth rate of a function.
+
 \section{Measure Space and Measures}
 \label{section:measurable_space}
 \begin{note}

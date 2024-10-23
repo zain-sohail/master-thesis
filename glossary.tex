@@ -1,27 +1,27 @@
 \newglossaryentry{train}{
-    name={train},
+    name={\textit{train}},
     description={Also known as \textit{Macrobunch}. A train represents a group of closely spaced electron bunches produced and accelerated by the \gls{FEL} (or more generally, any accelerator). Each train is associated with a unique identifier called \texttt{trainId}, which is used as the primary index for much of the data reduction process}
 }
 
 \newglossaryentry{pulse}{
-    name={pulse},
+    name={\textit{pulse}},
     description={Also known as \textit{\gls{microbunch}}. Each \gls{train} contains about 500 pulses produced from the \gls{SASE} process (See \gls{sase}). These are which are used as a secondary index for the data reduction process},
     plural={pulses},
 }
 
 \newglossaryentry{sase}{
-    name={self-amplified spontaneous emission},
+    name={\textit{self-amplified spontaneous emission}},
     description={is a process where the electron beam in the accelerator, when passing through an undulator, starts emitting radiation due to acceleration. The interaction between the emitted radiation and the charge distribution leads to microbunching. These microbunches emit radiation coherently, leading to the intense, coherent radition, characteristic of an \gls{FEL}. For more information see \cite{ackermannOperationFreeelectronLaser2007}}
 }
 
 \newglossaryentry{microbunch}{
-    name={microbunching},
-    description={Microbunches are produced by the interaction between the oscillating electrons in the undulator and the radiation that they produce (due to the oscillatory acceleration) leads to periodic longitudinal density modulation known as Microbunching. The in-phase emitted radition adds coherently, increasing intensity and enhancing microbunching. Adapted from \cite{ackermannOperationFreeelectronLaser2007}},
+    name={\textit{microbunching}},
+    description={Microbunches are produced by the interaction between the oscillating electrons in the undulator and the radiation that they produce (due to the oscillatory acceleration) leads to periodic longitudinal density modulation known as Microbunching. The in-phase emitted radition adds coherently, increasing intensity and enhancing microbunching.},
     plural={Microbunches},
 }
 
 \newglossaryentry{spontaneous_emission}{
-    name={spontaneous emission},
+    name={\textit{spontaneous emission}},
     description={Spontaneous emission requires no external perturbation, and is explained in quantum electrodynamics by the interaction between an atom and quantized electromagnetic field, where even with no photons in the field, there is a non-zero probability of photon emission from the atom.}
 }
 
@@ -37,28 +37,45 @@
 % }
 
 \newglossaryentry{undulator}{
-    name={undulator},
+    name={\textit{undulator}},
     description={Magnets arranged periodically to produce a periodic magnetic field. It is used to produce coherent radiation by accelerating electrons through it}
 }
 
 \newglossaryentry{beamline}{
-    name={beamline},
+    name={\textit{beamline}},
     description={A path leading the photons from the particle accelerator to the experimental end-station.}
 }
 
 \newglossaryentry{beamtime}{
-    name={beamtime},
+    name={\textit{beamtime}},
     description={The time allocated to an experiment at a synchrotron or \gls{FEL} facility.}
 }
 
 % shot noise
 \newglossaryentry{shot_noise}{
-    name={shot noise},
+    name={\textit{shot noise}},
     description={Shot noise originates from the quantized nature of light. It is the noise that arises from the random arrival of photons at a detector.}
 }
 
 % gas monitor detector
 \newglossaryentry{gmd}{
-    name={gas monitor detector},
+    name={\textit{gas monitor detector}},
     description={A diagnostic tool to measure the intensity of a \gls{FEL} pulse in a non-invasive manner. The gas inside the detector is ionized by the \gls{FEL} pulse, and the resulting current can be used to detect the absolute number of photons with an accuracy of 10\%.}
+}
+
+% latent
+\newglossaryentry{latent}{
+    name={\textit{latent}},
+    description={Latent refers to the underlying distribution of the data, which is unobserved.}
+}
+
+% noise
+\newglossaryentry{noise}{
+    name={\textit{noise}},
+    description={The inherent fluctuations in data due to its stochastic nature.}
+}
+%noise2noise
+\newglossaryentry{noise2noise}{
+    name={\textit{Noise2Noise}},
+    description={A training paradigm where both the input and target datasets are noisy, eliminating the need for clean reference data.}
 }

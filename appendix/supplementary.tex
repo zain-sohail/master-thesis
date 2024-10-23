@@ -1,4 +1,4 @@
-\chapter{Data Loading and Comparison}
+\chapter{Supplementary Material}
 \section{Transforming Raw Data to structured format: Extract, Load, Transform}\label{sec:elt}
 Raw data from the experiment is stored in \gls{HDF5} files. This includes many \gls{beamline} diagnostic information such as \gls{BAM}, \gls{GMD}, the delay stage readings, the monochromator energy, sample specific information such as extractor voltage, and the electron counting in the 3 detector dimensions corresponding to the \gls{DLD} spatial X and Y axes and the temporal time axis. This information is resolved at each bunch of electrons coming from the accelerator called a \gls{train}, which are further microbunched into \glsplural{pulse}.
 
@@ -8,7 +8,7 @@ The data pipeline follows an \gls{ELT} process, wherein raw data is extracted fr
 
 The following sections provide a detailed exposition of each stage of this \gls{ELT} process, also shown in \cref{fig:elt}. The first stage, extraction, begins with the loading of raw data from the \gls{HDF5} files. These files encapsulate experimental results across multiple channels, including electron-resolved and time-resolved data. The hierarchical structure of the \gls{HDF5} files allows the organization of data into groups, where each group contains an index and its corresponding dataset, collectively referred to as a “channel” The paths to these \gls{HDF5} files, along with relevant configuration parameters, are provided to the pipeline to dictate the steps of the subsequent transformation process.
 
-\section*{Pipeline Overview}
+\subsection*{Pipeline Overview}
 To optimize performance and facilitate data management, the pipeline generates buffer files for each type of data (electron and time-resolved). This task is handled by the \texttt{BufferFilePaths} class, which initializes file paths and manages the creation of buffer files in the efficient \texttt{Parquet} format. By checking the presence of pre-existing buffer files, the class determines whether to reuse these files or regenerate them, based on the \texttt{force\_recreate} flag.
 
 Each \gls{HDF5} file results in the generation of two primary buffer files: one containing electron-resolved data and another containing pulse/train-resolved data. These files are essential for organizing the data at the pulse level and maintaining resolution at the electron level. The data for each train contains roughly 500 pulses, and although some data is resolved at the pulse level, each index often holds an array, necessitating the use of the \texttt{pandas} MultiIndex functionality to maintain the data’s hierarchical structure. Detector measurements, which are electron-resolved along the X, Y, and temporal axes, are typically represented as three-dimensional arrays and add further complexity to the indexing process.
@@ -122,7 +122,7 @@ The \gls{GrIr} dataset is used, with electron counts ranging from \numrange{1e6}
 
 The metric evaluation procedure involves a data loader, implemented using the \texttt{PyTorch Dataset} class, which iterates through the different datasets and extracts noisy and target 2D image slices (window-averaged or single slice). For each pair of noisy and target slices, the metrics are computed. The comparison results are then grouped by acquisition count and type (noisy vs. denoised).
 
-This metric comparison is performed with \texttt{1638} images sliced along each dimension of the dataset. The results are aggregated and a 95\% confidence interval is calculated for each metric to assess the reliability of the comparison. Table~\ref{tab:comparison_types} summarizes the comparison types and metrics evaluated in this experiment, repeated for both single slice and window-averaged images.
+This metric comparison is performed with \num{1638} images sliced along each dimension of the dataset. The results are aggregated and a 95\% confidence interval is calculated for each metric to assess the reliability of the comparison. Table~\ref{tab:comparison_types} summarizes the comparison types and metrics evaluated in this experiment, repeated for both single slice and window-averaged images.
 
 
 \begin{figure}[h]
@@ -141,7 +141,7 @@ Comparing the noisy images with target, all metrics trivially show an improvemen
    \label{fig:metrics-comparison}
 \end{figure}
 
-Additionally, we investigate the effect of window-averaged reference images on the metrics. Results indicate that the window-averaged references improve metric outcomes, as the gap between the metrics calculated with noisy and high quality images split up further. Consequently, we adopt the window-averaged images as reference for the denoising evaluation.
+Additionally, we investigate the effect of window-averaged reference images on the metrics. Results indicate that window-averaged references improve metric outcomes, as the gap between the metrics calculated with noisy and high quality images split up further. Consequently, we adopt the window-averaged images as reference for the denoising evaluation.
 
 
 \begin{figure}
@@ -150,3 +150,151 @@ Additionally, we investigate the effect of window-averaged reference images on t
     \caption{Metrics comparison for noisy 2D slices against a window-averaged target slice. The window-averaged target does not significantly improve the reported metrics, showing that averaging over neighboring slices reduces resolution and does not offer a superior reference for denoising evaluation.}
     \label{fig:metrics-comparison-averaged-target}
 \end{figure}
+
+
+\subsection{Deep Learning Infrastructure}
+Model Architecture: UNET 2D and 3D
+
+Trained on A100 GPU 80 GB using Maxwell Cluster at DESY. 
+
+\section{Supplementary Figures for Deep Learning based Denoising}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\linewidth]{images/nn_denoised_ex_single_slice.pdf}
+    \caption{Noisy, denoised, and target \gls{E}-\gls{kx} cuts with window size $w=1$ shown for \gls{GdW} dataset. Each row corresponds \numlist{1e6;4e6;1.6e7} counts, respectively.}
+    \label{fig:nn-denoised-ex-single-slice}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\linewidth]{images/nn_denoised_ex_20_slice.pdf}
+    \caption{Noisy, denoised, and target \gls{E}-\gls{kx} cuts with window size $w=20$ shown for \gls{GdW} dataset. Each row corresponds \numlist{1e6;4e6;1.6e7} counts, respectively.}
+    \label{fig:nn-denoised-ex-20-slice}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\linewidth]{images/nn_denoised_xy_single_slice.pdf}
+    \caption{Noisy, denoised, and target \gls{ky}-\gls{kx} cuts with window size $w=1$ shown for \gls{GdW} dataset. Each row corresponds \numlist{1e6;4e6;1.6e7} counts, respectively.}
+    \label{fig:nn-denoised-xy-single-slice}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\linewidth]{images/nn_denoised_xy_20_slice.pdf}
+    \caption{Noisy, denoised, and target \gls{ky}-\gls{kx} cuts with window size $w=20$ shown for \gls{GdW} dataset. Each row corresponds \numlist{1e6;4e6;1.6e7} counts, respectively.}
+    \label{fig:nn-denoised-xy-20-slice}
+\end{figure}
+
+\break
+\section{Supplementary Figures for Photoelectron Counting Statistics}
+The following section outlines the counting statistics observed for \gls{PES} at two different light sources: a pulsed laser (\gls{WSe2} dataset), and a \gls{SASE} \gls{FEL} light source (\gls{GrIr} dataset). 
+
+\cref{fig:wse2-stats-2} shows the distribution of photoelectron counts for different time intervals ($\Delta t$) within a volumetric subset of the full \gls{WSe2} dataset. The count distributions for smaller time intervals ($\Delta t = \qtylist{2;10;20}{ms}$) follow Poisson statistics, as expected from an uncorrelated photoemission process where spatial and temporal fluctuations are minimal. However, for longer time intervals ($\Delta t = \qty{50}{ms}$), the distribution starts to deviate from the Poisson distribution. This deviation suggests that spatial correlations, due to the material properties of the sample, become significant enough to impact the distribution. While the impact of pulse light source should be minimal since the time intervals we look at are much longer than the pulse durations, the spatial correlations could be due to the material properties of the sample.
+
+
+The \gls{GrIr} dataset reveals more complex photoelectron count statistics over a broader range of time intervals. Figures \ref{fig:grir-stats-1}, \ref{fig:grir-stats-2}, and \ref{fig:grir-stats-3} show photoelectron count distributions for varying time windows ($\Delta t = \qtylist{10;50;100;500;1000;5000}{ms}$) in the acquisition time $T\approx\qty{30}{hour}$
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{images/hist_counts_facetgrid_2_wse2.pdf}
+    \caption{Distribution of photoelectron counts at time intervals $\Delta t =$ \qtylist{2;10;20;50}{ms} for a different volumetric subset of the full \gls{WSe2} dataset. Poisson statistics are observed at smaller time intervals, but as the time window increases ($\Delta t =$ \qty{50}{ms}), the data starts to deviate from the Poisson distribution, as spatial correlations become apparent.}
+    \label{fig:wse2-stats-2}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{images/hist_counts_facetgrid_3_grir.pdf}
+    \caption{Distribution of photoelectron counts at time intervals $\Delta t =$ \qtylist{10;50;100;500;1000;5000}{ms} for a selected volumetric subset of the full \gls{GrIr} dataset. Poisson statistics provide a good fit at $\Delta t \leq \qty{100}{ms}$. However, for intervals $\Delta t =$ \qtylist{0.5;1;5}{s} the distribution exhibits over dispersion with a right-skewed tail, characteristic of the \gls{NB} distribution. The total counts in this selected region are $\gls{ncounts}=\num{1e6}$ with total observation time $T\approx\qty{4}{h}$  (See red region in \cref{fig:gmd-intensity}). The smaller $\Delta t$ values may represent the limiting case of the \gls{NB} distribution approaching Poisson statistics.}
+    \label{fig:grir-stats-3}
+\end{figure}
+% \subsection{Mathematical Formulation}
+% As shown in \cref{alg:bm3d} and \cref{fig:bm3d-schematic}, the \gls{BM3D} scheme is a two-stage image denoising algorithm that exploits non-local image similarities. The algorithm processes a noisy image $X$ to produce a denoised estimate $\hat{Y}$ through collaborative filtering of similar patches.
+
+% Stage 1: Basic Estimate
+
+% The first stage produces a basic estimate through the following steps:
+
+% 1. **Block Matching**: For each reference block $B_r$ of size $N_1 \times N_1$ in the noisy image, similar blocks are found using the normalized $l^2$-distance:
+   
+%    $$d(B_r, B_k) = \frac{\|B_r - B_k\|_2^2}{N_1^2}$$
+
+%    Blocks with distance below a threshold $\tau_{\text{match}}$ are grouped:
+   
+%    $$\mathcal{S}(B_r) = \{B_k : d(B_r, B_k) \leq \tau_{\text{match}}\}$$
+
+% 2. **3D Block Formation**: Similar blocks are stacked into a 3D array $\mathcal{Z}$ of size $N_1 \times N_1 \times |\mathcal{S}(B_r)|$:
+   
+%    $$\mathcal{Z} = [B_r | B_{k_1} | B_{k_2} | ... | B_{k_n}]$$
+
+% 3. **3D Transform**: A separable 3D transform $\mathcal{T}_{3D}$ is applied:
+   
+%    $$\mathcal{T}_{3D} = \mathcal{T}_{2D} \otimes \mathcal{T}_{1D}$$
+   
+%    where $\mathcal{T}_{2D}$ is typically a 2D DCT applied to each block, and $\mathcal{T}_{1D}$ is a 1D Haar transform along the similarity dimension.
+
+% 4. **Hard Thresholding**: The transform coefficients are hard-thresholded:
+   
+%    $$\Gamma_{\lambda_{\text{3D}}}(\mathcal{T}_{3D}\mathcal{Z}) = 
+%    \begin{cases} 
+%    (\mathcal{T}_{3D}\mathcal{Z})_{i,j,k} & \text{if } |(\mathcal{T}_{3D}\mathcal{Z})_{i,j,k}| > \lambda_{\text{3D}} \\
+%    0 & \text{otherwise}
+%    \end{cases}$$
+
+% 5. **Inverse Transform and Aggregation**: The filtered blocks are transformed back and aggregated with weights $w_{B_r}$ based on the number of non-zero coefficients after thresholding:
+   
+%    $$\hat{Y}_{\text{basic}} = \frac{\sum_{B_r} w_{B_r} \cdot \mathcal{T}_{3D}^{-1}(\Gamma_{\lambda_{\text{3D}}}(\mathcal{T}_{3D}\mathcal{Z}))}{\sum_{B_r} w_{B_r}}$$
+
+% Stage 2: Final Estimate
+
+% The second stage uses the basic estimate to perform Wiener filtering:
+
+% 1. **Block Matching**: In the second stage, the block matching uses both the noisy image $X$ and the basic estimate $\hat{Y}_{\text{basic}}$. The distance between blocks is computed as:
+% $$d_2(B_r, B_k) = |B_r^{\text{basic}} - B_k^{\text{basic}}|2^2 = \sum{i,j} (B_r^{\text{basic}}[i,j] - B_k^{\text{basic}}[i,j])^2$$
+% where $B_r^{\text{basic}}$ and $B_k^{\text{basic}}$ are blocks from the basic estimate $\hat{Y}_{\text{basic}}$. The grouping in the second stage creates a set:
+% $$B = {B_k : d_2(B_r, B_k) \leq \tau_2}$$
+% where $\tau_2$ is the threshold for the second stage. The corresponding blocks from the noisy image $X$ are then used for the actual Wiener filtering, but their grouping is determined by the similarity of blocks in the basic estimate.
+% This approach is more reliable than using the noisy image alone because the basic estimate has reduced noise, leading to more accurate block matching.
+
+% 2. **Wiener Filtering**: For each 3D group $\mathcal{Z}$, the Wiener shrinkage coefficients are:
+
+%    $$W_{i,j,k} = \frac{|(\mathcal{T}_{3D}\mathcal{Z}_{\text{basic}})_{i,j,k}|^2}{|(\mathcal{T}_{3D}\mathcal{Z}_{\text{basic}})_{i,j,k}|^2 + \sigma^2}$$
+
+%    where $\mathcal{Z}_{\text{basic}}$ is the corresponding group from $\hat{Y}_{\text{basic}}$ and $\sigma^2$ is the noise variance.
+
+% 3. **Final Estimate**: The final estimate is obtained by:
+
+%    $$\hat{Y} = \frac{\sum_{B_r} w_{B_r} \cdot \mathcal{T}_{3D}^{-1}(W \cdot \mathcal{T}_{3D}\mathcal{Z})}{\sum_{B_r} w_{B_r}}$$
+
+% This two-stage approach is particularly effective because the Wiener filter coefficients are computed using the basic estimate, which provides a more reliable power spectrum estimate than the noisy image alone.
+% \begin{algorithm}
+%     \caption{BM3D Denoising Algorithm}\label{alg:bm3d}
+%     \begin{algorithmic}[1]
+%     \Require Noisy image $X$, noise variance $\sigma^2$
+%     \Ensure Denoised image $\hat{Y}$
+%     \Statex
+%     \State // Stage 1: Basic Estimate
+%     \State $\hat{Y}_{\text{basic}} \gets \textsc{BasicEstimate}(X, \sigma^2)$
+%     \State // Stage 2: Final Estimate
+%     \State $\hat{Y} \gets \textsc{WienerFiltering}(X, \hat{Y}_{\text{basic}}, \sigma^2)$
+%     \State \textbf{return} $\hat{Y}$
+%     \end{algorithmic}
+% \end{algorithm}
+
+% \begin{algorithm}
+%     \caption{Basic Estimate}\label{alg:basicestimate}
+%     \begin{algorithmic}[1]
+%     \Require Noisy image $X$, noise variance $\sigma^2$
+%     \Ensure Basic estimate $\hat{Y}_{\text{basic}}$
+%     \For{each reference block $B_r$ in $X$}
+%         \State $\mathcal{S}(B_r) \gets \{B_k : d(B_r, B_k) \leq \tau_{\text{match}}\}$ \Comment{Block matching}
+%         \State $\mathcal{Z} \gets \text{Stack}(B_r, \mathcal{S}(B_r))$ \Comment{3D array formation}
+%         \State $\mathcal{T}_{3D}\mathcal{Z} \gets \textsc{3DTransform}(\mathcal{Z})$
+%         \State $\mathcal{Z}_{\text{filtered}} \gets \Gamma_{\lambda_{\text{3D}}}(\mathcal{T}_{3D}\mathcal{Z})$ \Comment{Hard thresholding}
+%         \State $\mathcal{Z}_{\text{spatial}} \gets \textsc{3DInverseTransform}(\mathcal{Z}_{\text{filtered}})$
+%         \State Update $\hat{Y}_{\text{basic}}$ with weighted $\mathcal{Z}_{\text{spatial}}$
+%     \EndFor
+%     \State \textbf{return} $\hat{Y}_{\text{basic}}$
+%     \end{algorithmic}
+% \end{algorithm}
