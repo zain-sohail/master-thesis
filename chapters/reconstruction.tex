@@ -132,13 +132,13 @@ This noise is signal dependent as the variance is dependent on the true signal \
 
 \section{Variance Stabilization Transform: Anscombe}
 
-\Glspl{VST} are used to map the values of the data to a new domain so that the variance becomes constant. \citeauthor{anscombeTransformationPoissonBinomial1948} \cite{anscombeTransformationPoissonBinomial1948} introduced such a \gls{VST} for data distributed according to the Poisson, Binomial, and Negative Binomial distributions. The Anscombe transform for the Poisson distribution is defined as:
+\Glspl{VST} \todo{Is the acronym VST already defined? Those are usually spelled out at first use, not only in once in some acronym table.} are used to map the values of the data \todo{It would be helpful to state that one starts here with data samples from a distribution where the variance depends on the signal (pointing to the previous section as an example).} to a new domain so that the variance becomes constant. \citeauthor{anscombeTransformationPoissonBinomial1948} \cite{anscombeTransformationPoissonBinomial1948} introduced such a \gls{VST} for data distributed according to the Poisson, Binomial, and Negative Binomial distributions. The Anscombe transform for the Poisson distribution is defined as:\todo{Stat from where to here $T$ maps, I guess it is meant to map non-negative numbers to non-negative numbers, e.g., $T:[0,\infty)\to[0,\infty),X\mapsto...$.}\todo{Is this supposed to use an array notation? In the sense that $X$ is a 2D-array? If so, I would first state what it does with a single intensity value.}
 \begin{equation}
     T(X) = 2 \sqrt{X + \frac{3}{8}}
 \end{equation}
 
-Applying this transformation to a Poisson distributed \gls{rv} maps the data such that the variance becomes approximately constant. $T(X)$ can then be denoised using \gls{AWGN} denoising techniques such as \gls{BM3D}. 
-The denoised signal $\mathbb{Z}$ as is an estimate of expected value of $T(X)$ conditioned on the true signal $Y$ we aim to recover.
+Applying this transformation to a Poisson distributed \gls{rv} maps the data such that the variance becomes approximately constant\todo{In which sense approximately? I'd say that a plot of the variance before and after stabilization would be very illustrative here.}. $T(X)$ can then be denoised using \gls{AWGN} denoising techniques such as \gls{BM3D}. 
+The denoised signal $\mathbb{Z}$ \todo{Bad notation. $\mathbb{Z}$ is usually the set of integers.} as is an estimate of expected value of $T(X)$ conditioned on the true signal $Y$ we aim to recover.\todo{I don't understand this part and what you do with the expectation here. Why is this more than just ``apply $T$, denoise, apply $T^{-1}$''?}
 \begin{equation}
     \mathbb{X} = \mathbb{E}[T(X) | Y]
 \end{equation}
