@@ -10,7 +10,7 @@ This chapter, we will discuss the foundations of learning, covering the elements
 
 We discuss the combination of \textit{\gls{CNN}} and \textit{Autoencoders}, commonly used in image restoration tasks. Later, \textit{Noise2Noise}, a learning framework for image restoration not requiring clean images, introduced by \citeauthor{lehtinenNoise2NoiseLearningImage2018}, is discussed. To fully explain this framework, we look at the \textit{loss function} that allows this paradigm to work. We use the concrete realization using the \texttt{UNET} architecture, introduced by \citeauthor{ronnebergerUNetConvolutionalNetworks}, and its 3D variant, \texttt{UNET3D}.
 
-These methods are then applied to train a model that maps incomplete observations from \gls{PES} to the true multidimensional image, with $N=3$ dimensions. The aspects of data generation, training, and evaluation are henceforth, discussed in detail.
+These methods are then applied to train a model that maps incomplete observations from \gls{PES} to the true multidimensional image, with $d=3$ dimensions. The aspects of data generation, training, and evaluation are henceforth, discussed in detail.
 
 Much of the foundational concepts discussed are based on \cite{shalev-shwartzUnderstandingMachineLearning2014a,jamesIntroductionStatisticalLearning2013,tibshiraniElementsStatisticalLearning,goodfellowDeepLearning2016}.
 
@@ -43,13 +43,15 @@ Through optimization, the optimal hypothesis $\hat{h}^*$ can be found that minim
     \hat{h}^* = \argmin_{h \in \mathcal{H}} \mathcal{R}(\mathcal{D}; \theta)
 \end{equation}
 
+We already saw Wiener filtering in \cref{eq:wiener-mse} that minimizes the \gls{MSE} loss, a case of the risk minimization. Since it is a linear filter, the hypothesis space $\mathcal{H}$ is constrained to linear functions.
+
 \subsection{Hypothesis Class, Capacity and Realizability}
 The hypothesis $h$ is chosen from a hypothesis space $\mathcal{H}$, where the hypothesis space $\mathcal{H}$ is the set of functions that the learning algorithm can choose from to approximate the true function. 
 For example, in linear regression, the hypothesis space $\mathcal{H}$ consists of all possible linear functions of the form:
 
-\begin{equation*}
+\begin{equation}\label{eq:linear-hypothesis}
    \mathcal{H} =  \left\{ h_{\mathbf{w}}(\mathbf{x}) = \mathbf{w}^\top \mathbf{x} + w_0 \mid \mathbf{w} \in \mathbb{R}^d, w_0 \in \mathbb{R} \right\}
-\end{equation*}
+\end{equation}
 
 The \textit{capacity} (the measure of size\footnote{The VC dimension and Rademacher complexity are two popular measures of capacity.}) of this hypothesis space is smaller than other hypothesis spaces such as generalized linear models
 \footnote{These are linear models with a non-linear activation function, such as sigmoid function.} 
@@ -106,6 +108,56 @@ For a hypothesis space $\mathcal{H}$ that is finite, and \gls{iid} training data
 
 The finite hypothesis space assumption makes sense, considering that we learn through discrete data, and infinite hypothesis spaces become finite. 
 
+\section{Neural Networks for Image Restoration}
+There are a myriad of learning algorithms based on \gls{ERM}, that aim to minimize the expected loss $\mathcal{L}$ over a training set $\mathcal{S}$.  We have linear regression that aims to minimize the \gls{MSE} loss, logistic regression for binary classification (softmax as a generalization for multi-class classification) that minimizes the cross-entropy loss, and support vector machines that minimize the hinge loss to maximize the margin between different classes.
+
+Let us now look at one broad class of learning algorithms that have shown remarkable success in countless applications, including image restoration: \textit{Neural Networks}.
+
+We do not discuss other learning algorithms
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\linewidth]{images/simple_nn_architecture.pdf}
+    % \includesvg{images/simple_nn_architecture.svg}
+    \caption{An example trained fully connected neural network architecture with an input layer, two hidden layers, and an output layer. The weights are represented by the lines connecting the neurons, with opacity indicating the weights' strength.}
+    \label{fig:simple-nn-architecture}
+\end{figure}
+Neural networks (NNs) represent a class of models that draw inspiration from the structural and functional characteristics of the biological brain. These models are designed to approximate complex functions by learning from data. A neural network consists of interconnected nodes, referred to as "neurons," which process input data to generate output. In the realm of supervised learning, neural networks are utilized to map input data—such as images—to desired outputs, for instance, restored or enhanced images.
+
+\subsection{Basic Structure of Neural Networks}
+
+% A typical neural network comprises several layers of neurons. The input layer serves as the first layer, receiving the input data, with each node corresponding to a specific feature of that data. Following the input layer, the network contains one or more hidden layers. These intermediate layers are crucial for computation and learning, as each neuron within a hidden layer computes a weighted sum of its inputs, applies a nonlinear activation function, and transmits the resulting value to the subsequent layer. Finally, the output layer produces the final output of the network based on the computations performed in the hidden layers.
+
+% Connections between neurons are associated with weights that determine the strength and direction of the signals transmitted between them. The learning process of the network is achieved through the adjustment of these weights, which is accomplished via a method known as backpropagation. This process aims to minimize the error between the predicted output and the actual target by modifying the weights according to the gradient of the loss function.
+
+\subsection{Activation Functions}
+
+% To introduce non-linearity into the model, each neuron typically applies an activation function to the weighted sum of its inputs. Common activation functions include the sigmoid function, which maps input values to a range between 0 and 1, making it particularly useful in binary classification tasks. The Rectified Linear Unit (ReLU) sets negative inputs to zero while preserving positive inputs, and it is widely favored due to its simplicity and effectiveness in training deep networks. Additionally, the hyperbolic tangent (tanh) function maps input values to a range between -1 and 1, and it is often employed in the hidden layers of neural networks. The selection of an appropriate activation function significantly influences the network's performance and its ability to learn complex patterns within the data.
+
+\subsection{Training Neural Networks}
+
+% Training a neural network involves two primary phases: the forward pass and the backward pass. During the forward pass, the input data is propagated through the network, layer by layer, to generate an output. Following this, the backward pass occurs, in which the error—defined as the difference between the predicted output and the true output—is propagated back through the network using the gradient of the loss function. This step is crucial for updating the weights of the network.
+
+% The objective of training is to minimize the loss function, which quantifies the discrepancy between the predicted output and the true output. Common loss functions include Mean Squared Error (MSE), which is often used in regression tasks, and Cross-Entropy, which is prevalent in classification tasks. The training process utilizes optimization algorithms, such as Stochastic Gradient Descent (SGD) or Adam, which iteratively adjust the network's weights to reduce the loss.
+
+\subsection{Universal Approximation Theorem}
+
+% A fundamental result in the theoretical framework of neural networks is the Universal Approximation Theorem. This theorem posits that a feedforward neural network, possessing at least one hidden layer and a sufficient number of neurons, can approximate any continuous function on a compact subset of \(\mathbb{R}^n\) to any desired degree of accuracy, provided that the network employs a non-linear activation function.
+
+
+% The theorem can be formally articulated as follows: For any continuous function \(f: \mathbb{R}^n \to \mathbb{R}\) and for any \(\epsilon > 0\), there exists a feedforward neural network \(N\) with at least one hidden layer, a finite number of neurons, and an activation function (such as sigmoid or ReLU), such that for every \(x \in \mathbb{R}^n\), the inequality 
+
+% $|f(x) - N(x)| < \epsilon$
+
+% holds true. This result underscores the potential of neural networks; with an adequate number of neurons, they are capable of approximating complex, high-dimensional functions, independent of the underlying distribution of the data.
+
+% The Universal Approximation Theorem carries significant implications for the field of machine learning. Primarily, it highlights the expressive power of neural networks, which, in theory, can approximate any function. This versatility renders them highly effective for a wide array of tasks, including image classification, restoration, and speech recognition. 
+
+% While the theorem assures that a shallow network, possessing a single hidden layer, can approximate any function, practical applications often benefit from the utilization of deeper networks, which contain multiple hidden layers. Deeper networks typically require fewer neurons to achieve a comparable level of approximation and possess the capability to learn hierarchical representations of data. This characteristic is particularly advantageous in tasks involving images and language.
+
+% Despite the theoretical capabilities outlined by the Universal Approximation Theorem, practical challenges persist in training these models effectively. Issues such as local minima, vanishing gradients, and overfitting can complicate the training process. Furthermore, the number of neurons necessary to achieve the desired accuracy may be prohibitively large, leading to substantial computational demands.
+
+% In summary, the Universal Approximation Theorem emphasizes the considerable potential of neural networks to model intricate patterns. However, the practical success of a neural network is contingent upon careful design, tuning, and training of the model.
 
 \section{Noise2Noise: Deep Learning framework}
 % One can do a lot of different learning approaches. We will build towards the deep learning approach. Networks which can deal with image data are generally Convolutional Neural Networks. Looking at research, UNET has been used for image segmentation and denoising, which combines the concept of autoencoders and convolutional neural networks, along with skip connections.
@@ -128,7 +180,6 @@ The finite hypothesis space assumption makes sense, considering that we learn th
 \subsection{UNET}
 
 
-The benefits of 3D network can be explained by access to more correlations in the data. maybe blessing of dimensionality.
 
 \section{Training}
 
@@ -145,4 +196,43 @@ The benefits of 3D network can be explained by access to more correlations in th
     \includegraphics[width=1\linewidth]{images/nn_gdw_msssim.pdf}
     \caption{\num{1e6} counts take approximately \qty{11.5}{min} to acquire. \gls{GdW} dataset.}
     \label{fig:gdw-test-metirc}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{1\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{images/nn_denoised_ex_w_1.pdf}
+        \caption{}
+        \label{fig:nn-denoised-ex-w-1}
+    \end{subfigure}
+
+    \begin{subfigure}[b]{1\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{images/nn_denoised_ex_w_20.pdf}
+        \caption{\num{4e6} count dataset. The denoising performance leaves room for improvement, using the adjusted optimal $\sigma_{\text{o}}\approx0.4$.}
+        \label{fig:nn-denoised-ex-w-20}
+    \end{subfigure}
+    \caption{}
+    \label{fig:nn-denoised-ex-w}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{1\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{images/nn_denoised_xy_w_1.pdf}
+        \caption{}
+        \label{fig:nn-denoised-xy-w-1}
+    \end{subfigure}
+
+    \begin{subfigure}[b]{1\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{images/nn_denoised_xy_w_20.pdf}
+        \caption{}
+        \label{fig:nn-denoised-xy-w-20}
+    \end{subfigure}
+    \caption{}
+    \label{fig:nn-denoised-xy-w}
 \end{figure}
