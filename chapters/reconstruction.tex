@@ -1,6 +1,4 @@
-The goal of image restoration, detached from a specific noise model, is to estimate the latent
-\footnote{\textit{Latent} variables are unobserved and can only be inferred from the observed data.} 
-clean image  $Y \in \mathbb{R}^{n_1 \times \cdot \times n_d}$ , a $d$-dimensional discrete real-valued image, from an incomplete or corrupted (noisy) image  $X \in \mathbb{R}^{n_1 \times \cdot \times n_d}$. The voxel values of noisy $X$ and latent clean $Y$ images can be written as $x_{\mathbf{i}}$ and $y_{\mathbf{i}}$, respectively, where $\mathbf{i} = [i_1, i_2, \dots, i_d]^T$ is the coordinate vector in the $d$-dimensional space.
+The goal of image restoration, detached from a specific noise model, is to estimate the latent\footnote{\textit{Latent} variables are unobserved and can only be inferred from the observed data.} clean image  $Y \in \mathbb{R}^{n_1 \times \cdot \times n_d}$ , a $d$-dimensional discrete real-valued image, from an incomplete or corrupted (noisy) image  $X \in \mathbb{R}^{n_1 \times \cdot \times n_d}$. The voxel values of noisy $X$ and latent clean $Y$ images can be written as $x_{\mathbf{i}}$ and $y_{\mathbf{i}}$, respectively, where $\mathbf{i} = [i_1, i_2, \dots, i_d]^T$ is the coordinate vector in the $d$-dimensional space.
 
 In the most general form, the observation model can be defined as $X$ being a mapping of $Y$ through a function $\mathcal{F}$, generally stochastic. This can be written as:
 \begin{equation}\label{eq:observation-model}
@@ -18,7 +16,7 @@ and many more assume the noise to be \gls{AWGN} with noise of form in \cref{eq:a
     N \sim \mathcal{N}(0, \sigma^2)
 \end{equation}
 
-This mapping defined in \cref{eq:observation-model} is not injective and therefore, the inverse problem\footnote{Referred to as image restoration, reconstruction or denoising} to estimate $Y$ from $X$ (denoted $\hat{Y}$), is an \textit{ill-posed} problem; meaning that there are multiple possible solutions for $Y$ that could generate $X$.
+The mapping defined in \cref{eq:observation-model} is not injective and therefore, the inverse problem\footnote{Referred to as image restoration, reconstruction or denoising} to estimate $Y$ from $X$ (denoted $\hat{Y}$), is an \textit{ill-posed} problem; meaning that there are multiple possible solutions for $Y$ that could generate $X$.
 
 In the following chapter, we shall look at an \gls{AWGN} (\cref{eq:observation-model-additive}) denoising algorithm--the celebrated \gls{BM3D} algorithm, introduced first by \citeauthor{dabovImageDenoisingSparse2007} in \cite{dabovImageDenoisingSparse2007}, building upon many of the classical denoising techniques such as transform domain denoising, \gls{NLM} and filtering methods (such as the Wiener filter). We will look at its application to \gls{MPES} data, by first defining a noise model for the data, discussing the Anscombe \gls{VST}, finding optimal denoising level for different noise level (or \gls{ncounts}) and evaluating its performance using the \gls{MSSSIM} metric.
 
@@ -65,7 +63,7 @@ Notice from above that the Wiener filter requires access to the latent clean ima
 As the Fourier basis operates globally, applying Wiener filtering with this basis can introduce periodic artifacts, as global transforms may overemphasize large-scale image features and fail to capture fine local details. This limitation has motivated the development of local adaptive variants and the exploration of alternative transform domains such as wavelets, which better capture local image characteristics \cite{buadesReviewImageDenoising2005}.
 
 \subsection*{Non-Local Means}
-
+\todo{The non local means section}
 \section{BM3D: Denoising in Sparse Domain}
 
 \begin{figure}
@@ -77,7 +75,7 @@ As the Fourier basis operates globally, applying Wiener filtering with this basi
 
 
 As shown in \cref{alg:bm3d} and \cref{fig:bm3d-schematic}
-% \todo{This needs more details. Try to provide the essential formulas of what is actually computed for all steps. You don't need to put those details into the algorithm, it's better to add them to the main text.}
+\todo{This needs more details. Try to provide the essential formulas of what is actually computed for all steps. You don't need to put those details into the algorithm, it's better to add them to the main text.}
 , the \gls{BM3D} scheme works by grouping similar patches in a 2D image and applying a 3D transform\footnote{This algorithm has also been proposed for 3D images, dubbed BM4D \cite{mNonlocalTransformdomainFilter}.}. This leads to an enhanced sparse representation of the image which after filtering is transformed back to the spatial domain.
 % Main BM3D Algorithm
 \begin{algorithm}
@@ -109,9 +107,9 @@ with group $B_G$ formed by selecting blocks that have distance below the thresho
 $$B_G = \{ B_i : d(B_R, B_i) \leq \tau \}$$
 
 The Collaborative Filtering\footnote{Interestingly, collaborative filtering has been the backbone of recommendation systems such as by Netflix and Spotify \cite{bellLessonsNetflixPrize2007,drorYahooMusicDataset2012}.} shown in \cref{alg:collaborativefiltering} is then applied to the grouped blocks. This step consists of a 3D transform such as the discrete cosine transform (or the wavelet transform can be used).
-% \todo{This 3D stacking and 3D filtering is a crucial component, which should be elaborated / illustrated more.}
+\todo{This 3D stacking and 3D filtering is a crucial component, which should be elaborated / illustrated more.}
 A filter is applied to the transformed blocks to remove noise, initially by hard thresholding and in the second run by Wiener filtering. The inverse 3D transform is then applied to the filtered blocks, and the filtered blocks are aggregated to form the estimate. The first run is considered the basic estimate, and it is only after Collaborative Wiener filtering that the final estimate is obtained.
-% \todo{One a coarse level, this is all correct, but I would put much more detail. Also a sketch would be helpful.}
+\todo{One a coarse level, this is all correct, but I would put much more detail. Also a sketch would be helpful.}
     
 % Collaborative Filtering Algorithm
 \begin{algorithm}
@@ -215,7 +213,7 @@ Since the transformation is non-linear, an algebraic inverse is asymptotically b
 \end{algorithm}
 
 \section{Denoising MPES data}
-As described in \cref{section:datasets}, a 3D image is constructed by binning over the three physical axes $k_x$, $k_y$, $E$ from different datasets. By slicing along these axes, different 2D images can be generated for analysis. We evaluate the \gls{BM3D} algorithm, with and without the Anscombe transform, using the \gls{GrIr} dataset, which has the highest average counts of all datasets. Despite this, the average voxel intensity is low, making a true, noise-free image unavailable. This limitation complicates the task of evaluating denoising performance, as standard metrics rely on comparison with such a noise-free reference.
+As described in \cref{section:datasets}, a 3D image is constructed by binning over the three physical axes $k_x$, $k_y$, $E$ from different datasets. By slicing along these axes, different 2D images can be generated for analysis. We evaluate the \gls{BM3D} algorithm, with and without the Anscombe transform, using the \gls{GrIr} dataset, which has the highest average counts of all datasets. Despite this, the average voxel intensity is low (refer to \cref{noisy-dataset-table}), making a true, noise-free image unavailable. This limitation complicates the task of evaluating denoising performance, as standard metrics rely on comparison with such a noise-free reference.
 
 \Gls{IQA} is a field dedicated to measuring the objective and perpetual quality of an image. Objective metrics such as \gls{PSNR}, \gls{SSIM}, \gls{MSE} and \gls{MSSSIM} require a reference image---the latent clean image---to compare the denoised image against. No-reference metrics also exist, such as \gls{NIQE}. However, these metrics are designed for real-world, non-scientific images. Subjective metrics such as the \gls{MOS} can also be used, but these require evaluations by a group of experts, which can be impractical.
 
