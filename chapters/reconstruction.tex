@@ -113,7 +113,7 @@ The \gls{BM3D} algorithm had showed one of the best denoising performances and c
     \label{fig:combined-noisy-denoised}
 \end{figure}
 
-For low light settings, such as photon-limited imaging, the observed intensity $X$ is a stochastic mapping of the true image $Y$, where the voxel-wise observations can be modeled as independent Poisson \glspl{rv} with parameter $y_{\mathbf{i}}$--the true intensity \cite{makitaloOptimalInversionAnscombe2011,kimDeepLearningbasedStatistical2021}. This is shown in \cref{section:photoelectron-counting-stats} to be true for a constant intensity light source. 
+For low light settings, such as photon-limited imaging, the observed intensity $X$ is a stochastic mapping \todo{The fact that this is a stochastic mapping is not due to the low light setting. Fot that it's enough that you are measuring. The Possion part is due to the low light setting.} of the true image $Y$, where the voxel-wise observations can be modeled as independent Poisson \glspl{rv} \todo{Took me a bit to figure out that r.v.s is an automatically inserted abbreviation. I would only abbreviate longs terms that are used regularly. The random variable is not so bad that it needs to be abbreviated.} with parameter $y_{\mathbf{i}}$--the true intensity \cite{makitaloOptimalInversionAnscombe2011,kimDeepLearningbasedStatistical2021}. This is shown in \cref{section:photoelectron-counting-stats} to be true for a constant intensity light source. 
 
 The voxel-wise intensity can be expressed as $x_{\mathbf{i}} \sim \text{Poi}(y_{\mathbf{i}})$, where $\text{Poi}(y_{\mathbf{i}})$ denotes the Poisson distribution with parameter $y_{\mathbf{i}}$. The \gls{PMF} of the observed value $x_{\mathbf{i}}$ conditioned on the true intensity $y_{\mathbf{i}}$ is given by:
 
@@ -121,14 +121,14 @@ The voxel-wise intensity can be expressed as $x_{\mathbf{i}} \sim \text{Poi}(y_{
     P(x_{\mathbf{i}} = x| y_{\mathbf{i}} = y) = \frac{y^x e^{-y}}{x!}
 \end{equation}
 
-Here, $x$ represents the observation at voxel $X$, while $y$ corresponds to the underlying intensity that we aim to recover. Formally $\mathbb{E}[x_{\mathbf{i}} | y_{\mathbf{i}}] = y_{\mathbf{i}}$
+Here, $x$ represents the observation at voxel $X$\todo{What is this voxel $X$? Do you mean $\mathbf{i}$? In any case, some more explanations would be helpful.}, while $y$ corresponds to the underlying intensity that we aim to recover. Formally $\mathbb{E}[x_{\mathbf{i}} | y_{\mathbf{i}}] = y_{\mathbf{i}}$\todo{How can you conclude that and what does this mean exatly? Did you introduce the stochastic terminology already?}
 
-The Poisson noise can then be written as:
+The Poisson noise can then be written as:\todo{Why do we need the expectation to the noise?}
 \begin{equation}
     N_{\mathbf{i}} = x_{\mathbf{i}} - \mathbb{E}[x_{\mathbf{i}} | y_{\mathbf{i}}]
 \end{equation}
 
-This noise is signal dependent as the variance is dependent on the true signal $Var[N_{\mathbf{i}} | y_{\mathbf{i}}] = [x_{\mathbf{i}} | y_{\mathbf{i}}] = y_{\mathbf{i}}$ and hence it can be seen that the with decreasing intensity, the noise increases.
+This noise is signal dependent as the variance is dependent on the true signal \todo{Var should not be in italics.} $Var[N_{\mathbf{i}} | y_{\mathbf{i}}] = [x_{\mathbf{i}} | y_{\mathbf{i}}] = y_{\mathbf{i}}$ and hence it can be seen that the with decreasing intensity, the noise increases.
 
 \section{Variance Stabilization Transform: Anscombe}
 
