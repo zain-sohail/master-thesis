@@ -75,6 +75,24 @@ As the Fourier basis operates globally, applying Wiener filtering with this basi
 \subsection*{Non-Local Means}
 \todo[inline]{Since NLM is quite related to BM3D, it would also be helpful to define this in detail here. The definition is not that involved and I would say quite instructive to understand the non-locality.}
 \todo[disable]{``also''? What else uses this redundancy? BM3D, but you haven't mentioned that one yet. At leae not in this chapter.}
+
+Other than linear filters, non-linear filters such as the median filter, replace each pixel with the median value of its neighbors and are much better at removing salt-and-pepper noise. Other approaches, such as bilateral filtering, combine spatial proximity and intensity similarity, allowing for selective smoothing that  preserves sharpness around edges. 
+
+The principle behind \gls{NLM} denoising builds on the redundancy of similar patches in the image and estimates a pixel value by taking a weighted average over other pixels with a similar local structure, regardless of their spatial distance. By utilizing these priors, denoising algorithms can indeed aggressively use the intrinsic properties of the images and thereby enhance the visual quality and provide estimates closer to the latent clean image.
+
+Non-Local Means (NLM) denoising is a highly effective method for removing noise by leveraging the inherent redundancy found in natural images. Unlike local filters, which operate on immediate pixel neighborhoods, NLM uses a non-local approach, meaning that it searches the entire image for patches or neighborhoods that resemble the local structure of a pixel's neighborhood, regardless of their spatial distance. The algorithm replaces a noisy pixel by computing a weighted average of all pixels in the image, with the weights determined by the similarity of their neighborhoods.
+
+The similarity between the neighborhoods of pixels $i$ and $j$ is measured using the Gaussian-weighted Euclidean distance between intensity vectors in a window surrounding each pixel:
+
+\begin{equation}
+    w(i,j) = \frac{1}{Z(i)} \exp \left( -\frac{\|v(\mathcal{N}_i) - v(\mathcal{N}_j)\|_{2,a}^2}{h^2} \right),
+\end{equation}
+
+where $v(\mathcal{N}_i)$ is the vector of pixel intensities within the neighborhood $\mathcal{N}_i$ of pixel $i$, and $h$ is a parameter controlling the decay of weights as a function of this distance. The normalization factor $Z(i)$ ensures that the weights sum to 1 for each pixel $i$.
+
+NLM is particularly effective at preserving edges and textures in the image, as the weight $w(i,j)$ assigns higher values to pixels whose neighborhoods are similar in appearance to the target pixel's neighborhood. As a result, NLM performs well in removing noise while maintaining important image features, making it a popular choice for denoising tasks, especially when the noise is uniformly distributed across the image.
+
+
 \section{BM3D: Denoising in Sparse Domain}
 
 \begin{figure}
@@ -212,11 +230,11 @@ Since the transformation is non-linear, an algebraic inverse is asymptotically b
     \Ensure Denoised image $\hat{Y}$
     \Statex
     \Procedure{AnscombeBM3D}{$X$, $\sigma^2$}
-        \State $\hat{Y}_{\text{anscombe}} \gets \textsc{AnscombeTransform}(X)$
+        \State $\hat{Y}_{\text{T}} \gets T(X)$
         
-        \State $\hat{Y}_{\text{bm3d}} \gets \textsc{BM3D}(\hat{Y}_{\text{anscombe}}, \sigma^2, b, Y, \tau)$
+        \State $\hat{Y}_{\text{bm3d}} \gets \textsc{BM3D}(\hat{Y}_{\text{T}}, \sigma^2)$
         
-        \State $\hat{Y} \gets \textsc{InverseAnscombeTransform}(\hat{Y}_{\text{bm3d}})$
+        \State $\hat{Y} \gets T^{-1}(\hat{Y}_{\text{bm3d}})$
         
         \State \textbf{return} $\hat{Y}$
     \EndProcedure
@@ -226,7 +244,7 @@ Since the transformation is non-linear, an algebraic inverse is asymptotically b
 \section{Denoising MPES data}
 As described in \cref{section:datasets}, a 3D image is constructed by binning over the three physical axes $k_x$, $k_y$, $E$ from different datasets. By slicing along these axes, different 2D images can be generated for analysis. We evaluate the \gls{BM3D} algorithm, with and without the Anscombe transform, using the \gls{GrIr} dataset, which has the highest average counts of all datasets. Despite this, the average voxel intensity is low (refer to \cref{noisy-dataset-table}), making a true, noise-free image unavailable. This limitation complicates the task of evaluating denoising performance, as standard metrics rely on comparison with such a noise-free reference.
 
-\Gls{IQA} is a field dedicated to measuring the objective and perpetual quality of an image. Objective metrics such as \gls{PSNR}, \gls{SSIM}, \gls{MSE} and \gls{MSSSIM} require a reference image---the latent clean image---to compare the denoised image against. No-reference metrics also exist, such as \gls{NIQE}. However, these metrics are designed for real-world, non-scientific images. Subjective metrics such as the \gls{MOS} can also be used, but these require evaluations by a group of experts, which can be impractical.
+\Gls{IQA} is a field dedicated to measuring the objective and perpetual quality of an image. Objective metrics such as \gls{PSNR}, \gls{SSIM}, \gls{MSE} and \gls{MSSSIM} require a reference image---the latent clean image---to compare the denoised image against. No-reference metrics also exist, such as \gls{NIQE}. However, these metrics are designed for real-world, non-scientific images. Subjective metrics such as the \gls{MOS} can also be used, but these require evaluations by a group of experts, which can be impractical \cite{eskiciogluImageQualityMeasures1995,linzhangFSIMFeatureSimilarity2011}.
 
 \begin{figure}
     \centering

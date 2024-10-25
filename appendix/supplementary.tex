@@ -132,7 +132,7 @@ This metric comparison is performed with \num{1638} images sliced along each dim
     \label{fig:metrics-comparison-noisy}
 \end{figure}
 
-Comparing the noisy images with target, all metrics trivially show an improvement with increased counts (less noise) (see Figure~\ref{fig:metrics-comparison-noisy}). However, \gls{MSE}, \gls{PSNR} and \gls{SSIM} show deteriorated metrics when comparing against perpetually high quality images (Figure~\ref{fig:metrics-comparison}). This can be attributed to the presence of noise in the reference image. For higher counts, \gls{SSIM} manages to show improved results, whereas \gls{MSE} report \gls{PSNR} consistently worse results compared to the noisy images. \gls{MSSSIM} consistently reports better results with the higher quality images, making it the most reliable metric for evaluation.
+Comparing the noisy images with target, all metrics trivially show an improvement with increased counts (less noise) (see Figure~\ref{fig:metrics-comparison-noisy}). However, \gls{MSE}, \gls{PSNR} and \gls{SSIM} show deteriorated metrics when comparing against perpetually high quality images (Figure~\ref{fig:metrics-comparison}). This can be attributed to the presence of noise in the reference image. For higher counts, \gls{SSIM} manages to show improved results, whereas \gls{MSE} and \gls{PSNR} report consistently worse results compared to the noisy images. \gls{MSSSIM} consistently reports better results with the higher quality images, making it the most reliable metric for evaluation.
 
 \begin{figure}
     \centering
@@ -141,15 +141,14 @@ Comparing the noisy images with target, all metrics trivially show an improvemen
    \label{fig:metrics-comparison}
 \end{figure}
 
-Additionally, we investigate the effect of window-averaged reference images on the metrics. Results indicate that window-averaged references improve metric outcomes, as the gap between the metrics calculated with noisy and high quality images split up further. Consequently, we adopt the window-averaged images as reference for the denoising evaluation.
-
-
 \begin{figure}
     \centering
     \includegraphics[width=0.7\linewidth]{images/metrics_comparison_denoised_noisy_averaged.pdf}
-    \caption{Metrics comparison for noisy 2D slices against a window-averaged target slice. The window-averaged target does not significantly improve the reported metrics, showing that averaging over neighboring slices reduces resolution and does not offer a superior reference for denoising evaluation.}
+    \caption{Metrics comparison for noisy 2D slices against a window-averaged target slice. For \gls{MSE} and \gls{PSNR}, the window-averaged target lowers the reported metrics. \Gls{SSIM} shows a small improvement over the noisy target, while \gls{MSSSIM} shows a large improvement.}
     \label{fig:metrics-comparison-averaged-target}
 \end{figure}
+
+Additionally, we investigate the effect of window-averaged reference images on the metrics. Results in \cref{fig:metrics-comparison-averaged-target} indicate that window-averaged image as reference generally makes the metric prefer the noisy realization, except in the case of \gls{MSSSIM}, where the gap between the metrics calculated with noisy and high quality images split up further. Consequently, we adopt the window-averaged images as reference for the denoising evaluation.
 
 
 \subsection{Deep Learning Infrastructure}
