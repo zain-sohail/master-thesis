@@ -1,31 +1,41 @@
-The goal of image restoration, detached from a specific noise model, is to estimate the latent\footnote{\textit{Latent} variables are unobserved and can only be inferred from the observed data.} clean image  $Y \in \mathbb{R}^{n_1 \times \cdot \times n_d}$ , a $d$-dimensional discrete real-valued image, from an incomplete or corrupted (noisy) image  $X \in \mathbb{R}^{n_1 \times \cdot \times n_d}$. The voxel values of noisy $X$ and latent clean $Y$ images can be written as $x_{\mathbf{i}}$ and $y_{\mathbf{i}}$, respectively, where $\mathbf{i} = [i_1, i_2, \dots, i_d]^T$ is the coordinate vector in the $d$-dimensional space.
+The goal of image restoration, detached from a specific noise model, is to estimate the latent\footnote{\textit{Latent} variables are unobserved and can only be inferred from the observed data.} clean image $Y \in \mathbb{R}^{n_1 \times n_2 \times \cdots \times n_d}$\todo[disable]{It's always good to state where objects come from, i.e., in which spaces they are. Here it could be $Y\in\mathbb{R}^{n_1\times\cdot\times n_d}$ if $Y$ is a $d$-dimensional discrete real valued image.}, a $d$-dimensional discrete real-valued image, from an incomplete or corrupted (noisy) image  $X \in \mathbb{R}^{n_1 \times n_2 \times \cdots \times n_d}$\todo[disable]{$\in$?}. The voxel values of noisy $X$ and latent clean $Y$ images can be written as $x_{\mathbf{i}}$ and $y_{\mathbf{i}}$\todo[disable]{This kinds of reverses the logic. Before you can connect the observation $X$ to the true image $Y$, you first need to define exactly what the true image $X$ is supposed to be. From the above I would say it's a d-array of real values.}, respectively, where $\mathbf{i} \in \mathcal{I}$\todo[disable]{$\in$? In any case, the set of all possible indices should have a name, e.g., $\mathcal{I}$.}, and
 
-In the most general form, the observation model can be defined as $X$ being a mapping of $Y$ through a function $\mathcal{F}$, generally stochastic. This can be written as:
+\begin{equation*}
+    \mathcal{I} = \{[i_1, i_2, \dots, i_d]^T \mid i_1 \in [1, n_1], i_2 \in [1, n_2], \dots, i_d \in [1, n_d]\}
+\end{equation*}
+is the index set in the $d$-dimensional space.
+
+\todo[disable]{From where to where does $\mathcal{F}$ map? Also, this does not seem very general, since this $\mathcal{F}$ is limited to operate pixel-wise and cannot take into account the position $\mathbf{i}$ at all. It still may be general enough for what you need though. I don't know yet, since I just started reading.}
+In the most general form, the observation model can be defined as $X$ being a mapping of $Y$ through a function $\mathcal{F}$, which is generally stochastic. This can be written as:\todo[disable]{Will you give examples for $\mathcal{F}$ later? I think it would already be a good place to have a very simple example right here, e.g. additive noise. Then we probably see, that this is not truly a function, but involves a random variable.}
 \begin{equation}\label{eq:observation-model}
     X = \mathcal{F} (Y)
 \end{equation}
-where $\mathcal{F}$ can vary depending on the noise model (e.g., additive or multiplicative noise, etc.).
+where $\mathcal{F}$ can vary depending on the noise model (e.g., additive or multiplicative noise, etc.), or other corruptions such as blurring, distortions etc. \todo[disable]{To understand that, you should put an example $\mathcal{F}$ here. I'm not completely sure how you mean this exactly.}
 
-
-One widely used model is additive noise model. In this case, the observation model can be written as:
+One widely used model is additive noise model, where the function $\mathcal{F}(Y)$ simply adds noise $N$ to the clean image $Y$. In this case, the observation model can be written as:
 \begin{equation}\label{eq:observation-model-additive}
     X = Y + N
 \end{equation}
-and many more assume the noise to be \gls{AWGN} with noise of form in \cref{eq:awgn}. This is because the normal distribution has nice mathematical properties, allowing to derive theoretical guarantees.
+\todo[disable]{This does not fit into your framework for the mapping $\mathcal{F}$, because this does not do the same at every pixel: At pixel $\mathbf{i}$, the noise $n_\mathbf{i}$ is added, but this depends on $\mathbf{i}$.}
+
+where the common assumption for $N$ is \gls{AWGN}, normal distributed $\mathcal{N}$ with mean \num{0} and variance $\sigma^2$
 \begin{equation}\label{eq:awgn}
     N \sim \mathcal{N}(0, \sigma^2)
 \end{equation}
+\todo[disable]{This equation seems to be incomplete, $\mathcal{N}(0, \sigma^2)$ (make sure you have defined this notation) is a scalar valued distribution, but the way you use $N$, it must be a matrix, where every entry of that matrix is drawn independently from $\mathcal{N}(0, \sigma^2)$.}
 
-The mapping defined in \cref{eq:observation-model} is not injective and therefore, the inverse problem\footnote{Referred to as image restoration, reconstruction or denoising} to estimate $Y$ from $X$ (denoted $\hat{Y}$), is an \textit{ill-posed} problem; meaning that there are multiple possible solutions for $Y$ that could generate $X$.
+The inverse problem, of image restoration\footnote{Depending on context, also referred to as reconstruction or denoising}, to estimate $Y$ from $X$, is an \textit{ill-posed} problem; meaning that there are multiple possible solutions of the estimated image $\hat{Y}$ that are not unique or equal to the true image $Y$. This is due to the loss of information during the observation process, leading to an under-determined system. Depending on the prior knowledge posed, different estimates of the latent clean image can be recovered.
 
-In the following chapter, we shall look at an \gls{AWGN} (\cref{eq:observation-model-additive}) denoising algorithm--the celebrated \gls{BM3D} algorithm, introduced first by \citeauthor{dabovImageDenoisingSparse2007} in \cite{dabovImageDenoisingSparse2007}, building upon many of the classical denoising techniques such as transform domain denoising, \gls{NLM} and filtering methods (such as the Wiener filter). We will look at its application to \gls{MPES} data, by first defining a noise model for the data, discussing the Anscombe \gls{VST}, finding optimal denoising level for different noise level (or \gls{ncounts}) and evaluating its performance using the \gls{MSSSIM} metric.
+In the following chapter, we shall look at an \gls{AWGN} denoising algorithm--the celebrated \gls{BM3D}, introduced first by \citeauthor{dabovImageDenoisingSparse2007} in \cite{dabovImageDenoisingSparse2007}, building upon many of the classical denoising techniques such as transform domain denoising, \gls{NLM} and filtering methods (such as the Wiener filter). We will look at its application to \gls{MPES} data, by first defining a noise model for the data, discussing the Anscombe \gls{VST}, finding optimal denoising level for different noise levels ($\propto$ \gls{ncounts}) and evaluating its performance using the \gls{MSSSIM}.
 
 \section{Image Denoising in Spatial and Transform Domains}
-Image restoration techniques have been explored in both the spatial and transform domains \cite{buadesReviewImageDenoising2005,diwakarReviewCTImage2018}. For instance, the Fourier transform is commonly used to map images to the frequency domain. A simple way of denoising in this transform domain is to filter out the high frequency components that typically represent noise elements, followed by an inverse Fourier transform.
+Image restoration techniques have been explored in both the spatial and transform domains\todo[disable]{Directly give an example for what transform domains are, e.g., the frequency domain.} \cite{buadesReviewImageDenoising2005,diwakarReviewCTImage2018}. For instance, the Fourier transform is commonly used to map images to the frequency domain. A simple way of denoising in this transform domain is to filter out the high frequency components that typically represent noise elements, followed by an inverse Fourier transform. Other transforms include wavelet transforms, discrete cosine transforms, and curvelet transforms.
 
-In the spatial domain, several linear and nonlinear filtering techniques exist, utilizing different kernels to perform direct manipulation on pixel values. Linear filters, such as the mean filter, compute the weighted average of pixel values in a neighborhood and, in doing so, smooth the image but usually result in edge blurring.
+In the spatial domain, several linear and nonlinear filtering techniques exist, utilizing different kernels to perform direct manipulation on pixel values. Linear filters, such as the mean filter, compute the\todo[disable]{inserted ``weighted''} weighted average of pixel values in a neighborhood and, in doing so, smooth the image but usually result in edge blurring. Another popular linear filter is the Gaussian filter, which applies a Gaussian kernel to the image to perform smoothing.
+\todo[disable]{This short literature overview needs references that back your statements.}
 
 \subsection*{Wiener Filter}
+\todo[disable]{Would be nice to have more details on the Wiener filter here. This is used in BM3D, so it's highly relevant.}
 Wiener filtering is a transform domain restoration technique operating on statistical principles. Based on the additive noise model defined in \cref{eq:observation-model-additive}, it aims to minimize the \gls{MSE} between the estimated $\hat{Y}$ and latent clean image $Y$, which can be written as:
 
 \begin{equation}\label{eq:wiener-mse}
@@ -46,7 +56,7 @@ H(f) = \frac{S_Y(f)}{S_Y(f) + S_N(f)}
 
 with $S_Y(f)$ and $S_N(f)$ the \gls{PSD} of latent image $Y$ and noise $N$, respectively. The most common Wiener filtering technique assumes the \gls{PSD} of $N$ is assumed constant, which is the case of \gls{AWGN}. However, usage of other additive noise priors is as easy as changing the \gls{PSD} of $N$.
 
-For a optimal filter $H(f)$, based on image properties, it can be applied to the observed signal $X(f)$ to estimate the latent clean image in the frequency domain:
+For an optimal filter $H(f)$, based on image properties, it can be applied to the observed signal $X(f)$ to estimate the latent clean image in the frequency domain:
 
 \begin{equation*}
     \hat{Y}(f) = H(f) X(f)
@@ -63,7 +73,8 @@ Notice from above that the Wiener filter requires access to the latent clean ima
 As the Fourier basis operates globally, applying Wiener filtering with this basis can introduce periodic artifacts, as global transforms may overemphasize large-scale image features and fail to capture fine local details. This limitation has motivated the development of local adaptive variants and the exploration of alternative transform domains such as wavelets, which better capture local image characteristics \cite{buadesReviewImageDenoising2005}.
 
 \subsection*{Non-Local Means}
-\todo{The non local means section}
+\todo[inline]{Since NLM is quite related to BM3D, it would also be helpful to define this in detail here. The definition is not that involved and I would say quite instructive to understand the non-locality.}
+\todo[disable]{``also''? What else uses this redundancy? BM3D, but you haven't mentioned that one yet. At leae not in this chapter.}
 \section{BM3D: Denoising in Sparse Domain}
 
 \begin{figure}
@@ -75,7 +86,7 @@ As the Fourier basis operates globally, applying Wiener filtering with this basi
 
 
 As shown in \cref{alg:bm3d} and \cref{fig:bm3d-schematic}
-\todo{This needs more details. Try to provide the essential formulas of what is actually computed for all steps. You don't need to put those details into the algorithm, it's better to add them to the main text.}
+\todo[inline]{This needs more details. Try to provide the essential formulas of what is actually computed for all steps. You don't need to put those details into the algorithm, it's better to add them to the main text.}
 , the \gls{BM3D} scheme works by grouping similar patches in a 2D image and applying a 3D transform\footnote{This algorithm has also been proposed for 3D images, dubbed BM4D \cite{mNonlocalTransformdomainFilter}.}. This leads to an enhanced sparse representation of the image which after filtering is transformed back to the spatial domain.
 % Main BM3D Algorithm
 \begin{algorithm}
@@ -106,10 +117,10 @@ with group $B_G$ formed by selecting blocks that have distance below the thresho
 
 $$B_G = \{ B_i : d(B_R, B_i) \leq \tau \}$$
 
-The Collaborative Filtering\footnote{Interestingly, collaborative filtering has been the backbone of recommendation systems such as by Netflix and Spotify \cite{bellLessonsNetflixPrize2007,drorYahooMusicDataset2012}.} shown in \cref{alg:collaborativefiltering} is then applied to the grouped blocks. This step consists of a 3D transform such as the discrete cosine transform (or the wavelet transform can be used).
-\todo{This 3D stacking and 3D filtering is a crucial component, which should be elaborated / illustrated more.}
+The Collaborative Filtering\footnote{Interestingly, collaborative filtering has been the backbone of recommendation systems such as by Netflix and Spotify \cite{bellLessonsNetflixPrize2007,drorYahooMusicDataset2012}.}\todo[disable]{Reference for the Netfilx/Spotify statement?} shown in \cref{alg:collaborativefiltering} is then applied to the grouped blocks. This step consists of a 3D transform such as the discrete cosine transform (or the wavelet transform can be used).
+\todo[inline]{This 3D stacking and 3D filtering is a crucial component, which should be elaborated / illustrated more.}
 A filter is applied to the transformed blocks to remove noise, initially by hard thresholding and in the second run by Wiener filtering. The inverse 3D transform is then applied to the filtered blocks, and the filtered blocks are aggregated to form the estimate. The first run is considered the basic estimate, and it is only after Collaborative Wiener filtering that the final estimate is obtained.
-\todo{One a coarse level, this is all correct, but I would put much more detail. Also a sketch would be helpful.}
+\todo[inline]{One a coarse level, this is all correct, but I would put much more detail. Also a sketch would be helpful.}
     
 % Collaborative Filtering Algorithm
 \begin{algorithm}
@@ -159,7 +170,7 @@ The \gls{BM3D} algorithm had showed one of the best denoising performances and c
     \label{fig:combined-noisy-denoised}
 \end{figure}
 
-For low light settings, such as photon-limited imaging, the observed intensity $X$ is a stochastic mapping \todo{The fact that this is a stochastic mapping is not due to the low light setting. Fot that it's enough that you are measuring. The Possion part is due to the low light setting.} of the true image $Y$, where the voxel-wise observations can be modeled as independent Poisson \glspl{rv} \todo{Took me a bit to figure out that r.v.s is an automatically inserted abbreviation. I would only abbreviate longs terms that are used regularly. The random variable is not so bad that it needs to be abbreviated.} with parameter $y_{\mathbf{i}}$--the true intensity \cite{makitaloOptimalInversionAnscombe2011,kimDeepLearningbasedStatistical2021}. This is shown in \cref{section:photoelectron-counting-stats} to be true for a constant intensity light source. 
+In imaging systems, the observed intensity $x$ at voxel $\mathbf{i}$ is a stochastic mapping of the latent distribution $y$ due to the inherent noise in the system. In low light settings, such as photon-limited imaging, the voxel-wise observations can be modeled as independent Poisson \glspl{rv}\todo[disable,inline]{Took me a bit to figure out that r.v.s is an automatically inserted abbreviation. I would only abbreviate longs terms that are used regularly. The random variable is not so bad that it needs to be abbreviated.}\tododone[inline]{Actually r.v. is used quite frequently in the text, starting from the introduction so I thought it useful.} with parameter $y_{\mathbf{i}}$--the true intensity \cite{makitaloOptimalInversionAnscombe2011,kimDeepLearningbasedStatistical2021}. This is shown in \cref{section:photoelectron-counting-stats} to be true for a constant intensity light source.
 
 The voxel-wise intensity can be expressed as $x_{\mathbf{i}} \sim \text{Poi}(y_{\mathbf{i}})$, where $\text{Poi}(y_{\mathbf{i}})$ denotes the Poisson distribution with parameter $y_{\mathbf{i}}$. The \gls{PMF} of the observed value $x_{\mathbf{i}}$ conditioned on the true intensity $y_{\mathbf{i}}$ is given by:
 
@@ -167,24 +178,24 @@ The voxel-wise intensity can be expressed as $x_{\mathbf{i}} \sim \text{Poi}(y_{
     P(x_{\mathbf{i}} = x| y_{\mathbf{i}} = y) = \frac{y^x e^{-y}}{x!}
 \end{equation}
 
-Here, $x$ represents the observation at voxel $X$\todo{What is this voxel $X$? Do you mean $\mathbf{i}$? In any case, some more explanations would be helpful.}, while $y$ corresponds to the underlying intensity that we aim to recover. Formally $\mathbb{E}[x_{\mathbf{i}} | y_{\mathbf{i}}] = y_{\mathbf{i}}$\todo{How can you conclude that and what does this mean exatly? Did you introduce the stochastic terminology already?}
+Here, $x$ represents the observation at voxel $X$\todo[inline]{What is this voxel $X$? Do you mean $\mathbf{i}$? In any case, some more explanations would be helpful.}, while $y$ corresponds to the underlying intensity that we aim to recover. Formally $\mathbb{E}[x_{\mathbf{i}} | y_{\mathbf{i}}] = y_{\mathbf{i}}$\todo[inline]{How can you conclude that and what does this mean exatly? Did you introduce the stochastic terminology already?}
 
-The Poisson noise can then be written as:\todo{Why do we need the expectation to the noise?}
+The Poisson noise can then be written as:\todo[inline]{Why do we need the expectation to the noise?}
 \begin{equation}
     N_{\mathbf{i}} = x_{\mathbf{i}} - \mathbb{E}[x_{\mathbf{i}} | y_{\mathbf{i}}]
 \end{equation}
 
-This noise is signal dependent as the variance is dependent on the true signal \todo{Var should not be in italics.} $Var[N_{\mathbf{i}} | y_{\mathbf{i}}] = [x_{\mathbf{i}} | y_{\mathbf{i}}] = y_{\mathbf{i}}$ and hence it can be seen that the with decreasing intensity, the noise increases.
+This noise is signal dependent as the variance is dependent on the true signal $\text{Var}[N_{\mathbf{i}} | y_{\mathbf{i}}] = [x_{\mathbf{i}} | y_{\mathbf{i}}] = y_{\mathbf{i}}$ and hence it can be seen that the with decreasing intensity, the noise increases.
 
 \section{Variance Stabilization Transform: Anscombe}
 
-\Glspl{VST} \todo{Is the acronym VST already defined? Those are usually spelled out at first use, not only in once in some acronym table.} are used to map the values of the data \todo{It would be helpful to state that one starts here with data samples from a distribution where the variance depends on the signal (pointing to the previous section as an example).} to a new domain so that the variance becomes constant. \citeauthor{anscombeTransformationPoissonBinomial1948} \cite{anscombeTransformationPoissonBinomial1948} introduced such a \gls{VST} for data distributed according to the Poisson, Binomial, and Negative Binomial distributions. The Anscombe transform for the Poisson distribution is defined as:\todo{Stat from where to here $T$ maps, I guess it is meant to map non-negative numbers to non-negative numbers, e.g., $T:[0,\infty)\to[0,\infty),X\mapsto...$.}\todo{Is this supposed to use an array notation? In the sense that $X$ is a 2D-array? If so, I would first state what it does with a single intensity value.}
+\Glspl{VST} \todo[inline]{Is the acronym VST already defined? Those are usually spelled out at first use, not only in once in some acronym table.} are used to map the values of the data \todo[inline]{It would be helpful to state that one starts here with data samples from a distribution where the variance depends on the signal (pointing to the previous section as an example).} to a new domain so that the variance becomes constant. \citeauthor{anscombeTransformationPoissonBinomial1948} \cite{anscombeTransformationPoissonBinomial1948} introduced such a \gls{VST} for data distributed according to the Poisson, Binomial, and Negative Binomial distributions. The Anscombe transform for the Poisson distribution is defined as:\todo[inline]{Stat from where to here $T$ maps, I guess it is meant to map non-negative numbers to non-negative numbers, e.g., $T:[0,\infty)\to[0,\infty),X\mapsto...$.}\todo[inline]{Is this supposed to use an array notation? In the sense that $X$ is a 2D-array? If so, I would first state what it does with a single intensity value.}
 \begin{equation}
     T(X) = 2 \sqrt{X + \frac{3}{8}}
 \end{equation}
 
-Applying this transformation to a Poisson distributed \gls{rv} maps the data such that the variance becomes approximately constant\todo{In which sense approximately? I'd say that a plot of the variance before and after stabilization would be very illustrative here.}. $T(X)$ can then be denoised using \gls{AWGN} denoising techniques such as \gls{BM3D}. 
-The denoised signal $\mathbb{Z}$ \todo{Bad notation. $\mathbb{Z}$ is usually the set of integers.} as is an estimate of expected value of $T(X)$ conditioned on the true signal $Y$ we aim to recover.\todo{I don't understand this part and what you do with the expectation here. Why is this more than just ``apply $T$, denoise, apply $T^{-1}$''?}
+Applying this transformation to a Poisson distributed \gls{rv} maps the data such that the variance becomes approximately constant\todo[inline]{In which sense approximately? I'd say that a plot of the variance before and after stabilization would be very illustrative here.}. $T(X)$ can then be denoised using \gls{AWGN} denoising techniques such as \gls{BM3D}. 
+The denoised signal $\mathbb{Z}$ \todo[inline]{Bad notation. $\mathbb{Z}$ is usually the set of integers.} as is an estimate of expected value of $T(X)$ conditioned on the true signal $Y$ we aim to recover.\todo[inline]{I don't understand this part and what you do with the expectation here. Why is this more than just ``apply $T$, denoise, apply $T^{-1}$''?}
 \begin{equation}
     \mathbb{X} = \mathbb{E}[T(X) | Y]
 \end{equation}
