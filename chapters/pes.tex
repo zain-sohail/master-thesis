@@ -70,7 +70,7 @@ Efficient detection schemes are then necessary to capture all emitted electrons 
 \section{Detection Systems: Time-of-Flight Momentum Microscope with a Multi-Sector Delay Line Detector}
 The \gls{MM} allows 
 
-The \gls{HEXTOF} instrument shown in \cref{fig:hex-tof} is designed to perform core- and valence-electron time- and momentum-resolved studies at \gls{FLASH}, addressing challenges such as low-repetition-rate sources, and the space-charge effect. The instrument combines a \gls{DLD} with a \gls{TOF} tube to detect individual electrons and measure their momentum and kinetic energy simultaneously.
+The \gls{HEXTOF} instrument shown in \cref{fig:hex-tof} is designed to perform core- and valence-electron time- and momentum-resolved studies at \gls{FLASH}, addressing challenges such as low-repetition-rate sources, and the space-charge effect \cite{kutnyakhovTimeMomentumresolvedPhotoemission2020}.  The instrument combines a \gls{DLD} with a \gls{TOF} tube to detect individual electrons and measure their momentum and kinetic energy simultaneously.
 
 One of the standout features of \gls{HEXTOF} is its multidimensional recording scheme. This approach allows for simultaneous measurement of multiple parameters that can be related to the complete momentum space \gls{kx}, \gls{ky}, \gls{kz}, energy \gls{E}, and delay time \gls{tpp}. The \gls{kx} and \gls{ky} are recorded based on the direction of the emitted electrons, while the \gls{kz} is determined by tuning the photon source. The \gls{E} is determined by the time-of-flight of the electrons, and the \gls{tpp} is the delay between the pump and probe pulses. More recently, the spin branch has been explored and spin polarization added to the list of parameters that can be measured. 
 
@@ -81,33 +81,43 @@ One of the standout features of \gls{HEXTOF} is its multidimensional recording s
     \label{fig:hex-tof}
 \end{figure}
 
+For a detailed comparison between the hemispherical analyzer and the \gls{TOF} energy analyzer, the reader is referred to \cite{maklarQuantitativeComparisonTimeflight2020}.
 
-\subsection{Delay Line Detectors}\label{section:dld}
-Individual electrons released by the photoemission process are difficult to directly detect due to their low energies. \Glspl{MCP} are amplifiers of sort (electron multipliers), that generate a cascade of secondary electrons when an electron strikes the detector surface. This amplification allows for the detection of individual electrons. \Glspl{MCP} generally do not resolve for position of electrons and schemes such as \gls{MCP} combined with a delay-line readout are used to determine the position. 
+\subsection*{Detector}\label{section:dld}
+\subsubsection*{Microchannel Plate}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{images/mcp.pdf}
+    \caption{Front view of a circular \gls{MCP}, showing the hexagonal microchannel structure. \Glspl{MCP} are densely packed with millions of microchannels, each of which can amplify an electron cascade.}
+    \label{fig:mcp}
+\end{figure}
 
+Individual electrons released by the photoemission process are difficult to directly detect due to their small charge.  Therefore, it is necessary to have an amplification process to allow their detection. \Gls{MCP} is one such amplifier, that is sensitive to electrons\footnote{\Glspl{MCP} are versatile as they are also sensitive to high energy photons in the \gls{XUV} regime, and also to charged particles.}
+\Glspl{MCP} are made of an insulating material with a 2D array of hexagonal holes called microchannels as can be seen in \cref{fig:mcp}. With millions of such channels, each charge cloud can be localized. When an electron strikes the surface of the \gls{MCP}, it generates a cascade of secondary electrons, resulting in a final charge cloud that is orders of magnitude stronger than the initial signal. For additional gain, the \glspl{MCP} can be stacked in two layers, with V-stack (Chevron) configuration as can be seen in top of \cref{fig:dld}, where the V shape is visible when viewing MCP 1 and MCP 2 together \cite{ladislaswizaMicrochannelPlateDetectors1979,paschottaMicrochannelPlatesEncyclopedia2019}. The amplified charge cloud is then collected by a readout system, such as a phosphor screen that converts the charge cloud into light, which can be detected by a \gls{CCD} camera. This allows for the spatial distribution of the electrons to be recorded. 
+
+For ultrafast applications such as \gls{trPES}, the phosphor--\gls{CCD} scheme is 
 The readout consists of a series of meandering\footnote{This zigzag pattern increases effective length, allowing for finer temporal resolution and hence position.} wires running in orthogonal directions beneath the \gls{MCP}. The cloud of electrons can then be detected by the delay-line readout and the signal travels along the wires connected to a series of precise timing circuits. Using \glspl{TDC}, The time difference for the signal to travel from the point of impact to the readout is used to determine the position of the electron.
 
-
+\subsubsection*{Delay Line Detector}
 The \gls{TOF} tube built into the \gls{HEXTOF} instrument is used to measure the time electrons take to travel from the sample to the detector. The \gls{TOF} can be measured by recording the initiation of the event (when the photon pulse comes) till when they hit the \gls{MCP}. Since electrons with different energies travel at different velocities, the \gls{TOF} can be used to determine the kinetic energy of the electrons. 
 
-The detector is divided into \num{4} quadrants, each able to detect electrons independently. This division allows the system to detect several electrons from the same or different pulses without significant dead-time. While the quandarant structure ensures higher detection, if and electron has momenta that falls in a quadrant which is already detecting an electron, the dead-time can lose the second electron. That is why the \gls{DLD} has a multi-layer structure as seen in \cref{fig:sectors}, where the two layers are stacked at \qty{45}{\degree} to each other. This allows for detection of events that might fall on the same quadrant space.
+The detector is divided into \num{4} quadrants, each able to detect electrons independently. This division allows the system to detect several electrons from the same or different pulses without significant dead-time. While the quandarant structure ensures higher detection, if and electron has momenta that falls in a quadrant which is already detecting an electron, the dead-time can lose the second electron. That is why the \gls{DLD} has a multi-layer structure as seen in \cref{fig:dld}, where the two layers are stacked at \qty{45}{\degree} to each other. This allows for detection of events that might fall on the same quadrant space.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.3\linewidth]{images/sectors_figure.pdf}
-    \caption{Schematic of the 2-layered DLD. The detector is divided into 2 layers, each with 4 sectors.}
-    \label{fig:sectors}
+    \includegraphics[width=1\linewidth]{images/dld.pdf}
+    \caption{Diagram of an example \gls{DLD}, with an \gls{MCP} and a delayline structure. \textbf{\gls{MCP} Structure}: The \glspl{MCP} are arranged in a V-stack (Chevron) configuration, with microchannels at opposite tilt angles to enhance electron cascade efficiency. Each channel, shown as simplified lines within the semi-transparent blue \gls{MCP} layers, initiates an electron cascade upon impact. This cascade amplifies the signal across both \glspl{MCP}, preserving spatial information and forming a final charge cloud. \textbf{Delayline Structure}: Below the \glspl{MCP}, a detailed view of the $x$ and $y$ meandering delay lines, rotated \qty{45}{degree} relative to one another, illustrates how each delay line (labeled X and Y) captures spatial information through the timing of signals between designated endpoints ($x_1$, $x_2$, $y_1$, $y_2$).}
+    \label{fig:dld}
 \end{figure}
 
 Owing to the 2-layered \gls{DLD} in our experimental setup, measuring two electrons impinging on locations nearby to one another can be detected. However, the multi-layer detection scheme comes with a caveat: the layers must be calibrated appropriately otherwise the electron counting routines can report two or more events for the same electron (due to the angle between the layers); with different momenta due to the miscalibration. With a correlation analysis on the photoelectrons generated in pulses, this effect has been observed by [Haber Thesis here]. This multiple counting also occurs within the individual layers, at the intersection of individual sectors.
 
 This effect not only wrongly counts electrons but also distorts (blurs) the momentum distribution. \citeauthor{heberStudiesUltrafastDynamics2024} further demonstrates that by first finding the double-counted events (or more) and averaging them, the resolution of the momentum distribution can be improved as can be seen in \cref{fig:chessy-distribution} right.
 
-%images/chessy_deblurring_merged_events.png
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.7\linewidth]{images/chessy_deblurring_merged_events.png}
-    \caption{Chessy sample before and after merging double-counted events. It can be seen that the momentum distribution is improved after averaging over the double-counted events. Taken from \cite{heberStudiesUltrafastDynamics2024}.}
+    \caption{Chessy sample before and after merging double-counted events, showing better resolved features. Chessy test sample is employed to determine the spatial overlap and field of view alignment in a momentum microscope using the \gls{PEEM} mode. Adapted from \cite{heberStudiesUltrafastDynamics2024}.}
     \label{fig:chessy-distribution}
 \end{figure}
 
@@ -115,7 +125,25 @@ This effect not only wrongly counts electrons but also distorts (blurs) the mome
 It has also been observed that the \gls{DLD} codes can not always accurately reconstruct the events, due to signal overlap, such as in the study by \citeauthor{knipferDeepLearningbasedSpatiotemporal2024}. They have proposed a deep learning based method to reconstruct the events accurately \cite{knipferDeepLearningbasedSpatiotemporal2024}.
 
 \section{Experimental Datasets}\label{section:datasets}
-We look at four materials that have been studied using \gls{HEXTOF} at \gls{FLASH}: \gls{GrIr}, \gls{NiW}, \gls{GdW}, and \gls{WSe2}. Long acquisition times \gls{total_time} are necessary to get interpretable results. This is due to three main reasons. As mentioned above, the intrinsic stochastic nature of the photoemission process requires us to collect a large number of events to approach the true value (expected value). Additionally, the low repetition rate of the \gls{FEL} means that we need to collect data over a long period of time to get enough events. As seen in \cref{fig:acq-time-1M}, it takes $\gls{total_time}=\qty{8}{\min}$ to acquire electron counts $\gls{ncounts}=\num{e6}$. Lastly, the multidimensional acquisition scheme to simultaneously resolve \gls{kx}, \gls{ky}, \gls{kz}, \gls{E}, \gls{tpp}, and spin polarization suffers from the curse of dimensionality. With an increase in dimension, the space becomes sparser, and exponentially more data is needed to fill the space.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/acq_time_1M.pdf}
+    \caption{Total acquisition time \gls{total_time} in minutes for generating \num{e6} data points. Some outliers are present due to the photon source being off, leading to longer \gls{total_time}. The average \gls{total_time} without outliers is approximately \qty{8}{min} (see dashed line).}
+    \label{fig:acq-time-1M}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{images/datasets_3_kx_ky.pdf}
+    \caption{A \gls{kx}-\gls{ky} slice of the \gls{GrIr}, \gls{NiW}, and \gls{GdW} datasets, window averaged across \gls{E} with $\gls{winsize}=\num{20}$.}
+    \label{fig:all-hextof-datasets-kxky}
+\end{figure}
+
+We investigate three materials--\gls{GrIr} \cite{heberMultispectralTimeresolvedEnergy2022}, \gls{NiW} \cite{shokeenRealtimeObservationNonequilibrium2024}, and \gls{GdW} \cite{kutnyakhovMultidimensionalPhotoemissionSpectra2024}--that have been studied using \gls{HEXTOF} at \gls{FLASH}. Interpretable results from these experiments require long acquisition times (\gls{total_time}), essential for capturing the underlying physical processes. This is primarily due to three main reasons. As mentioned above, the intrinsic stochastic nature of the photoemission process requires the collection of a large number of events to approach the true value (expected value). Additionally, the low repetition rate of the \gls{FEL} means that the data  needs to be collected over a long period of time to get sufficient statistics. For example, as shown in \cref{fig:acq-time-1M}, acquiring $\gls{ncounts}=\num{e6}$ requires an acquisition time of $\gls{total_time}=\qty{8}{\min}$. Lastly, the multidimensional acquisition scheme to simultaneously resolve \gls{kx}, \gls{ky}, \gls{kz}, \gls{E}, \gls{tpp}, and spin polarization necessitates exponentially more data to adequately fill the sample space in higher dimensions.
+
+For most of this study, we use the \gls{GrIr} dataset, as it features the longest acquisition time, and hence the highest number of counts, with $\gls{ncounts}=\num{1.86e8}$. The \gls{NiW} and \gls{GdW} datasets have comparatively lower total counts, at $\gls{ncounts}=\num{6.52e7}$ and \num{2.21e7}, respectively. However, \gls{ncounts} is not the only factor in determining data quality. Material-specific factors, sample conditions, and instrument settings can influence spectral clarity, meaning that a higher-count dataset does not necessarily guarantee more pronounced spectral features. For instance, while the \gls{NiW} dataset has a higher count rate than \gls{GdW}, its spectral features are comparatively less distinct as seen in \cref{fig:all-hextof-datasets-kxky}.
+
+For reference, we also look at the \gls{WSe2} dataset \cite{maklarTimeresolvedARPESRAW2022}, measured with a pulsed laser-based \gls{XUV} source and a \gls{TOF} \gls{MM} analyzer. This dataset has a much larger number of counts, with $\gls{ncounts}=\num{e9}$, recorded in $\gls{total_time}=\qty{27}{s}$, compared to acquiring $\gls{ncounts}=\num{e6}$ in $\gls{total_time}=\qty{8}{\min}$ for the \gls{GrIr} dataset. The \gls{WSe2} dataset is used to compare the performance of denoising algorithms on a high-count dataset.
 
 \begin{figure}[h]
     \centering
@@ -133,23 +161,29 @@ For a \gls{trPES}, a common workflow is shown in \cref{fig:mpes_workflow}, where
     \label{fig:grir-2d-slice-calibrated}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}
     \centering
-    \includegraphics[width=1\linewidth]{images/3d_gr_ir_masked.png}
-    \caption{A 3D image constructed from the \gls{GrIr} dataset. The image is constructed by binning over the three physical axes $k_x$, $k_y$, $E$ from different datasets. 2D images can be formed by slicing (or window averaging) along any of the axes.}
+    \begin{subfigure}[t]{0.49\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{images/3d_gr_ir_8M.png}
+        \caption{$\gls{ncounts}=\num{8e6}$ corresponding to $\gls{total_time}=\qty{8}{min}$. The fine features of the data are not visible due to the low count rate.}
+        \label{fig:3d-gr-ir-8M}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.49\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{images/3d_gr_ir_masked.png}
+        \caption{$\gls{ncounts}=\num{1.86e8}$ corresponding to $\gls{total_time}=\qty{30}{hour}$. 2D images can be formed by slicing (or window averaging) along any of the axes, as depicted by the three lines.}
+        \label{fig:3d-gr-ir-186M}
+    \end{subfigure}
+    \caption{3D images from the \gls{GrIr} dataset, with $\gls{ncounts}=\num{8e6}$ and \num{1.86e8}. The image is constructed by binning over the three physical axes $k_x$, $k_y$, $E$.}
     \label{fig:3d-gr-ir}
 \end{figure}
 
-If we just want to look at the static results, a 3D image such as \cref{fig:3d-gr-ir} can be formed by binning across the three physical axes--\gls{kx}, \gls{ky} and \gls{E}--from different datasets such as the \gls{GrIr} dataset, which contains \num{1.86e8} electron counts in the entire dataset. The average count decreases when binning across additional dimensions, such as the pump-probe time \gls{tpp} or spin polarization. After focusing on a \gls{ROI} (\gls{EF} and near), and 3D binning with an image resolution of \num{460} in each direction, the total counts are \num{1.15e8}, with an average count of $\approx$\num{1.13} per voxel.  Slicing along the \gls{E} direction, we can form 2D images such as the one shown in \cref{fig:grir-2d-slice-calibrated}.
+
+If we just want to look at the static results, a 3D image such as \cref{fig:3d-gr-ir} can be formed by binning across the three physical axes--\gls{kx}, \gls{ky} and \gls{E}--from different datasets such as the \gls{GrIr} dataset, which contains \num{1.86e8} electron counts in the entire dataset. The average count decreases when binning across additional dimensions, such as the pump-probe time \gls{tpp} or spin polarization. After focusing on a \gls{ROI} (\gls{EF} and near), and 3D binning with an image resolution of \qty{460}{px} in each direction, the total counts are \num{1.15e8}, with an average count of $\approx$\num{1.13} per voxel.  Slicing along the \gls{E} direction, we can form 2D images such as the one shown in \cref{fig:grir-2d-slice-calibrated}.
 
 With the \gls{DLD} providing a stream of single-event data, we are uniquely positioned to observe noisy realizations by taking subsets of varying electron counts \gls{ncounts} from the full dataset. These subsets can then be binned to form independent 3D images, used later for evaluating and training denoising algorithms.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.8\linewidth]{images/acq_time_1M.pdf}
-    \caption{Total acquisition time \gls{total_time} in minutes for generating \num{e6} data points. Some outliers are present due to the photon source being off, leading to longer \gls{total_time}. The average \gls{total_time} without outliers is approximately \qty{8}{min} (see dashed line).}
-    \label{fig:acq-time-1M}
-\end{figure}
 
 
  For instance, the complete dataset, \num{186} subsets, sampled at $\gls{ncounts}=\num{e6}$ intervals, can be extracted. In theory, the data generation is an independent stochastic process, allowing for a large variety of randomly sampled subsets. However, in our case, the \gls{FEL} light source introduces a degree of dependence as it is not stable over extended periods, beyond its intrinsic fluctuations.
@@ -157,26 +191,26 @@ With the \gls{DLD} providing a stream of single-event data, we are uniquely posi
 
 \begin{table}[h]
     \centering
-    \resizebox{0.4\textwidth}{!}
+    \resizebox{0.6\textwidth}{!}
         {%
-        \begin{tabular}{lrr}
+        \begin{tabular}{lrrr}
             \toprule
-            & \gls{ncounts} & Average Counts \\
-            &  & Per Voxel \\
+            & \gls{ncounts} & Average Counts & $T$ [h] \\
+            &  & Per Voxel & \\
             \midrule
-            $n$ & \num{1e6} & \num{5.98e-3} \\
-            $2n$ & \num{2e6} & \num{1.22e-2} \\
-            $4n$ & \num{4e6} & \num{2.44e-2} \\
-            $8n$ & \num{8e6} & \num{4.89e-2} \\
-            $16n$ & \num{1.6e7} & \num{9.77e-2} \\
-            $32n$ & \num{3.2e7} & \num{2.00e-1} \\
-            $48n$ & \num{4.8e7} & \num{2.90e-1} \\
-            $96n$ & \num{9.6e7} & \num{5.84e-1} \\
-            $186n$ & \num{1.86e8} & \num{11.3e-1} \\
+            $n$ & \num{1e6} & \num{5.98e-3} & $\num{0.13}$ \\
+            $2n$ & \num{2e6} & \num{1.22e-2} & $\num{0.28}$ \\
+            $4n$ & \num{4e6} & \num{2.44e-2} & $\num{0.57}$ \\
+            $8n$ & \num{8e6} & \num{4.89e-2} & $\num{1.23}$ \\
+            $16n$ & \num{1.6e7} & \num{9.77e-2} & $\num{2.62}$ \\
+            $32n$ & \num{3.2e7} & \num{2.00e-1} & $\num{5.32}$ \\
+            $48n$ & \num{4.8e7} & \num{2.90e-1} & $\num{8.14}$ \\
+            $96n$ & \num{9.6e7} & \num{5.84e-1} & $\num{16.07}$ \\
+            $186n$ & \num{1.86e8} & \num{11.3e-1} & $\num{30.78}$ \\
             \bottomrule
         \end{tabular}
         }
-    \caption{Noisy realizations generated by varying total counts. The acquisition time $T$ is proportional to \gls{ncounts}, with $\gls{ncounts}=\num{1.86e8}$ count dataset serving as the target.}
+    \caption{Table shows the noisy realizations generated by varying number of counts \gls{ncounts}, with the acquisition time being proportional to \gls{ncounts}. $\gls{ncounts}=\num{1.86e8}$ serves as the reference dataset.}
     \label{noisy-dataset-table}
 \end{table}
 
