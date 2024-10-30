@@ -1,7 +1,7 @@
 \documentclass[a4paper,11pt,twoside,openany]{book}
 
 % Page layout and formatting
-\usepackage[margin=3cm]{geometry}
+\usepackage[inner=3cm,outer=2cm,top=2.5cm,bottom=2cm]{geometry}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
 \usepackage{float}
@@ -85,6 +85,7 @@ fonttitle=\bfseries,#1}
 \setlength{\marginparwidth}{2cm}
 \usepackage[textsize=tiny]{todonotes}
 \newcommand{\tododone}[2][]{\todo[color=blue!50, #1]{#2}}
+\newcommand{\todocite}[2][]{\todo[color=green!50, #1]{#2}}
 
 % Customizations
 \renewcommand{\baselinestretch}{1}  % Line spacing
@@ -117,7 +118,7 @@ fonttitle=\bfseries,#1}
 \printglossary[type=symbols, style=tree, title=List of Symbols, nonumberlist]
 % \addcontentsline{toc}{chapter}{List of Acronyms}
 
-\printglossary
+\printglossary[nonumberlist]
 % \addcontentsline{toc}{chapter}{Glossary}
 \glsunsetall
 \glsresetall
@@ -133,9 +134,11 @@ fonttitle=\bfseries,#1}
 \chapter[Photoemission Spectroscopy: Interaction, Light Sources, and Detection]{Photoemission Spectroscopy:\\Interaction, Light Sources, and Detection}\label{ch:pes}
 \input{chapters/pes}
 
-\chapter{Denoising preliminaries and BM3D}\label{ch:denoising}
-\input{chapters/reconstruction}
-% \input{chapters/reconstruction}
+\chapter{Denoising Preliminaries and BM3D}\label{ch:denoising}
+\input{chapters/denoising}
+
+\chapter{From Raw Data to Denoised Images}\label{ch:datasets_bm3d}
+\input{chapters/datasets_bm3d}
 
 \chapter{Characterizing Photon and Photoelectron Statistics}\label{ch:pes-statistics}
 \input{chapters/statistics}
