@@ -32,7 +32,7 @@ Finally, the schema of the buffer files is cross-validated against the predefine
     \caption{Complete \gls{ELT} pipeline for the data from \gls{HEXTOF} at \gls{FLASH}}
 \end{figure}
 
-\section{Metrics}
+\section{Metrics}\label{sec:metrics}
 
 \Gls{MSE} is a common measure of the average squared differences between predicted values and actual values. It quantifies the error in a model’s predictions, where lower values indicate better performance. It is sensitive to outliers since squaring the differences amplifies larger errors.
 
@@ -93,14 +93,8 @@ Finally, the schema of the buffer files is cross-validated against the predefine
 
 \section{Experiment: Metric Comparison}\label{sec:metric_comparison_experiment}
 
-The objective of this experiment is to evaluate the effectiveness of various image quality metrics (\gls{MSE}, \gls{PSNR}, \gls{SSIM}, and \gls{MSSSIM}) when the provided reference is noisy. Specifically, reconstructed images from a trained neural network, that has shown clear improvements in perpetual quality, are compared against the high-count but noisy reference. Examples of such images at different counts can be seen in Figure~\ref{fig:images-noisy-denoised}, which shows how the noisy images are devoid of any features at low counts, while the denoised images show clear features similar to the target. For this analysis, it is not relevant if the high quality reconstructions are due to overfitting or not, but rather that they produce perpetually better quality images (sometimes even compared to the target). So the hope is that the metrics acknowledge this improvement.
+The objective of this experiment is to evaluate the effectiveness of various image quality metrics (\gls{MSE}, \gls{PSNR}, \gls{SSIM}, and \gls{MSSSIM}) when the provided reference is noisy. Specifically, reconstructed images from a trained neural network, that has shown clear improvements in perpetual quality, are compared against the high-count but noisy reference. Examples of such images at different counts can be seen in Figure~\ref{fig:images-noisy-denoised-training}, which shows how the noisy images are devoid of any features at low counts, while the denoised images show clear features similar to the target. For this analysis, it is not relevant if the high quality reconstructions are due to overfitting or not, but rather that they produce perpetually better quality images (sometimes even compared to the target). So the hope is that the metrics acknowledge this improvement.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=1\linewidth]{images/images_noisy_denoised_with_target.pdf}
-    \caption{Noisy and denoised \gls{ky}-\gls{kx} cuts with window size $w=1$ shown for \gls{GrIr} dataset. Each column corresponds to \numlist{1e6;2e6;4e6;8e6;1.6e7;3.2e7;1.86e8} counts, respectively; where the last column is the target image with $w=1$ in row 1 and $w=15$ in row 2. Below \num{8e6} counts, none of the features are discernible for noisy images, while the denoised images show clear features similar to the target.}
-    \label{fig:images-noisy-denoised}
-\end{figure}
 
 The \gls{GrIr} dataset is used, with electron counts ranging from \numrange{1e6}{3.2e7}. For each total count, a set of 2D noisy images (referred to as noisy slices) is extracted from the dataset. Corresponding high-count 2D slices (referred to as target slices) are used as reference images for comparison (from the dataset with \num{1.86e8} counts). Likewise, reconstructed images from the neural network are also compared against the target slices.
 
@@ -151,7 +145,7 @@ Comparing the noisy images with target, all metrics trivially show an improvemen
 Additionally, we investigate the effect of window-averaged reference images on the metrics. Results in \cref{fig:metrics-comparison-averaged-target} indicate that window-averaged image as reference generally makes the metric prefer the noisy realization, except in the case of \gls{MSSSIM}, where the gap between the metrics calculated with noisy and high quality images split up further. Consequently, we adopt the window-averaged images as reference for the denoising evaluation.
 
 
-\subsection{Deep Learning Infrastructure}
+\section{Deep Learning Infrastructure}
 Model Architecture: UNET 2D and 3D
 
 Trained on A100 GPU 80 GB using Maxwell Cluster at DESY. 

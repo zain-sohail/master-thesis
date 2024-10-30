@@ -14,7 +14,7 @@ The rate of convergence to $\bar{X_n}$ is of practical importance, as it indicat
     \left|\bar{X_n} - \mu\right| = \mathcal{O}\left(\frac{1}{\sqrt{n}}\right)
 \end{equation}
 
-indicating that the relative fluctuations decrease with an increased number of observations $n$.  Since $n \propto T$, increasing $T$ reduces the sample mean fluctuations. While convergence rate described by $\mathcal{O}\left(\frac{1}{\sqrt{n}}\right)$ is a fundamental result, the constant that accompanies this rate is distribution dependent, and can affect the convergence rate. The Big O notation, denoted as $\mathcal{O}(g(n))$, describes an upper bound on the time complexity of an algorithm or the growth rate of a function.
+indicating that the relative fluctuations decrease with an increased number of observations \gls{ncounts}.  Since $n \propto T$, increasing the acquisition time $T$ reduces the sample mean fluctuations. While convergence rate described by $\mathcal{O}\left(\frac{1}{\sqrt{n}}\right)$ is a fundamental result, the constant that accompanies this rate is distribution dependent, and can affect the convergence rate. The Big O notation, denoted as $\mathcal{O}(g(n))$, describes an upper bound on the time complexity of an algorithm or the growth rate of a function.
 
 \section{Measure Space and Measures}
 \label{section:measurable_space}
@@ -257,11 +257,11 @@ The null hypothesis and alternative hypothesis are stated as follows:
 
 
 \subsection*{Confidence Intervals}
-\Glspl{CI} are a way to quantify the uncertainty in an estimate. They provide a range of plausible values for a parameter, rather than a single point estimate. The confidence level indicates the probability that the interval contains the true parameter value. For example, a 95\% \gls{CI} means that if we were to repeat the experiment many times, 95\% of the intervals would contain the true parameter value.
+Confidence Intervals are a way to quantify the uncertainty in an estimate. They provide a range of plausible values for a parameter, rather than a single point estimate. The confidence level indicates the probability that the interval contains the true parameter value. For example, a 95\% confidence interval means that if we were to repeat the experiment many times, 95\% of the intervals would contain the true parameter value.
 
-Parametric methods for computing \glspl{CI} rely on knowing the underlying distribution of the data, such as the normal distribution. However, in many cases, the true distribution is unknown or does not follow a standard form. In such cases, non-parametric methods such as bootstrapping can be used.
+Parametric methods for computing confidence intervals rely on knowing the underlying distribution of the data, such as the normal distribution. However, in many cases, the true distribution is unknown or does not follow a standard form. In such cases, non-parametric methods such as bootstrapping can be used.
 
 Bootstrapping involves resampling the data with replacement to create multiple bootstrap samples, from which the sample statistic is computed. The distribution of the sample statistic across the bootstrap samples provides an estimate of the sampling distribution of the statistic, and becomes more informative when using larger sample sizes.
 
-\subsection*{Optimal parameter estimation}
-Used in estimating distribution parameters
+% \subsection*{Optimal parameter estimation}
+% Used in estimating distribution parameters
