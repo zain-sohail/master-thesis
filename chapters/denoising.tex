@@ -26,7 +26,7 @@ where the common assumption for $N$ is \gls{AWGN}, normal distributed $\mathcal{
 
 The inverse problem, of image restoration\footnote{Depending on context, also referred to as reconstruction or denoising}, to estimate $Y$ from $X$, is an \textit{ill-posed} problem; meaning that there are multiple possible solutions of the estimated image $\hat{Y}$ that are not unique or equal to the true image $Y$. This is due to the loss of information during the observation process, leading to an under-determined system. Depending on the prior knowledge posed, different estimates of the latent clean image can be recovered.
 
-In the following chapter, we shall look at an \gls{AWGN} denoising algorithm--the celebrated \gls{BM3D}, introduced first by \citeauthor{dabovImageDenoisingSparse2007} in \cite{dabovImageDenoisingSparse2007}, building upon many of the classical denoising techniques such as transform domain denoising, \gls{NLM} and filtering methods (such as the Wiener filter). We will look at its application to \gls{MPES} data, by first defining a noise model for the data, discussing the Anscombe \gls{VST}, finding optimal denoising level for different noise levels ($\propto$ \gls{ncounts}) and evaluating its performance using the \gls{MSSSIM}.
+In the following chapter, we shall look at an \gls{AWGN} denoising algorithm--the celebrated \gls{BM3D}, introduced first by \citeauthor{dabovImageDenoisingSparse2007} in \cite{dabovImageDenoisingSparse2007}, building upon many of the classical denoising techniques such as transform domain denoising, filtering methods (such as the Wiener filter) and \gls{NLM}. We will look at a noise model for Poisson distributed data, discussing the Anscombe \gls{VST} for stabilizing its variance.
 
 \section{Image Denoising in Spatial and Transform Domains}
 Image restoration techniques have been explored in both the spatial and transform domains\todo[disable]{Directly give an example for what transform domains are, e.g., the frequency domain.} \cite{buadesReviewImageDenoising2005,diwakarReviewCTImage2018}. For instance, the Fourier transform is commonly used to map images to the frequency domain. A simple way of denoising in this transform domain is to filter out the high frequency components that typically represent noise elements, followed by an inverse Fourier transform. Other transforms include wavelet transforms, discrete cosine transforms, and curvelet transforms.
@@ -158,33 +158,67 @@ A filter is applied to the transformed blocks to remove noise, initially by hard
 
 The \gls{BM3D} algorithm had showed one of the best denoising performances and can only be contested by the recent deep-learning based denoising methods. 
 
-\section{Poisson Noise Model}\label{sec:poisson-noise-model}
-In imaging systems, the observed intensity $x$ at voxel $\mathbf{i}$ is a stochastic mapping of the latent distribution $y$ due to the inherent noise in the system. In low light settings, such as photon-limited imaging, the voxel-wise observations can be modeled as independent Poisson \glspl{rv}\todo[inline]{Took me a bit to figure out that r.v.s is an automatically inserted abbreviation. I would only abbreviate longs terms that are used regularly. The random variable is not so bad that it needs to be abbreviated.}\tododone[inline]{Actually r.v. is used quite frequently in the text, starting from the introduction so I thought it useful.} with parameter $y_{\mathbf{i}}$--the true intensity \cite{makitaloOptimalInversionAnscombe2011,kimDeepLearningbasedStatistical2021}. This is shown in \cref{section:photoelectron-counting-stats} to be true for a constant intensity light source.
+\section{Poisson Noise and Variance Stabilization}\label{sec:poisson-noise-model}
+In imaging systems, the observed intensity $x_{\mathbf{i}}$ at each voxel $\mathbf{i}$ of a noisy image $X$ is a stochastic mapping of the latent distribution $y_{\mathbf{i}}$ due to the measurement process.\todo[disable]{The fact that this is a stochastic mapping is not due to the low light setting. For that it's enough that you are measuring. The Possion part is due to the low light setting.} In low light settings, such as photon-limited imaging, $x_{\mathbf{i}}$ can be modeled as independent Poisson characterized by the true intensity $y_{\mathbf{i}}$, we aim to estimate\footnote{This assumption is discussed in more detail in \cref{section:photoelectron-counting-stats}, and is true for a constant intensity light source.} \cite{makitaloOptimalInversionAnscombe2011,kimDeepLearningbasedStatistical2021} 
+\begin{equation*}
+    x_{\mathbf{i}} \sim \text{Poi}(y_{\mathbf{i}})
+\end{equation*}
 
-The voxel-wise intensity can be expressed as $x_{\mathbf{i}} \sim \text{Poi}(y_{\mathbf{i}})$, where $\text{Poi}(y_{\mathbf{i}})$ denotes the Poisson distribution with parameter $y_{\mathbf{i}}$. The \gls{PMF} of the observed value $x_{\mathbf{i}}$ conditioned on the true intensity $y_{\mathbf{i}}$ is given by:
+where $\text{Poi}(y_{\mathbf{i}})$ denotes the Poisson distribution with latent intensity $y_{\mathbf{i}}$. The \gls{PMF} of the observed value $x_{\mathbf{i}}$ is given by:
 
 \begin{equation}
     P(x_{\mathbf{i}} = x| y_{\mathbf{i}} = y) = \frac{y^x e^{-y}}{x!}
 \end{equation}
 
-Here, $x$ represents the observation at voxel $X$\todo[inline]{What is this voxel $X$? Do you mean $\mathbf{i}$? In any case, some more explanations would be helpful.}, while $y$ corresponds to the underlying intensity that we aim to recover. Formally $\mathbb{E}[x_{\mathbf{i}} | y_{\mathbf{i}}] = y_{\mathbf{i}}$\todo[inline]{How can you conclude that and what does this mean exatly? Did you introduce the stochastic terminology already?}
+Poisson distribution has the key property that the mean and variance are equal, $\mathbb{E}[x_{\mathbf{i}}] = \text{Var}[x_{\mathbf{i}}] = y_{\mathbf{i}}$, with standard deviation $\sqrt{y_{\mathbf{i}}}$. In contrast to the \gls{AWGN} model, which assumes a variance independent of the true intensity, the Poisson noise model has variance scaling with the true intensity. This implies that with decreasing intensity, the fluctuations (standard deviation) increase. Consequently, \gls{AWGN} denoising algorithms, such as \gls{BM3D}, can not directly be applied to Poisson noise.
 
-The Poisson noise can then be written as:\todo[inline]{Why do we need the expectation to the noise?}
+To address this issue, suitable transformations that stabilize the variance, making it largely independent of the mean (similar to the normal distribution) can be beneficial. Transforms such as these are known as \glsxtrfullpl{VST}. \citeauthor{bartlettSquareRootTransformation1936} \cite{bartlettSquareRootTransformation1936} first showed such a transform: the square root transformation $T_{\sqrt{\cdot}}$:
+%Moreover, \glspl{VST} variance stabilization is independent of the sample size.
+
+% More abstractly, let us consider a random variable $Z$ with a Poisson distribution, $Z \sim \text{Poi}(\lambda)$. The variance of $Z$ is given by $\mathbb{E}[X] = \text{Var}[Z] = \lambda$.
+
+\begin{equation*}
+    T_{\sqrt{\cdot}}: [0, \infty) \to [0, \infty), \quad Z \to \sqrt{Z}
+\end{equation*}
+
+where $Z$ is Poisson random variable with parameter $\lambda$.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{images/data_transform_anscombe.pdf}
+    \caption{\textit{Variance stabilization through various transformations of Poisson-distributed data.} The plot shows the variance of Poisson-distributed random variables (blue) along with the variances of their transformed values under different variance-stabilizing transformations: the square root transform (orange, and scaled transform green), the square root transform with a constant of $\frac{1}{2}$ (red), and the Anscombe transform with a constant of $\frac{3}{8}$ (purple). 
+    As the Poisson parameter $\lambda$ increases, the variance of the square root transform stabilizes to approximately $1$, with the fastest convergence using the Anscombe transform.
+    The random variables are scaled by $2$ (except orange and blue), allowing the data to more closely approximate a standard normal distribution. Dashed horizontal lines indicate the stabilization levels.}
+    \label{fig:data-transform-anscombe}
+\end{figure}
+
+Applying this transform to Poisson data makes the transformed values approximately normally distributed as the Poisson parameter $\lambda$ increases. The blue and orange line plots in \cref{fig:data-transform-anscombe} show the variance of $Z$ and its square root as a function of $\lambda$. It can be seen that while the variance of $Z$ increases with $\lambda$, the variance of $\sqrt{Z}$ stabilizes to $\frac{1}{4}$. \citeauthor{bartlettSquareRootTransformation1936} additionally showed that by adding a constant of $\frac{1}{2}$ to the square root transform, the convergence to normality improves, leading to the transformation:
+
+\begin{equation*}
+    T_{\sqrt{\cdot + \frac{1}{2}}}: [0, \infty) \to [0, \infty), \quad Z \to \sqrt{Z + \frac{1}{2}}
+\end{equation*}
+
+The red line plot \cref{fig:data-transform-anscombe} shows this faster convergence (also preventing overshoot) when compared to the green line plot. Here, the random variables are scaled by \num{2}, effectively centering the variance around \num{1}\footnote{The variance scales by square of the scaling factor, i.e., $\text{Var}[aZ] = a^2 \text{Var}[Z]$}, yielding a transformed variable that approximates a standard normal distribution.
+
+\citeauthor{anscombeTransformationPoissonBinomial1948} \cite{anscombeTransformationPoissonBinomial1948} showed that the constant of $\frac{3}{8}$ is an optimal \gls{VST} $T_A$ for Poisson distributed data:
+
 \begin{equation}
-    N_{\mathbf{i}} = x_{\mathbf{i}} - \mathbb{E}[x_{\mathbf{i}} | y_{\mathbf{i}}]
+    T_A: [0, \infty) \to [0, \infty), \quad Z \to 2 \sqrt{Z + \frac{3}{8}}
 \end{equation}
 
-This noise is signal dependent as the variance is dependent on the true signal $\text{Var}[N_{\mathbf{i}} | y_{\mathbf{i}}] = [x_{\mathbf{i}} | y_{\mathbf{i}}] = y_{\mathbf{i}}$ and hence it can be seen that the with decreasing intensity, the noise increases.
+In \cref{fig:hist-anscombe}, the distribution is visualized before after applying the Anscombe transform with $\lambda$ values \numrange{1}{8} (with the mean value subtracted), highlighting how variance stabilization improves with increasing $\lambda$. Comparing $T_{\sqrt{\cdot + \frac{1}{2}}}$ (red) with $T_A$ (purple) in \cref{fig:data-transform-anscombe}, it can be seen that the variance of the Anscombe transform stabilizes to \num{1} faster, while not significantly different from the square root transform with a constant.
 
-\section{Variance Stabilization Transform: Anscombe}
 
-\Glspl{VST} \todo[inline]{Is the acronym VST already defined? Those are usually spelled out at first use, not only in once in some acronym table.}\tododone[inline]{Yes it happens automatically. It's defined in the introduction of the chapter. If preferred, I can redefine here.} are used to map the values of the data \todo[inline]{It would be helpful to state that one starts here with data samples from a distribution where the variance depends on the signal (pointing to the previous section as an example).} to a new domain so that the variance becomes constant. \citeauthor{anscombeTransformationPoissonBinomial1948} \cite{anscombeTransformationPoissonBinomial1948} introduced such a \gls{VST} for data distributed according to the Poisson, Binomial, and Negative Binomial distributions. The Anscombe transform for the Poisson distribution is defined as:\todo[inline]{Stat from where to here $T$ maps, I guess it is meant to map non-negative numbers to non-negative numbers, e.g., $T:[0,\infty)\to[0,\infty),X\mapsto...$.}\todo[inline]{Is this supposed to use an array notation? In the sense that $X$ is a 2D-array? If so, I would first state what it does with a single intensity value.}
-\begin{equation}
-    T(X) = 2 \sqrt{X + \frac{3}{8}}
-\end{equation}
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{images/hist_anscombe.pdf}
+    \caption{\textit{Variance stabilization through the Anscombe transform.} The histogram shows the distribution of Poisson-distributed random variables with different $\lambda$ values, before and after applying the Anscombe transform. The data approaches standard normality as $\lambda$ increases.}
+    \label{fig:hist-anscombe}
+\end{figure}
 
-Applying this transformation to a Poisson distributed \gls{rv} maps the data such that the variance becomes approximately constant\todo[inline]{In which sense approximately? I'd say that a plot of the variance before and after stabilization would be very illustrative here.}. $T(X)$ can then be denoised using \gls{AWGN} denoising techniques such as \gls{BM3D}. 
-The denoised signal $\hat{Y}_{\text{bm3d}}$ \todo[disable]{Bad notation. $\mathbb{Z}$ is usually the set of integers.} is an estimate of expected value of $T(X)$ conditioned on the true signal $Y$ we aim to recover.\todo[inline]{I don't understand this part and what you do with the expectation here. Why is this more than just ``apply $T$, denoise, apply $T^{-1}$''?}
+The Anscombe transform can hence be applied to the corrupted image $X$ (to each voxel individually $x_{\mathbf{i}}$) to stabilize the variance, making it suitable for denoising using \gls{AWGN} denoising algorithms. After the denoising, an inverse transformation must be applied to recover the estimated image $\hat{Y}$.
+
+\todo[disable]{Bad notation. $\mathbb{Z}$ is usually the set of integers.} is an estimate of expected value of $T(X)$ conditioned on the true signal $Y$ we aim to recover.\todo[inline]{I don't understand this part and what you do with the expectation here. Why is this more than just ``apply $T$, denoise, apply $T^{-1}$''?}
 \begin{equation}
     \mathbb{X} = \mathbb{E}[T(X) | Y]
 \end{equation}
@@ -192,7 +226,7 @@ Hence, the final estimate for the true signal $Y$ can be obtained by applying th
 \begin{equation}
     \hat{Y} = T^{-1}(\mathbb{X}) = \mathbb{E}[X | T(X) = \mathbb{X}]
 \end{equation}
-Since the transformation is non-linear, an algebraic inverse is asymptotically biased\todo{I don't see how the non-linearity of the transformation should result in ``an'' algebraic inverse to be asymptocically biased. It's not even clear what you mean with the term ``asymptocically biased''. For the algebraic inverse, I guess you mean by the inverse you get by solving (3.8) for $X$.}. \citeauthor{makitaloOptimalInversionAnscombe2011} \cite{makitaloOptimalInversionAnscombe2011} proposed an exact unbiased \todo{What does ``exact unbiased'' mean?} inverse of $\hat{Y}_{\text{bm3d}}$ giving the denoised estimate $\hat{Y}$. This method performs better than methods based on explicit Poisson noise removal. Therefore, in the next few sections we make use of the scheme described in \cref{alg:anscombe-bm3d} \todo{So the $T^{-1}$ is the ``exact unbiased inverse'', not the ``algebraic inverse''? The notation ``$T^{-1}$'' means the inverse of $T$, which is unique. If you don't apply the inverse, explain what exactly you apply, use a different notation and if possible also give a formula.} to denoise 2D image slices from the \gls{MPES} data.
+Since the transformation is non-linear, an algebraic inverse is asymptotically biased\todo{I don't see how the non-linearity of the transformation should result in ``an'' algebraic inverse to be asymptocically biased. It's not even clear what you mean with the term ``asymptocically biased''. For the algebraic inverse, I guess you mean by the inverse you get by solving (3.8) for $X$.}.. \citeauthor{makitaloOptimalInversionAnscombe2011} \cite{makitaloOptimalInversionAnscombe2011} proposed an exact unbiased \todo{What does ``exact unbiased'' mean?} inverse of $\hat{Y}_{\text{bm3d}}$ giving the denoised estimate $\hat{Y}$. This method performs better than methods based on explicit Poisson noise removal. Therefore, \todo{So the $T^{-1}$ is the ``exact unbiased inverse'', not the ``algebraic inverse''? The notation ``$T^{-1}$'' means the inverse of $T$, which is unique. If you don't apply the inverse, explain what exactly you apply, use a different notation and if possible also give a formula.} in the next chapter we make use of the scheme described in \cref{alg:anscombe-bm3d} to denoise 2D image slices from the \gls{MPES} data.
 
 \begin{algorithm}
     \caption{Algorithm to Denoise Poisson Corrupted Images}\label{alg:anscombe-bm3d}
@@ -201,11 +235,11 @@ Since the transformation is non-linear, an algebraic inverse is asymptotically b
     \Ensure Denoised image $\hat{Y}$
     \Statex
     \Procedure{AnscombeBM3D}{$X$, $\sigma^2$}
-        \State $\hat{Y}_{\text{T}} \gets T(X)$
+        \State $X_{\text{A}} \gets T_A(X)$
         
-        \State $\hat{Y}_{\text{bm3d}} \gets \textsc{BM3D}(\hat{Y}_{\text{T}}, \sigma^2)$
+        \State $Y_A \gets \textsc{BM3D}(X_A, \sigma^2)$
         
-        \State $\hat{Y} \gets T^{-1}(\hat{Y}_{\text{bm3d}})$
+        \State $\hat{Y} \gets T^{-1}(Y_A)$
         
         \State \textbf{return} $\hat{Y}$
     \EndProcedure
@@ -213,3 +247,11 @@ Since the transformation is non-linear, an algebraic inverse is asymptotically b
 \end{algorithm}
 
 
+\todo[disable]{What is this voxel $X$? Do you mean $\mathbf{i}$? In any case, some more explanations would be helpful.}
+\todo[disable]{How can you conclude that and what does this mean exatly? Did you introduce the stochastic terminology already?}
+\todo[disable]{Why do we need the expectation to the noise?}
+\todo[disable]{Is the acronym VST already defined? Those are usually spelled out at first use, not only in once in some acronym table.}\tododone[disable]{Yes it happens automatically. It's defined in the introduction of the chapter. If preferred, I can redefine here.}
+\todo[disable]{It would be helpful to state that one starts here with data samples from a distribution where the variance depends on the signal (pointing to the previous section as an example).}
+\todo[disable]{Stat from where to here $T$ maps, I guess it is meant to map non-negative numbers to non-negative numbers, e.g., $T:[0,\infty)\to[0,\infty),X\mapsto...$.}
+\todo[disable]{Is this supposed to use an array notation? In the sense that $X$ is a 2D-array? If so, I would first state what it does with a single intensity value.}
+\todo[disable]{In which sense approximately? I'd say that a plot of the variance before and after stabilization would be very illustrative here.}.
