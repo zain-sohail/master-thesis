@@ -11,7 +11,7 @@ For a light source with a constant flux\footnote{Flux is the average number of p
     P(n) = \binom{N}{n} p^n (1 - p)^{N - n}
 \end{equation}
 
-Using the Poisson Limit Theorem \cite{fellerIntroductionProbabilityTheory1968}, it can be shown that as $N \to \infty$, and the probability $p \to 0$ such that $Np = \lambda$ remains constant, there is a convergence in distribution to the Poisson distribution (\cref{note:poisson-distribution}). Hence, the Poisson distribution is a suitable model for counting statistics of photons from a coherent light source.
+Using the Poisson Limit Theorem \cite{fellerIntroductionProbabilityTheory1991a}, it can be shown that as $N \to \infty$, and the probability $p \to 0$ such that $Np = \lambda$ remains constant, there is a convergence in distribution to the Poisson distribution (\cref{note:poisson-distribution}). Hence, the Poisson distribution is a suitable model for counting statistics of photons from a coherent light source.
 
 \subsection*{Photoelectron Counting}
 \citeauthor{mandelFluctuationsPhotonBeams1958} \cite{mandelFluctuationsPhotonBeams1958,mandelFluctuationsPhotonBeams1959} and others have shown that the transition probability of an electron from its ground state to an unbounded state at the surface of a photodetector is directly proportional to both the duration of the time interval $\Delta t$ and the instantaneous light intensity $I(t)$. This suggests that the rate density of photoelectrons is proportional to the light intensity $\lambda(t) \propto \int_{A} I(t)$, where $A$ is the detector area.
@@ -28,7 +28,7 @@ If the rate density function is constant, $\Lambda(t) = \Lambda$, the process is
 
 % Such is the case if the light source is a \gls{SASE} \gls{FEL}, where the intensity of light fluctuates stochastically (see \cref{section:light-sources} for why this happens). Due to this process, the photoelectron counting statistics in this case also deviate from the Poisson distribution, as we shall see later.
 
-Integrating light intensity $I(t)$ over the time interval $\Delta t$ can be treated as a \gls{rv} with probability density $P(W)$, with $W$ as:
+Integrating light intensity $I(t)$ over the time interval $\Delta t$ can be treated as a random variable with probability density $P(W)$, with $W$ as:
 \begin{equation}
     W = \int_{\Delta t}^{t+\Delta t} I(t') dt
 \end{equation}
@@ -97,7 +97,7 @@ It must be noted that for \gls{HHG} sources, \citeauthor{gorlachQuantumopticalNa
 \end{figure}
 
 \subsection*{SASE FEL Light Source}
-Analyzing this data requires a few additional considerations. In \cref{section:dld}, we already saw that the \num{8}S \gls{DLD} shows repeated counts for a single electron, due to the segmented structure. From preliminary analysis of counting statistics shown in \cref{fig:grir-stats-dld-comparison}, it can be seen that this has a significant impact on the counting statistics, where the \num{2}-event occurrence is unnaturally high compared to the others (\cref{fig:grir-stats-2-layer}). Therefore, this analysis will only consider a single layer (from the 2-layered delay-line structure), and ideally a volumetric subset from a single sector.
+Analyzing this data requires a few additional considerations. In \cref{section:dld}, we already saw that the \num{8}S \gls{DLD} shows repeated counts for a single electron, due to the segmented structure. From preliminary analysis of counting statistics shown in \cref{fig:grir-stats-dld-comparison}, it can be seen that this has a significant impact on the counting statistics, where the \num{2}-event occurrence is unnaturally high compared to the others (\cref{fig:grir-stats-2-layer}). Therefore, this analysis will only consider a single layer (from the 2-layered delay-line structure), and ideally a volumetric subset from a single segment\footnote{Due to the overlap between segments.}.
 
 
 
@@ -117,7 +117,7 @@ Analyzing this data requires a few additional considerations. In \cref{section:d
 \end{figure}
 
 
-The second consideration is the long-term intensity drifts in the \gls{FEL} light source. \cref{fig:gmd-intensity} shows the beam intensity measurements (measured using \gls{GMD}) over the time period $T=\qty{30}{hour}$, with data window-averaged at \qty{1}{min} intervals. The long-term drifts in intensity, and the beam interruptions due to accelerator operation can be observed. For analysis, we look at the data from the orange, green, and red spans. With no beam interruptions in the orange and red span, the expectation is that it follows the \gls{NB} distribution. Whereas, the counting statistics would differ in the green span due to the beam interruptions.
+The second consideration is the long-term intensity drifts in the \gls{FEL} light source. \cref{fig:gmd-intensity} shows the beam intensity measurements\footnote{Measured using \gls{GMD}, see \gls{gmd}} over the time period $T=\qty{30}{hour}$, with data window-averaged at \qty{1}{min} intervals. The long-term drifts in intensity, and the beam interruptions due to accelerator operation can be observed. For analysis, we look at the data from the orange, green, and red spans. With no beam interruptions in the orange and red span, the expectation is that it follows the \gls{NB} distribution. Whereas, the counting statistics would differ in the green span due to the beam interruptions.
 
 
 We continue looking at the \gls{GrIr} dataset from previous chapters. We look at a broad range of time intervals, as the count rate is much lower compared to the \gls{HHG} source. The pulse structure of the \gls{FEL} is more complex, as illustrated in \cref{fig:hex-tof}. The macrobunches (see \gls{train}) arrive at a repetition rate of \qty{10}{Hz}, meaning a new train of \glspl{pulse} arrives every \qty{100}{ms}.

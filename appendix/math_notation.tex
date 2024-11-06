@@ -2,9 +2,9 @@
 \label{appendix:mathematical-notation}
 
 \section{Law of Large Numbers}\label{section:law-of-large-numbers}
-Consider a sequence of \gls{iid} \glspl{rv} $X_1, X_2, \dots, X_n$ defined on the probability space $(\Omega, \mathcal{A}, P)$ (see \cref{section:probability-notation}), representing the number of detected events in different intervals. Since the \gls{rv} are \gls{iid}, the expected value $\mu$ of each $X_i$ is the same. The true mean (or expected value) of these \glspl{rv} can be defined as $\mu = \mathbb{E}(X_1)$, and the variance as $\sigma^2 = Var(X_1)$.
+Consider a sequence of \gls{iid} random variables $X_1, X_2, \dots, X_n$ defined on the probability space $(\Omega, \mathcal{A}, P)$ (see \cref{section:probability-notation}), representing the number of detected events in different intervals. Since the random variable are \gls{iid}, the expected value $\mu$ of each $X_i$ is the same. The true mean (or expected value) of these random variables can be defined as $\mu = \mathbb{E}(X_1)$, and the variance as $\sigma^2 = Var(X_1)$.
 
-Formally, by the \gls{LLN}\footnote{Specifically, the weak \gls{LLN}, which also has a stronger variant proving \gls{as} convergence.}, the sample mean $\bar{X_n} = \frac{1}{n} \sum_{i=1}^{n} X_i$ converges in probability to the expected value $\mu$ as $n \to \infty$ \cite{fellerIntroductionProbabilityTheory1968}:
+Formally, by the law of large numbers\footnote{Specifically, the weak law of large numbers, which also has a stronger variant proving almost surely (a.s.) convergence.}, the sample mean $\bar{X_n} = \frac{1}{n} \sum_{i=1}^{n} X_i$ converges in probability to the expected value $\mu$ as $n \to \infty$ \cite{fellerIntroductionProbabilityTheory1991a}:
 \begin{equation}
     \lim_{n \to \infty} P(|\bar{X_n} - \mu| > \epsilon) = 0
 \end{equation}
@@ -14,7 +14,7 @@ The rate of convergence to $\bar{X_n}$ is of practical importance, as it indicat
     \left|\bar{X_n} - \mu\right| = \mathcal{O}\left(\frac{1}{\sqrt{n}}\right)
 \end{equation}
 
-indicating that the relative fluctuations decrease with an increased number of observations \gls{ncounts}.  Since $n \propto T$, increasing the acquisition time $T$ reduces the sample mean fluctuations. While convergence rate described by $\mathcal{O}\left(\frac{1}{\sqrt{n}}\right)$ is a fundamental result, the constant that accompanies this rate is distribution dependent, and can affect the convergence rate. The Big O notation, denoted as $\mathcal{O}(g(n))$, describes an upper bound on the time complexity of an algorithm or the growth rate of a function.
+indicating that the relative fluctuations decrease with an increased number of observations \gls{ncounts}.  Increasing the acquisition time $T$ reduces the sample mean fluctuations, since $n \propto T$. While convergence rate described by $\mathcal{O}\left(\frac{1}{\sqrt{n}}\right)$ is a fundamental result, the constant that accompanies this rate is distribution dependent, and can affect the convergence rate. The Big O notation, denoted as $\mathcal{O}(g(n))$, describes an upper bound on the time complexity of an algorithm or the growth rate of a function.
 
 \section{Measure Space and Measures}
 \label{section:measurable_space}
@@ -63,20 +63,20 @@ A \textit{probability measure} $P: \mathcal{A} \to [0, 1]$ satisfies all the pro
 This leads to the measure space for probability (or probability space) being $(\Omega, \mathcal{A}, P)$. The probability of an event $A \in \mathcal{A}$ is $P(A)$. The probability measure is hence a real number between 0 and 1 that defines the likelihood of an event to occur.
 \end{note}
 
-In the \textit{frequentist} interpretation, probability is defined as the long-run relative frequency of an event occurring in repeated independent trials. It assumes that probabilities are objective and intrinsic properties of the physical world. For example, the probability of getting heads in a fair coin toss is 0.5, meaning that if we were to toss the coin an infinite number of times, half of the outcomes would be heads.
+% In the \textit{frequentist} interpretation, probability is defined as the long-run relative frequency of an event occurring in repeated independent trials. It assumes that probabilities are objective and intrinsic properties of the physical world. For example, the probability of getting heads in a fair coin toss is 0.5, meaning that if we were to toss the coin an infinite number of times, half of the outcomes would be heads.
 
-The \textit{Bayesian} interpretation, on the other hand, views probability as a measure of belief or certainty about an event, given the available information. It is inherently subjective and updates as new evidence is introduced. For instance, if we initially believe that a coin is fair, but after observing several tosses we notice a bias, we update our belief (and hence the probability) to reflect the new evidence. This process of updating beliefs is formalized through \textit{Bayes' rule}, which is a cornerstone of Bayesian inference.
+% The \textit{Bayesian} interpretation, on the other hand, views probability as a measure of belief or certainty about an event, given the available information. It is inherently subjective and updates as new evidence is introduced. For instance, if we initially believe that a coin is fair, but after observing several tosses we notice a bias, we update our belief (and hence the probability) to reflect the new evidence. This process of updating beliefs is formalized through \textit{Bayes' rule}, which is a cornerstone of Bayesian inference.
 
-\begin{note}{Law of Total Probability}
-    The law of total probability provides a way to compute the probability of an event based on a partition of the sample space. If $\{B_i\}_{i=1}^{n}$ is a partition of the sample space $\Omega$ (i.e., $B_i \cap B_j = \emptyset$ for $i \neq j$ and $\bigcup_{i=1}^{n} B_i = \Omega$), then for any event $A$:
+% \begin{note}{Law of Total Probability}
+%     The law of total probability provides a way to compute the probability of an event based on a partition of the sample space. If $\{B_i\}_{i=1}^{n}$ is a partition of the sample space $\Omega$ (i.e., $B_i \cap B_j = \emptyset$ for $i \neq j$ and $\bigcup_{i=1}^{n} B_i = \Omega$), then for any event $A$:
 
-    \begin{equation}
-        P(A) = \sum_{i=1}^{n} P(A \mid B_i) P(B_i).
-    \end{equation}
+%     \begin{equation}
+%         P(A) = \sum_{i=1}^{n} P(A \mid B_i) P(B_i).
+%     \end{equation}
     
-    This law is particularly useful when dealing with complex events that can be decomposed into simpler, mutually exclusive cases.
+%     This law is particularly useful when dealing with complex events that can be decomposed into simpler, mutually exclusive cases.
     
-\end{note}
+% \end{note}
 
 \subsection*{Distributions}
 \begin{note}
@@ -123,6 +123,15 @@ For overdispersed count data, the \gls{NB} is suitable.
 
 
 For relation between Poisson, \gls{NB} and Gamma distributions, see \cite{barry2020gamma}. It can be shown that \gls{NB} converges to Poisson as $r \to \infty$. The \gls{NB} distribution can also be considered as a mixture of Poisson distributions with a Gamma prior on the rate parameter $\lambda$.
+
+% \subsection{Central Limit Theorem}
+% % Central Limit Theorem (CLT)
+% Consider again a sequence of \gls{iid} random variables $X_1, X_2, \dots, X_n$ defined on the probability space $(\Omega, \mathcal{A}, P)$. The Central Limit Theorem states that for such an \gls{iid} sequence with mean $\mu$ and variance $\sigma^2$, the normalized sum of these variables converges in distribution to the standard normal distribution as $n$ tends to infinity:
+
+% \begin{equation}
+%     \frac{\sum_{i=1}^{n} X_i - n\mu}{\sigma \sqrt{n}} \xrightarrow{d} \mathcal{N}(0, 1) \quad \text{as} \quad n \to \infty.
+% \end{equation}
+
 % \begin{note}{Conditional Probability}
 %     Conditional probability quantifies the probability of an event occurring given that another event has already occurred. If $A$ and $B$ are two events in a probability space with $P(B) > 0$, the \textit{conditional probability} of $A$ given $B$ is defined as:
     
