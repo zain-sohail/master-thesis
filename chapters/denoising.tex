@@ -281,7 +281,7 @@ A closed form approximation of $I_C$ is also provided in \cite{makitaloClosedFor
 \end{equation}
 
 \subsection{The Anscombe BM3D Algorithm}
-Extending the Anscombe transform $T_A$ and the exact inverse $I_C$ to apply on all voxels of the noisy image $X$, allows to use the \gls{BM3D} algorithm (shown in \cref{alg:bm3d}) for denoising Poisson corrupted images. This scheme can be seen in \cref{alg:anscombe-bm3d}, allowing to get an estimate of the latent clean image $Y$ from the noisy image $X$. This method has been shown to perform better than methods based on explicit Poisson noise removal \cite{makitaloOptimalInversionAnscombe2011}. Therefore, in the next chapter we make use of the scheme described in \cref{alg:anscombe-bm3d} to denoise 2D image slices from \gls{MPES} data.
+Extending the Anscombe transform $T_A$ and the exact inverse $I_C$ to apply on all voxels $x_{\mathbf{i}}$ of the noisy image $X$, allows to use the \gls{BM3D} algorithm (shown in \cref{alg:bm3d}) with Anscombe transform for denoising Poisson corrupted images. This scheme can be seen in \cref{alg:anscombe-bm3d}, allowing to get an estimate of the latent clean image $Y$ from the noisy image $X$. This method has been shown to perform better than methods based on explicit Poisson noise removal \cite{makitaloOptimalInversionAnscombe2011}. Therefore, in the next chapter we make use of the scheme described in \cref{alg:anscombe-bm3d} to denoise 2D image slices from \gls{MPES} data.
 
 \begin{algorithm}
     \caption{Algorithm to Denoise Poisson Corrupted Images}\label{alg:anscombe-bm3d}
@@ -309,7 +309,7 @@ Extending the Anscombe transform $T_A$ and the exact inverse $I_C$ to apply on a
 \todo[disable]{It would be helpful to state that one starts here with data samples from a distribution where the variance depends on the signal (pointing to the previous section as an example).}
 \todo[disable]{Stat from where to here $T$ maps, I guess it is meant to map non-negative numbers to non-negative numbers, e.g., $T:[0,\infty)\to[0,\infty),X\mapsto...$.}
 \todo[disable]{Is this supposed to use an array notation? In the sense that $X$ is a 2D-array? If so, I would first state what it does with a single intensity value.}
-\todo[disable]{In which sense approximately? I'd say that a plot of the variance before and after stabilization would be very illustrative here.}.
+\todo[disable]{In which sense approximately? I'd say that a plot of the variance before and after stabilization would be very illustrative here.}
 \todo[disable]{Bad notation. $\mathbb{x}$ is usually the set of integers.}
 \todo[disable]{I don't understand this part and what you do with the expectation here. Why is this more than just ``apply $T$, denoise, apply $T^{-1}$''?}
 \todo[disable]{I don't see how the non-linearity of the transformation should result in ``an'' algebraic inverse to be asymptocically biased. It's not even clear what you mean with the term ``asymptocically biased''. For the algebraic inverse, I guess you mean by the inverse you get by solving (3.8) for $X$.}
