@@ -50,12 +50,12 @@ Measurement of more than three dimensions is generally referred to as \gls{MPES}
 \section{Light Sources}\label{section:light-sources}
 As discussed in the previous section, the light source plays a critical role in both \gls{PES} and \gls{trPES}. Other than the necessary high fluence, monochromatic\footnote{Truly monochromatic radiation is physically impossible, and generally a range is considered.} \gls{XUV} energy and high repetition rate sources are necessary to probe the material, and acquire large amount of data quickly. \Gls{trPES} further requires the source to be temporally coherent, with pulse durations on the order of \unit{fs}.
 
-\subsection*{HHG}
+\subsection{HHG}
 The most ubiquitous of light sources--the laser--revolutionized experimental science as it enabled a vast range of phenomena to be precisely tested and observed, due to its high spatial and temporal coherence properties. A laser produces its light through a process known as stimulated emission, a process in which electrons, excited to higher energy states by an external energy source, emit photons as they return to lower energy states. These emitted photons, in turn, stimulate other electrons to release additional photons, leading to a cascade of coherent light.
 
 To generate ultrafast, \gls{XUV} light, necessary to probe electronic states in materials, \gls{HHG} is a widely used technique. The \Gls{HHG} principle operates by converting the frequency of \unit{fs} laser pulses into higher harmonic frequencies, resulting in coherent light spanning from extreme ultraviolet to soft x-ray ranges. This is achieved through the non-linear interaction of an intense laser pulse with a gaseous medium, in which electrons are released, accelerated, and then collided with their parent atoms, releasing photons at harmonic multiples of the laser’s original frequency. This approach enables the generation of ultrashort light pulses with energies typically ranging from \qtyrange{10}{100}{eV}, which is well-suited for \gls{trPES} \cite{macklinHighorderHarmonicGeneration1993}. Later in this thesis, we analyze \gls{WSe2} experimental data obtained with a \gls{HHG} source.
 
-\subsection*{Free-Electron Laser}
+\subsection{Free-Electron Laser}
 Particle accelerators, initially used for high energy physics experiments, which produce radiation as a byproduct of particles accelerating, found their use in spectroscopy. Soon, dedicated facilities providing extremely bright and tunable source of electromagnetic radiation emerged such as Synchrotrons and \glspl{FEL}.
 While Synchrotrons are excellent sources of light for a multitude of experiments, they have limitations in terms of the temporal coherence of the light produced. \Glspl{FEL} are linear particle accelerators that produce a pulsed light source with a high temporal coherence, and energies to probe core and deep valence electrons. There are two modes under which \glspl{FEL} operate: \gls{SASE} and seeded.
 
@@ -95,14 +95,21 @@ The \gls{MM} exploits the basic concept from optics where the reciprocal of an i
 
 The kinetic energies of photoelectrons are resolved through a TOF spectrometer, which consists of a field-free drift tube. In the drift tube, photoelectrons are separated in energy due to their differences in velocity and hit the detector at different times. This setup requires pulsed photon sources, such as the earlier discussed \gls{FEL} and \gls{HHG} sources.
 
-\Glspl{MM} also include a \gls{PEEM} mode, allowing real-space imaging of the sample surface by adjusting the lens system to map the spatial electron distribution instead of momenta. \gls{PEEM}  is useful for verifying the spatial overlap of excitation beams and facilitates precise alignment of photon beam positions and focus on the sample.
+\Glspl{MM} also include a \gls{PEEM} mode, allowing real-space imaging of the sample surface by adjusting the lens system to map the spatial electron distribution instead of momenta. \gls{PEEM} is useful for verifying the spatial overlap of excitation beams and facilitates precise alignment of photon beam positions and focus on the sample. An example of a \gls{PEEM} image can be seen in \cref{fig:chessy-distribution}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{images/chessy_deblurring_merged_events.png}
+    \caption{Chessy sample before and after merging double-counted events, showing better resolved features. Chessy test sample is employed to determine the spatial overlap and field of view alignment in a momentum microscope using the \gls{PEEM} mode. Courtesy of M. Heber.}
+    \label{fig:chessy-distribution}
+\end{figure}
 
 The \gls{HEXTOF} instrument \cite{kutnyakhovTimeMomentumresolvedPhotoemission2020}, shown in \cref{fig:hex-tof}, is based on this \gls{TOF}-\gls{MM} scheme to perform core- and valence-electron time- and momentum-resolved studies at \gls{FLASH}, utilizing a specialized \num{8}S-\gls{DLD} for capturing electron distributions, discussed in the next section. This instrument captured majority of the data presented in this thesis,  with the exception of \gls{WSe2} data, captured using another instrument.
 
 One of the standout features of \gls{HEXTOF} is its multidimensional recording scheme. This approach allows for simultaneous measurement of multiple parameters that can be related to the complete momentum space \gls{kx}, \gls{ky}, \gls{kz}, energy \gls{E}, and delay time \gls{tpp}. The \gls{kx} and \gls{ky} are recorded based on the direction of the emitted electrons, while the \gls{kz} is determined by tuning the photon source. The \gls{E} is determined by the time-of-flight of the electrons, and the \gls{tpp} is the delay between the pump and probe pulses. More recently, the spin branch has been explored and spin polarization added to the list of parameters that can be measured. 
 
 \section{Delay Line Detector}\label{section:dld}
-\subsection*{Microchannel Plate}
+\subsection{Microchannel Plate}
 Individual electrons released by the photoemission process are difficult to directly detect due to their small charge.  Therefore, it is necessary to have an amplification process to allow their detection. \Gls{MCP} is one such amplifier, that is sensitive to electrons\footnote{\Glspl{MCP} are versatile as they are also sensitive to high energy photons in the \gls{XUV} regime, and also to charged particles.}
 
 \begin{figure}[h]
@@ -131,7 +138,7 @@ The amplified charge cloud is then collected by a readout system, such as  phosp
 
 Pixelated detectors, which divide the anode into discrete segments, provide an alternative means to capture spatial information with high precision. However, the need to read each pixel individually limits their processing speed, as each pixel must be sequentially analyzed. While this approach supports multiple simultaneous hits across the pixel grid, it remains inadequate for experiments requiring rapid data acquisition and precise temporal resolution. Improvements in the readout speed have been suggested and the prospect of using pixelated detectors in future experiments is being realized \todocite{Pixelated detector citation needed}.
 
-\subsection*{MCP with Delay-line readout}
+\subsection{MCP with Delay-line readout}
 \begin{figure}
     \centering
     \includegraphics[width=0.9\linewidth]{images/dld.pdf}
@@ -144,16 +151,9 @@ The \gls{DLD} is also able to record the electron \gls{TOF}, which is synchroniz
 
 The issue with these detectors is that the meanders experience a dead-time on the \unit{ns} scale after each event. This allows only some collected electrons to be detected, necessitating a higher acquisition time. An alternative to this is segmenting the detector. One way is to add more 2D meanders and assign them to different sections of the \gls{MCP} (with overlaps to have no missing location), such as having the meanders in different quadrants of the \gls{MCP}. This allows for the detection of multiple electrons simultaneously. Another is to layer these meanders behind each other, as the meander experiencing dead-time is mostly invisible to the electrons, and the next layer can detect the electrons. Stacking up to \num{128} meander layers is currently under development \cite{oelsnerTimeEnergyResolved2010}.
 
-\subsection*{HEXTOF 8Q-DLD}
+\subsection{HEXTOF 8Q-DLD}
 The detector used in the \gls{HEXTOF} instrument uses a combination of these approaches, with a 2-layer, 4-quadrant structure, known as the 8Q-DLD. The 8Q-DLD is hence capable of detecting multiple electrons simultaneously, providing a more comprehensive view of the photoelectron distribution. However, the multi-layer detection scheme comes with a caveat: when an electron cloud strikes in locations where two quadrants meet\footnote{This is always the case for 2 or more layered schemes.}, special adjustments need to be made to not detect the event twice. To that end, layers must be appropriately calibrated otherwise the electron counting routines can report multiple events for the same electron, reporting different momentum and energy values for the same electron event. 
 
 With a correlation analysis on the photoelectrons generated in pulses, this effect has been observed by \citeauthor{heberStudiesUltrafastDynamics2024} \cite{heberStudiesUltrafastDynamics2024}. This effect not only wrongly counts electrons but also distorts (blurs) the momentum distribution. \citeauthor{heberStudiesUltrafastDynamics2024} further demonstrates that by first finding the multi-counted events and averaging them, the resolution of \gls{MM} can be improved as can be seen on the right of \cref{fig:chessy-distribution}, compared to the distorted distribution on the left.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.7\linewidth]{images/chessy_deblurring_merged_events.png}
-    \caption{Chessy sample before and after merging double-counted events, showing better resolved features. Chessy test sample is employed to determine the spatial overlap and field of view alignment in a momentum microscope using the \gls{PEEM} mode. Courtesy of M. Heber.}
-    \label{fig:chessy-distribution}
-\end{figure}
 
 For the interested reader, we also point to the work by \citeauthor{knipferDeepLearningbasedSpatiotemporal2024} who have proposed a deep learning based method to reconstruct the events accurately \cite{knipferDeepLearningbasedSpatiotemporal2024}, significantly improving reconstruction done by prior \gls{DLD} codes.

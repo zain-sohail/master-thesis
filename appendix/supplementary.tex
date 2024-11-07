@@ -29,9 +29,10 @@ Finally, the schema of the buffer files is cross-validated against the predefine
     \label{fig:elt}
     \centering
     \includegraphics[width=0.7\linewidth]{images/elt_cropped.png}
-    \caption{Complete \gls{ELT} pipeline for the data from \gls{HEXTOF} at \gls{FLASH}}
+    \caption{Complete \gls{ELT} pipeline for the data from \gls{HEXTOF} at \gls{FLASH}.}
 \end{figure}
 
+\FloatBarrier
 \section{Metrics}\label{sec:metrics}
 
 \Gls{MSE} is a common measure of the average squared differences between predicted values and actual values. It quantifies the error in a model’s predictions, where lower values indicate better performance. It is sensitive to outliers since squaring the differences amplifies larger errors.
@@ -92,6 +93,7 @@ Finally, the schema of the buffer files is cross-validated against the predefine
 
 The metric implementations used in this thesis are either \texttt{PIQA} library \href{https://github.com/francois-rozet/piqa}{https://github.com/francois-rozet/piqa}, or \texttt{skimage} library \href{https://scikit-image.org/}{https://scikit-image.org/}.
 
+\FloatBarrier
 \section{Experiment: Metric Comparison}\label{sec:metric_comparison_experiment}
 
 The objective of this experiment is to evaluate the effectiveness of various image quality metrics (\gls{MSE}, \gls{PSNR}, \gls{SSIM}, and \gls{MSSSIM}) when the provided reference is noisy. Specifically, reconstructed images from a trained neural network, that has shown clear improvements in perpetual quality, are compared against the high-count but noisy reference. Examples of such images at different counts can be seen in Figure~\ref{fig:images-noisy-denoised-training}, which shows how the noisy images are devoid of any features at low counts, while the denoised images show clear features similar to the target. For this analysis, it is not relevant if the high quality reconstructions are due to overfitting or not, but rather that they produce perpetually better quality images (sometimes even compared to the target). So the hope is that the metrics acknowledge this improvement.
@@ -99,58 +101,77 @@ The objective of this experiment is to evaluate the effectiveness of various ima
 
 The \gls{GrIr} dataset is used, with electron counts ranging from \numrange{1e6}{3.2e7}. For each total count, a set of 2D noisy images (referred to as noisy slices) is extracted from the dataset. Corresponding high-count 2D slices (referred to as target slices) are used as reference images for comparison (from the dataset with \num{1.86e8} counts). Likewise, reconstructed images from the neural network are also compared against the target slices.
 
-\begin{table}[h]
-    \centering
-    \caption{Comparison Types and Metrics}
-    \begin{tabular}{p{0.24\linewidth} | p{0.49\linewidth} | p{0.19\linewidth}}
-        \hline
-        \textbf{Comparison Type} & \textbf{Description} & \textbf{Metrics Evaluated} \\
-        \hline
-        Noisy & Input image is a noisy realization of target & MSE, PSNR, SSIM, MS-SSIM \\
-        \hline
-        Denoised & Input image is perpetually of better quality & MSE, PSNR, SSIM, MS-SSIM \\
-        \hline
-    \end{tabular}
-    \caption{Comparison types and metrics evaluated in the experiment. This is repeated for single slice and window-averaged images.}
-    \label{tab:comparison_types}
-\end{table}
+% \begin{table}[h]
+%     \centering
+%     \caption{Comparison Types and Metrics}
+%     \begin{tabular}{p{0.24\linewidth} | p{0.49\linewidth} | p{0.19\linewidth}}
+%         \hline
+%         \textbf{Comparison Type} & \textbf{Description} & \textbf{Metrics Evaluated} \\
+%         \hline
+%         Noisy & Input image is a noisy realization of target & MSE, PSNR, SSIM, MS-SSIM \\
+%         \hline
+%         Denoised & Input image is perpetually of better quality & MSE, PSNR, SSIM, MS-SSIM \\
+%         \hline
+%     \end{tabular}
+%     \caption{Comparison types and metrics evaluated in the experiment. This is repeated for single slice and window-averaged images.}
+%     \label{tab:comparison_types}
+% \end{table}
 
 The metric evaluation procedure involves a data loader, implemented using the \texttt{PyTorch Dataset} class, which iterates through the different datasets and extracts noisy and target 2D image slices (window-averaged or single slice). For each pair of noisy and target slices, the metrics are computed. The comparison results are then grouped by acquisition count and type (noisy vs. denoised).
 
-This metric comparison is performed with \num{1638} images sliced along each dimension of the dataset. The results are aggregated and a 95\% confidence interval is calculated for each metric to assess the reliability of the comparison. Table~\ref{tab:comparison_types} summarizes the comparison types and metrics evaluated in this experiment, repeated for both single slice and window-averaged images.
-
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.7\linewidth]{images/metrics_comparison_same_target.pdf}
-    \caption{Comparison of image quality metrics (\gls{MSE}, \gls{PSNR}, \gls{SSIM}, \gls{MSSSIM}) with noisy realization of a noisy target. The metrics show improved results with increased electron counts, as noise levels decrease. \gls{MSSSIM} shows the best relative improvement in metrics lower counts below \num{e7}.}
-    \label{fig:metrics-comparison-noisy}
-\end{figure}
-
-Comparing the noisy images with target, all metrics trivially show an improvement with increased counts (less noise) (see Figure~\ref{fig:metrics-comparison-noisy}). However, \gls{MSE}, \gls{PSNR} and \gls{SSIM} show deteriorated metrics when comparing against perpetually high quality images (Figure~\ref{fig:metrics-comparison}). This can be attributed to the presence of noise in the reference image. For higher counts, \gls{SSIM} manages to show improved results, whereas \gls{MSE} and \gls{PSNR} report consistently worse results compared to the noisy images. \gls{MSSSIM} consistently reports better results with the higher quality images, making it the most reliable metric for evaluation.
-
+This metric comparison is performed with \num{1638} images sliced along each dimension of the dataset. The results are aggregated and a 95\% confidence interval is calculated for each metric to assess the reliability of the comparison. 
+% Table~\ref{tab:comparison_types} summarizes the comparison types and metrics evaluated in this experiment, repeated for both single slice and window-averaged images.
 \begin{figure}
     \centering
-    \includegraphics[width=0.7\linewidth]{images/metrics_comparison_denoised_noisy.pdf}
-    \caption{Shows comparison of evaluating metrics (\gls{MSE}, \gls{PSNR}, \gls{SSIM}, \gls{MSSSIM}) with the input being a noisy realization of target or denoised version of that realization. Both are compared to a high-count target that is also noisy. Trivially, all metrics show an improvement when the counts increase. However, \gls{MSE} and \gls{PSNR} evaluate better when the input is noisy, while \gls{SSIM} and \gls{MSSSIM} show better results when the input is denoised. The gap between noisy and denoised is more pronounced for \gls{MSSSIM} than \gls{SSIM}, hence the better metric. }
-   \label{fig:metrics-comparison}
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/metrics_comparison_denoised_noisy.pdf}
+        \caption{Comparison of input and target images window averaged with $w=1$. All metrics improve as counts increase, though \gls{MSE} and \gls{PSNR} show better results for noisy inputs, while \gls{SSIM} and \gls{MSSSIM} favor denoised inputs. \gls{MSSSIM} shows the greatest improvement, indicating it is less sensitive to noise and focused more on perpetual quality.}
+        \label{fig:metrics-comparison}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/metrics_comparison_denoised_noisy_averaged.pdf}
+        \caption{Comparison of input and target images window averaged with $w=1$ and $w=10$, respectively. All metrics improve much faster as counts increase. With a window-averaged target, \gls{MSE} and \gls{PSNR} start to favor the noisy input. \gls{SSIM} shows improvement that the perpetually better images are preferred at all counts. \gls{MSSSIM} exhibits a further separation between noisy and denoised inputs.}
+        \label{fig:metrics-comparison-averaged-target}
+    \end{subfigure}
+    \caption{Evaluation of metrics (\gls{MSE}, \gls{PSNR}, \gls{SSIM}, \gls{MSSSIM}) for noisy and denoised inputs, comparing against noisy input and (less) noisy target slices.}
+    \label{fig:combined-metrics-comparison}
 \end{figure}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=0.7\linewidth]{images/metrics_comparison_denoised_noisy_averaged.pdf}
-    \caption{Metrics comparison for noisy 2D slices against a window-averaged target slice. For \gls{MSE} and \gls{PSNR}, the window-averaged target lowers the reported metrics. \Gls{SSIM} shows a small improvement over the noisy target, while \gls{MSSSIM} shows a large improvement.}
-    \label{fig:metrics-comparison-averaged-target}
-\end{figure}
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=0.7\linewidth]{images/metrics_comparison_same_target.pdf}
+%     \caption{Comparison of image quality metrics (\gls{MSE}, \gls{PSNR}, \gls{SSIM}, \gls{MSSSIM}) with noisy realization of a noisy target. The metrics show improved results with increased electron counts, as noise levels decrease. \gls{MSSSIM} shows the best relative improvement in metrics lower counts below \num{e7}.}
+%     \label{fig:metrics-comparison-noisy}
+% \end{figure}
 
-Additionally, we investigate the effect of window-averaged reference images on the metrics. Results in \cref{fig:metrics-comparison-averaged-target} indicate that window-averaged image as reference generally makes the metric prefer the noisy realization, except in the case of \gls{MSSSIM}, where the gap between the metrics calculated with noisy and high quality images split up further. Consequently, we adopt the window-averaged images as reference for the denoising evaluation.
+Comparing the noisy images with target, all metrics trivially show an improvement with increased counts (less noise) (see \cref{fig:metrics-comparison}). However, \gls{MSE}, \gls{PSNR} and \gls{SSIM} show deteriorated metrics when comparing against perpetually high quality images. This can be attributed to the presence of noise in the reference image. For higher counts, \gls{SSIM} manages to show improved results, whereas \gls{MSE} and \gls{PSNR} report consistently worse results compared to the noisy images. \gls{MSSSIM} consistently reports better results with the higher quality images, making it the most reliable metric for evaluation.
 
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.7\linewidth]{images/metrics_comparison_denoised_noisy.pdf}
+%     \caption{Shows comparison of evaluating metrics (\gls{MSE}, \gls{PSNR}, \gls{SSIM}, \gls{MSSSIM}) with the input being a noisy realization of target or denoised version of that realization. Both are compared to a high-count target that is also noisy. Trivially, all metrics show an improvement when the counts increase. However, \gls{MSE} and \gls{PSNR} evaluate better when the input is noisy, while \gls{SSIM} and \gls{MSSSIM} show better results when the input is denoised. The gap between noisy and denoised is more pronounced for \gls{MSSSIM} than \gls{SSIM}, hence the better metric. }
+%    \label{fig:metrics-comparison}
+% \end{figure}
 
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.7\linewidth]{images/metrics_comparison_denoised_noisy_averaged.pdf}
+%     \caption{Metrics comparison for noisy 2D slices against a window-averaged target slice. For \gls{MSE} and \gls{PSNR}, the window-averaged target lowers the reported metrics. \Gls{SSIM} shows a small improvement over the noisy target, while \gls{MSSSIM} shows a large improvement.}
+%     \label{fig:metrics-comparison-averaged-target}
+% \end{figure}
+
+Additionally, we investigate the effect of window-averaged reference images on the metrics. Results in \cref{fig:metrics-comparison-averaged-target} indicate that window-averaged image as reference generally makes the metric prefer the noisy realization, except in the case of \gls{SSIM} and \gls{MSSSIM}, in the latter of which the gap between the metrics calculated with noisy and high quality images split up further. Consequently, we adopt the window-averaged images as reference for the denoising evaluation.
+
+\FloatBarrier
 \section{Deep Learning Infrastructure}
 Model Architecture: UNET 2D and 3D
 
 Trained on A100 GPU 80 GB using Maxwell Cluster at DESY. 
 
+\FloatBarrier
 \section{Supplementary Figures for Deep Learning based Denoising}
 \begin{figure}[h]
     \centering
@@ -180,7 +201,7 @@ Trained on A100 GPU 80 GB using Maxwell Cluster at DESY.
     \label{fig:nn-denoised-xy-20-slice}
 \end{figure}
 
-\break
+\FloatBarrier
 \section{Supplementary Figures for Photoelectron Counting Statistics}
 The following section outlines the counting statistics observed for \gls{PES} at two different light sources: a pulsed laser (\gls{WSe2} dataset), and a \gls{SASE} \gls{FEL} light source (\gls{GrIr} dataset). 
 

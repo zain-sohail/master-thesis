@@ -13,7 +13,7 @@ For a light source with a constant flux\footnote{Flux is the average number of p
 
 Using the Poisson Limit Theorem \cite{fellerIntroductionProbabilityTheory1991a}, it can be shown that as $N \to \infty$, and the probability $p \to 0$ such that $Np = \lambda$ remains constant, there is a convergence in distribution to the Poisson distribution (\cref{note:poisson-distribution}). Hence, the Poisson distribution is a suitable model for counting statistics of photons from a coherent light source.
 
-\subsection*{Photoelectron Counting}
+\subsection{Photoelectron Counting}
 \citeauthor{mandelFluctuationsPhotonBeams1958} \cite{mandelFluctuationsPhotonBeams1958,mandelFluctuationsPhotonBeams1959} and others have shown that the transition probability of an electron from its ground state to an unbounded state at the surface of a photodetector is directly proportional to both the duration of the time interval $\Delta t$ and the instantaneous light intensity $I(t)$. This suggests that the rate density of photoelectrons is proportional to the light intensity $\lambda(t) \propto \int_{A} I(t)$, where $A$ is the detector area.
 
 The aforementioned can be mathematically formalized through one-dimensional stochastic process known as a \gls{PP}\footnote{For a more generalized description of \gls{PP}, the reader is referred to \cite{chiuStochasticGeometryIts2013}.}. A \gls{PP} is used to model occurrences of stochastic events that happen in some space. If we look at the time domain, the \gls{PP} allows us to the model the occurrence of events in time. The process generates a series of time points $\{t_1, t_2, \dots, t_n\}$ where the events occur, within a time interval $[0, T]$.
@@ -66,8 +66,8 @@ While the \gls{PPP} should exhibit the same counting statistics for any time win
 
 In our analysis, we consider the detector-defined 3D subsets of data, which are often sparsely populated. While the most precise assessment of counting statistics would involve analyzing a single voxel, the sparsity of the data necessitates examining small subsets of the 3D volume instead. We select sufficiently small $\Delta t$ to ensure that spatial correlations have minimal impact on the observed statistics, and also look at the cases where it is high.
 
-\subsection*{Pulsed Light Source}
-Let us look at the dataset using pulsed laser first: \gls{WSe2}. \cref{fig:wse2-stats} shows the count distribution at $\Delta t =$ \qtylist{2;10;20;50}{ms}, with an observation time $T=\qty{126}{s}$, and one specific volumetric subset. The count distributions for smaller time intervals ($\Delta t = \qtylist{2;10;20}{ms}$) follow Poisson statistics, as expected from an uncorrelated photoemission process where spatial and temporal fluctuations are minimal. However, for longer time intervals ($\Delta t = \qty{50}{ms}$), the distribution starts to deviate from the Poisson distribution. This deviation suggests that spatial correlations, due to the material properties of the sample, become significant enough to impact the distribution. While the impact of pulse light source should be minimal since the time intervals we look at are much longer than the pulse durations, the intensity drifts could also cause the deviation. \cref{fig:wse2-stats-2} shows count statistics from a different volumetric subset, forming the same conclusions.
+\subsection{HHG Light Source}
+Let us look at the dataset using \gls{HHG} laser first: \gls{WSe2}. \cref{fig:wse2-stats} shows the count distribution at $\Delta t =$ \qtylist{2;10;20;50}{ms}, with an observation time $T=\qty{126}{s}$, and one specific volumetric subset. The count distributions for smaller time intervals ($\Delta t = \qtylist{2;10;20}{ms}$) follow Poisson statistics, as expected from an uncorrelated photoemission process where spatial and temporal fluctuations are minimal. However, for longer time intervals ($\Delta t = \qty{50}{ms}$), the distribution starts to deviate from the Poisson distribution. This deviation suggests that spatial correlations, due to the material properties of the sample, become significant enough to impact the distribution. While the impact of pulse light source should be minimal since the time intervals we look at are much longer than the pulse durations, the intensity drifts could also cause the deviation. \cref{fig:wse2-stats-2} shows count statistics from a different volumetric subset, forming the same conclusions.
 
 From the above, we can conclude that the photoemitted electrons statistics are a realization of a \gls{PPP}. \citeauthor{heimerlMultiphotonElectronEmission2024} \cite{heimerlMultiphotonElectronEmission2024} have also recently showed that the emitted electrons show a Poisson distribution with a (coherent) pulsed laser light source.
 
@@ -96,7 +96,7 @@ It must be noted that for \gls{HHG} sources, \citeauthor{gorlachQuantumopticalNa
     \label{fig:grir-stats-dld-comparison}
 \end{figure}
 
-\subsection*{SASE FEL Light Source}
+\subsection{SASE FEL Light Source}
 Analyzing this data requires a few additional considerations. In \cref{section:dld}, we already saw that the \num{8}S \gls{DLD} shows repeated counts for a single electron, due to the segmented structure. From preliminary analysis of counting statistics shown in \cref{fig:grir-stats-dld-comparison}, it can be seen that this has a significant impact on the counting statistics, where the \num{2}-event occurrence is unnaturally high compared to the others (\cref{fig:grir-stats-2-layer}). Therefore, this analysis will only consider a single layer (from the 2-layered delay-line structure), and ideally a volumetric subset from a single segment\footnote{Due to the overlap between segments.}.
 
 

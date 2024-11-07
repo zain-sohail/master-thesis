@@ -281,7 +281,7 @@ A closed form approximation of $I_C$ is also provided in \cite{makitaloClosedFor
 \end{equation}
 
 \subsection{The Anscombe BM3D Algorithm}
-Extending the Anscombe transform $T_A$ and the exact inverse $I_C$ to apply on all voxels $x_{\mathbf{i}}$ of the noisy image $X$, allows to use the \gls{BM3D} algorithm (shown in \cref{alg:bm3d}) with Anscombe transform for denoising Poisson corrupted images. This scheme can be seen in \cref{alg:anscombe-bm3d}, allowing to get an estimate of the latent clean image $Y$ from the noisy image $X$. This method has been shown to perform better than methods based on explicit Poisson noise removal \cite{makitaloOptimalInversionAnscombe2011}. Therefore, in the next chapter we make use of the scheme described in \cref{alg:anscombe-bm3d} to denoise 2D image slices from \gls{MPES} data.
+Extending the Anscombe transform $T_A$ and the exact inverse $I_C$ to apply on all voxels $x_{\mathbf{i}}$ of the noisy image $X$, allows to use the \gls{BM3D} algorithm (shown in \cref{alg:bm3d}) with Anscombe transform for denoising Poisson corrupted images. This scheme can be seen in \cref{alg:anscombe-bm3d}, allowing to get an estimate of the latent clean image $Y$ from the noisy image $X$. This method has been shown to perform better than methods based on explicit Poisson noise removal \cite{makitaloOptimalInversionAnscombe2011}. Therefore, in the next chapter we make use of the scheme described in \cref{alg:anscombe-bm3d} to denoise 2D images from \gls{MPES} datasets.
 
 \begin{algorithm}
     \caption{Algorithm to Denoise Poisson Corrupted Images}\label{alg:anscombe-bm3d}
