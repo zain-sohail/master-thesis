@@ -1,9 +1,27 @@
-The goal of image restoration, detached from a specific noise model, is to estimate the latent\footnote{\textit{Latent} variables are unobserved and can only be inferred from the observed data.} clean image $Y \in \mathbb{R}^{n_1 \times n_2 \times \cdots \times n_d}$\todo[disable]{It's always good to state where objects come from, i.e., in which spaces they are. Here it could be $Y\in\mathbb{R}^{n_1\times\cdot\times n_d}$ if $Y$ is a $d$-dimensional discrete real valued image.}, a $d$-dimensional discrete real-valued image, from an incomplete or corrupted (noisy) image  $X \in \mathbb{R}^{n_1 \times n_2 \times \cdots \times n_d}$\todo[disable]{$\in$?}. The voxel values of noisy $X$ and latent clean $Y$ images can be written as $x$ and $y$\todo[disable]{This kinds of reverses the logic. Before you can connect the observation $X$ to the true image $Y$, you first need to define exactly what the true image $X$ is supposed to be. From the above I would say it's a d-array of real values.}, respectively, where $\mathbf{i} \in \mathcal{I}$\todo[disable]{$\in$? In any case, the set of all possible indices should have a name, e.g., $\mathcal{I}$.}, and
+The goal of image restoration, detached from a specific noise model, is to estimate the latent\footnote{\textit{Latent} variables are unobserved and can only be inferred from the observed data.} clean image $Y$, from an incomplete or corrupted (noisy) image $X$ where
 
-\begin{equation*}
+\begin{equation}\label{eq:images}
+    Y, X \in \mathbb{R}^{n_1 \times n_2 \times \cdots \times n_d}
+\end{equation}
+
+are both $d$-dimensional discrete real-valued images.
+
+The voxel values (intensity or counts) of noisy $X$ and latent clean $Y$ images is denoted as $x_{\mathbf{i}}$ and $y_{\mathbf{i}}$, respectively, with
+
+\begin{equation}
+    x_{\mathbf{i}}, y_{\mathbf{i}} \quad \text{for} \quad \mathbf{i} \in \mathcal{I}.
+\end{equation}
+
+where $\mathcal{I}$, the index set in the $d$-dimensional space, is defined as
+
+\begin{equation}
     \mathcal{I} = \{[i_1, i_2, \dots, i_d]^T \mid i_1 \in [1, n_1], i_2 \in [1, n_2], \dots, i_d \in [1, n_d]\}
-\end{equation*}
-is the index set in the $d$-dimensional space.
+\end{equation}
+
+\todo[disable]{It's always good to state where objects come from, i.e., in which spaces they are. Here it could be $Y\in\mathbb{R}^{n_1\times\cdot\times n_d}$ if $Y$ is a $d$-dimensional discrete real valued image.}
+\todo[disable]{$\in$?}
+\todo[disable]{This kinds of reverses the logic. Before you can connect the observation $X$ to the true image $Y$, you first need to define exactly what the true image $X$ is supposed to be. From the above I would say it's a d-array of real values.}
+\todo[disable]{$\in$? In any case, the set of all possible indices should have a name, e.g., $\mathcal{I}$.}
 
 \todo[disable]{From where to where does $\mathcal{F}$ map? Also, this does not seem very general, since this $\mathcal{F}$ is limited to operate pixel-wise and cannot take into account the position $\mathbf{i}$ at all. It still may be general enough for what you need though. I don't know yet, since I just started reading.}
 In the most general form, the observation model can be defined as $X$ being a mapping of $Y$ through a function $\mathcal{F}$, which is generally stochastic. This can be written as:\todo[disable]{Will you give examples for $\mathcal{F}$ later? I think it would already be a good place to have a very simple example right here, e.g. additive noise. Then we probably see, that this is not truly a function, but involves a random variable.}
@@ -24,9 +42,9 @@ where the common assumption for $N$ is \gls{AWGN}, normal distributed $\mathcal{
 \end{equation}
 \todo[disable]{This equation seems to be incomplete, $\mathcal{N}(0, \sigma^2)$ (make sure you have defined this notation) is a scalar valued distribution, but the way you use $N$, it must be a matrix, where every entry of that matrix is drawn independently from $\mathcal{N}(0, \sigma^2)$.}
 
-The inverse problem, of image restoration\footnote{Depending on context, also referred to as reconstruction or denoising}, to estimate $Y$ from $X$, is an \textit{ill-posed} problem; meaning that there are multiple possible solutions of the estimated image $\hat{Y}$ that are not unique or equal to the true image $Y$. This is due to the loss of information during the observation process, leading to an under-determined system. Depending on the prior knowledge posed, different estimates of the latent clean image can be recovered.
+The inverse problem, of image restoration\footnote{Depending on context, also referred to as reconstruction or denoising.}, to estimate $Y$ from $X$, is an \textit{ill-posed} problem; meaning that there are multiple possible solutions of the estimated image $\hat{Y}$ that are not unique or equal to the true image $Y$. This is due to the loss of information during the observation process, leading to an under-determined system. Depending on the prior knowledge posed, different estimates of the latent clean image can be recovered.
 
-In the following chapter, we shall look at an \gls{AWGN} denoising algorithm--the celebrated \gls{BM3D}, introduced first by \citeauthor{dabovImageDenoisingSparse2007} in \cite{dabovImageDenoisingSparse2007}, building upon many of the classical denoising techniques such as transform domain denoising, filtering methods (such as the Wiener filter) and \gls{NLM}. We will look at a noise model for Poisson distributed data, discussing the Anscombe \gls{VST} for stabilizing its variance.
+In the following chapter, we shall look at an \gls{AWGN} denoising algorithm--the celebrated \gls{BM3D}, introduced first by \citeauthor{dabovImageDenoisingSparse2007} in \cite{dabovImageDenoisingSparse2007}, building upon many of the classical denoising techniques such as transform domain denoising, filtering methods (such as the Wiener filter) and \gls{NLM}. We will look at a noise model for Poisson distributed data, discussing the Anscombe \gls{VST} for stabilizing its variance, the inversion of the transform, and the \gls{BM3D} algorithm for Poisson noise.
 
 \section{Image Denoising in Spatial and Transform Domains}
 Image restoration techniques have been explored in both the spatial and transform domains\todo[disable]{Directly give an example for what transform domains are, e.g., the frequency domain.} \cite{buadesReviewImageDenoising2005,diwakarReviewCTImage2018}. For instance, the Fourier transform is commonly used to map images to the frequency domain. A simple way of denoising in this transform domain is to filter out the high frequency components that typically represent noise elements, followed by an inverse Fourier transform. Other transforms include wavelet transforms, discrete cosine transforms, and curvelet transforms.
@@ -48,15 +66,15 @@ This formulation is a case of risk minimization, a concept discussed in \cref{ch
     X(f) = \mathfrak{F}(X)
 \end{equation*}
 
-where $f$ is the frequency. The Wiener filter is then expressed as a linear filter that scales each frequency component of the observed signal based on the \glspl{PSD} of $Y$ and $N$: 
+where $f$ is the frequency. The Wiener filter $H(f)$ is then expressed as a linear filter that scales each frequency component of the observed signal based on the \glspl{PSD} of $Y$ and $N$: 
 
 \begin{equation*}
 H(f) = \frac{S_Y(f)}{S_Y(f) + S_N(f)}
 \end{equation*}
 
-with $S_Y(f)$ and $S_N(f)$ the \gls{PSD} of latent image $Y$ and noise $N$, respectively. The most common Wiener filtering technique assumes the \gls{PSD} of $N$ is assumed constant, which is the case of \gls{AWGN}. However, usage of other additive noise priors is as easy as changing the \gls{PSD} of $N$.
+with $S_Y(f)$ and $S_N(f)$ the \gls{PSD} of latent image $Y$ and noise $N$, respectively. The most common Wiener filtering technique assumes the \gls{PSD} of $N$ to be constant, which is the case for \gls{AWGN}. However, usage of other additive noise priors is as easy as changing the \gls{PSD} of $N$.
 
-For an optimal filter $H(f)$, based on image properties, it can be applied to the observed signal $X(f)$ to estimate the latent clean image in the frequency domain:
+This (optimal) filter $H(f)$, based on image properties, can be applied to $X(f)$ to estimate the latent clean image in the frequency domain:
 
 \begin{equation*}
     \hat{Y}(f) = H(f) X(f)
@@ -168,7 +186,7 @@ where $\text{Poi}(y)$ denotes the Poisson distribution with parameter (and laten
 
 To simplify notation moving forward, we denote the observed value as $x$ and the underlying intensity as $y$. Using this, we can express the \gls{PMF} of $x$ given $y$  as:
 
-\begin{equation}\label{eq:poisson-pmf}
+\begin{equation}\label{eq:poisson-pmf-1}
     P(x = k| y) = \frac{y^k e^{-y}}{k!} , \quad k \in \mathbb{N}_0
 \end{equation}
 
@@ -244,7 +262,7 @@ To reduce this bias, \citeauthor{anscombeTransformationPoissonBinomial1948} \cit
     I_B: [0, \infty) \to [0, \infty), \quad d \to \left(\frac{d}{2} \right)^2 - \frac{1}{8}
 \end{equation}
 
-The asymptotic unbiasedness of $I_B$ can also be seen in \cref{fig:anscombe-expectation-inversion} (red line), as when $y \geq 3$ (high counts), the expected value of $I_B(d)$ is close to $y=\mathbb{E}[x]$. However, for low counts, the bias is even higher than the algebraic inverse.
+The asymptotic unbiasedness of $I_B$ can also be seen in \cref{fig:anscombe-expectation-inversion} (red line), as when $y \geq 3$ (high-counts), the expected value of $I_B(d)$ is close to $y=\mathbb{E}[x]$. However, for low-counts, the bias is even higher than the algebraic inverse.
 
 \begin{figure}
     \centering
@@ -260,28 +278,40 @@ To address these limitations, \citeauthor{makitaloOptimalInversionAnscombe2011} 
     I_C: \mathbb{E}[T_A(x) \mid y] \to \mathbb{E}[x \mid y] = y
 \end{equation}
 
-To construct such an exact unbiased inverse $I_C$, the expected value of the Anscombe-transformed variable, $\mathbb{E}[T_A(x) \mid y]$, which reflects the expected value of  $T_A(x) $ when $x \sim Poi(y)$ and is given by
+To construct such an exact unbiased inverse $I_C$, the expected value of the Anscombe-transformed variable, $\mathbb{E}[T_A(x) \mid y]$, which reflects the expected value of $T_A(x) $ (where $x \sim Poi(y)$) is given by
 
 \begin{equation}   
     \mathbb{E}[T_A(x) \mid y] = \sum_{x=0}^{\infty} T_A(x) \cdot P(x \mid y),
 \end{equation}
 
-where $P(x \mid y)$ is defined in \cref{eq:poisson-pmf}, and $T_A(x)$ in \cref{eq:anscombe-transform}, so we substitute this into the expectation:
+where $T_A(x)$ is defined in \cref{eq:anscombe-transform}, and $P(x \mid y)$ in \cref{eq:poisson-pmf-1}, so we substitute this into the expectation:
 
-\begin{equation}
+\begin{equation*}
     \mathbb{E}[T_A(x) \mid y] = \sum_{x=0}^{\infty} 2 \sqrt{x + \frac{3}{8}} \cdot y^x e^{-y} \frac{1}{x!}
-\end{equation}
+\end{equation*}
 
-This expectation sums over all possible values of $x$, weighting each transformed value $T_A(x)$ by its probability under the Poisson distribution with mean $y$. Calculating this expectation accurately allows the exact unbiased inverse  $I_C$  to achieve its goal: matching the expected value of the transformed variable $T_A(x)$ back to the original mean, $y$. $I_C$ can be computed using a numerical optimization algorithm, as detailed by \cite{makitaloOptimalInversionAnscombe2011}. The authors additionally find the maximum likelihood estimate and the minimum \gls{MSE} inverses, where these inversions coincide when denoising is successful. This method is also shown to perform better than the asymptotically unbiased inverse $I_B$ and the algebraic inverse $I_A$ \cite{makitaloOptimalInversionAnscombe2011}.
+This expectation sums over all possible values of $x$, weighting each transformed value $T_A(x)$ by its probability under the Poisson distribution with mean $y$. Calculating this expectation accurately allows the exact unbiased inverse  $I_C$  to achieve its goal: matching the expected value of the transformed variable $T_A(x)$ back to the original mean, $y$. $I_C$ can be computed using a numerical optimization algorithm, as detailed in \cite{makitaloOptimalInversionAnscombe2011}. 
 
-A closed form approximation of $I_C$ is also provided in \cite{makitaloClosedFormApproximationExact2011}, written as:
+The authors additionally find that the maximum likelihood inversion\footnote{They also find a minimum \gls{MSE} inversion that coincides with $I_C$ when the denoising is successful i.e. the true mean is recovered.} coincides with $I_C$. This method is also shown to perform better than the asymptotically unbiased inverse $I_B$ and the algebraic inverse $I_A$ \cite{makitaloOptimalInversionAnscombe2011}, and is hence the inversion we use in the rest of this work.
+
+A closed form approximation of $I_C$ is also available in \cite{makitaloClosedFormApproximationExact2011}, written as:
 
 \begin{equation}
     I_D(d) = \frac{1}{4} d^2 + \frac{\sqrt{\frac{3}{2}}}{4} d^{-1} - \frac{11}{8} d^{-2} + \frac{5 \sqrt{\frac{3}{2}}}{8} d^{-3} - \frac{1}{8}
 \end{equation}
 
 \subsection{The Anscombe BM3D Algorithm}
-Extending the Anscombe transform $T_A$ and the exact inverse $I_C$ to apply on all voxels $x_{\mathbf{i}}$ of the noisy image $X$, allows to use the \gls{BM3D} algorithm (shown in \cref{alg:bm3d}) with Anscombe transform for denoising Poisson corrupted images. This scheme can be seen in \cref{alg:anscombe-bm3d}, allowing to get an estimate of the latent clean image $Y$ from the noisy image $X$. This method has been shown to perform better than methods based on explicit Poisson noise removal \cite{makitaloOptimalInversionAnscombe2011}. Therefore, in the next chapter we make use of the scheme described in \cref{alg:anscombe-bm3d} to denoise 2D images from \gls{MPES} datasets.
+Poisson corrupted 2D images can hence be denoised using a three-step scheme shown in \cref{fig:anscombe-bm3d}; Applying the Anscombe transform to noisy image $X$, denoising the transformed image the \gls{BM3D} algorithm, and inverting the transformation to obtain estimate $\hat{Y}$ of the latent clean image $Y$. We use the Anscombe transform $T_A$ and the exact unbiased inversion $I_C$ for the pixel-wise transformations in the image. An algorithmic scheme can be seen in \cref{alg:anscombe-bm3d}, where we assume that $T_A$ and $I_C$ can take an image as an input.
+
+This method has been shown to perform better than methods based on explicit Poisson noise removal \cite{makitaloOptimalInversionAnscombe2011}. Therefore, in the next chapter we make use of the scheme described in \cref{fig:anscombe-bm3d} to denoise 2D images from \gls{MPES} datasets.
+
+% create figure with bm3d_anscombe_scheme.pdf
+\begin{figure} 
+    \centering
+    \includegraphics[width=1\linewidth]{images/bm3d_anscombe_scheme.pdf}
+    \caption{Block diagram showing the denoising scheme for Poisson corrupted images, consisting of the Anscombe transform, BM3D denoising, and the inversion of the Anscombe transform.}
+    \label{fig:anscombe-bm3d}
+\end{figure}
 
 \begin{algorithm}
     \caption{Algorithm to Denoise Poisson Corrupted Images}\label{alg:anscombe-bm3d}
