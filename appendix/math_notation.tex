@@ -220,49 +220,49 @@ For relation between Poisson, \gls{NB} and Gamma distributions, see \cite{barry2
 
 
 \section{Statistical Inference}
-For goodness-of-fit tests, small $p$-values indicate that you can reject the null hypothesis and conclude that your data were not drawn from a population with the specified distribution. In the case of such tests, a high $p$-value would suggest that the observed data and the expected distribution are statistically similar.
-\subsection*{Goodness of Fit Tests}\label{section:chi-test}
-We hypothesize that the data follows a certain distribution based on theoretical grounding and visualize analysis. Specifically, that data from a laser follows a Poisson distribution and from an \gls{FEL} a \gls{NB} distribution. One possible way to test these hypotheses is through a statistical test such as the Chi-Square Goodness of Fit test.
+% For goodness-of-fit tests, small $p$-values indicate that you can reject the null hypothesis and conclude that your data were not drawn from a population with the specified distribution. In the case of such tests, a high $p$-value would suggest that the observed data and the expected distribution are statistically similar.
+% \subsection*{Goodness of Fit Tests}\label{section:chi-test}
+% We hypothesize that the data follows a certain distribution based on theoretical grounding and visualize analysis. Specifically, that data from a laser follows a Poisson distribution and from an \gls{FEL} a \gls{NB} distribution. One possible way to test these hypotheses is through a statistical test such as the Chi-Square Goodness of Fit test.
 
-The Chi-Square test determines if the observed frequencies of data fit with the expected frequencies derived from the hypothesized distribution. This test is particularly suitable for discrete data, making it appropriate for count data that follows Poisson or Negative Binomial distributions.
+% The Chi-Square test determines if the observed frequencies of data fit with the expected frequencies derived from the hypothesized distribution. This test is particularly suitable for discrete data, making it appropriate for count data that follows Poisson or Negative Binomial distributions.
 
-\begin{note}
-    {Chi-Square Test}
-    Let  $O_i$  be the observed frequency in category  $i$ , and  $E_i$  be the expected frequency in category  $i$  under the hypothesized distribution. The Chi-Square test statistic  $\chi^2 $ is given by:
-    \begin{equation}
-        \chi^2 = \sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}
-    \end{equation}
-    where $k$ is the number of categories. The degrees of freedom for this test is given by:
+% \begin{note}
+%     {Chi-Square Test}
+%     Let  $O_i$  be the observed frequency in category  $i$ , and  $E_i$  be the expected frequency in category  $i$  under the hypothesized distribution. The Chi-Square test statistic  $\chi^2 $ is given by:
+%     \begin{equation}
+%         \chi^2 = \sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}
+%     \end{equation}
+%     where $k$ is the number of categories. The degrees of freedom for this test is given by:
 
-    The null hypothesis $H_0$ states that the observed data follows the specified distribution, while the alternative hypothesis $H_1$ posits that the observed data does not follow the specified distribution:
+%     The null hypothesis $H_0$ states that the observed data follows the specified distribution, while the alternative hypothesis $H_1$ posits that the observed data does not follow the specified distribution:
 
-    \begin{equation*}
-        H_0: \text{The data follows the specified distribution}
-    \end{equation*}
-    \begin{equation*}
-        H_1: \text{The data does not follow the specified distribution}
-    \end{equation*}
-\end{note}
+%     \begin{equation*}
+%         H_0: \text{The data follows the specified distribution}
+%     \end{equation*}
+%     \begin{equation*}
+%         H_1: \text{The data does not follow the specified distribution}
+%     \end{equation*}
+% \end{note}
 
-The Poisson dispersion test specifically examines whether the variance of the observed data significantly differs from the mean, as expected for a Poisson distribution, where the mean and variance should be equal. Deviations from this relationship may indicate overdispersion or underdispersion, which can inform the choice of an appropriate statistical model.
-\begin{note}
-    {Poisson Dispersion Test}
-    Let $O_i$ be the observed frequency in category $i$ and let $\lambda$ be the estimated mean of the observed data. The test statistic for the Poisson dispersion test is defined as:
-    \begin{equation}
-    D = \frac{S^2}{\bar{X}}
-    \end{equation}
-    where $S^2$ is the sample variance of the observed data and $\bar{X}$ is the mean of the observed counts.
-    Under the null hypothesis $H_0$ (the data follows a Poisson distribution), the test statistic $D$ follows a Chi-Square distribution with $n - 1$ degrees of freedom, where $n$ is the number of observed categories. 
+% The Poisson dispersion test specifically examines whether the variance of the observed data significantly differs from the mean, as expected for a Poisson distribution, where the mean and variance should be equal. Deviations from this relationship may indicate overdispersion or underdispersion, which can inform the choice of an appropriate statistical model.
+% \begin{note}
+%     {Poisson Dispersion Test}
+%     Let $O_i$ be the observed frequency in category $i$ and let $\lambda$ be the estimated mean of the observed data. The test statistic for the Poisson dispersion test is defined as:
+%     \begin{equation}
+%     D = \frac{S^2}{\bar{X}}
+%     \end{equation}
+%     where $S^2$ is the sample variance of the observed data and $\bar{X}$ is the mean of the observed counts.
+%     Under the null hypothesis $H_0$ (the data follows a Poisson distribution), the test statistic $D$ follows a Chi-Square distribution with $n - 1$ degrees of freedom, where $n$ is the number of observed categories. 
 
-The null hypothesis and alternative hypothesis are stated as follows:
+% The null hypothesis and alternative hypothesis are stated as follows:
 
-\begin{equation*}
-    H_0: \text{The data follows a Poisson distribution}
-\end{equation*}
-\begin{equation*}
-    H_1: \text{The data does not follow a Poisson distribution}
-\end{equation*}
-\end{note}
+% \begin{equation*}
+%     H_0: \text{The data follows a Poisson distribution}
+% \end{equation*}
+% \begin{equation*}
+%     H_1: \text{The data does not follow a Poisson distribution}
+% \end{equation*}
+% \end{note}
 
 
 \subsection*{Confidence Intervals}
