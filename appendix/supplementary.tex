@@ -1,17 +1,17 @@
 \chapter{Supplementary Material}
 \section{Transforming Raw Data to structured format: Extract, Load, Transform}\label{sec:elt}
-Raw data from the experiment is stored in \gls{HDF5} files. This includes many \gls{beamline} diagnostic information such as beam arrival monitor (BAM), \gls{GMD}, the delay stage readings, the monochromator energy, sample specific information such as extractor voltage, and the electron counting in the 3 detector dimensions corresponding to the \gls{DLD} spatial X and Y axes and the temporal time axis. This information is resolved at each bunch of electrons coming from the accelerator called a \gls{train}, which are further microbunched into \glsplural{pulse}.
+Raw data from the experiment is stored in HDF5 files. This includes many \gls{beamline} diagnostic information such as beam arrival monitor (BAM), \gls{GMD}, the delay stage readings, the monochromator energy, sample specific information such as extractor voltage, and the electron counting in the 3 detector dimensions corresponding to the \gls{DLD} spatial X and Y axes and the temporal time axis. This information is resolved at each bunch of electrons coming from the accelerator called a \gls{train}, which are further microbunched into \glsplural{pulse}.
 
 The Open Community of Multidimensional Photoemission Spectroscopy (OpenCOMPES) was established to develop tools and infrastructure to make analysis easier. To this end, a modular Python library called \texttt{SED} was created that provides the entire pipeline from easy data loading to common calibration and corrections, multidimensional binning to create images, and saving the images to standard formats, with proper care of data provenance.
 
-The data pipeline follows an \gls{ELT} process, wherein raw data is extracted from \gls{HDF5} files, transformed into a structured format suitable for analysis, and subsequently stored in intermediate buffer files for further downstream processes such as analysis and visualization.
+The data pipeline follows an \gls{ELT} process, wherein raw data is extracted from HDF5 files, transformed into a structured format suitable for analysis, and subsequently stored in intermediate buffer files for further downstream processes such as analysis and visualization.
 
-The following sections provide a detailed exposition of each stage of this \gls{ELT} process, also shown in \cref{fig:elt}. The first stage, extraction, begins with the loading of raw data from the \gls{HDF5} files. These files encapsulate experimental results across multiple channels, including electron-resolved and time-resolved data. The hierarchical structure of the \gls{HDF5} files allows the organization of data into groups, where each group contains an index and its corresponding dataset, collectively referred to as a “channel” The paths to these \gls{HDF5} files, along with relevant configuration parameters, are provided to the pipeline to dictate the steps of the subsequent transformation process.
+The following sections provide a detailed exposition of each stage of this \gls{ELT} process, also shown in \cref{fig:elt}. The first stage, extraction, begins with the loading of raw data from the HDF5 files. These files encapsulate experimental results across multiple channels, including electron-resolved and time-resolved data. The hierarchical structure of the HDF5 files allows the organization of data into groups, where each group contains an index and its corresponding dataset, collectively referred to as a “channel” The paths to these HDF5 files, along with relevant configuration parameters, are provided to the pipeline to dictate the steps of the subsequent transformation process.
 
 \subsection*{Pipeline Overview}
 To optimize performance and facilitate data management, the pipeline generates buffer files for each type of data (electron and time-resolved). This task is handled by the \texttt{BufferFilePaths} class, which initializes file paths and manages the creation of buffer files in the efficient \texttt{Parquet} format. By checking the presence of pre-existing buffer files, the class determines whether to reuse these files or regenerate them, based on the \texttt{force\_recreate} flag.
 
-Each \gls{HDF5} file results in the generation of two primary buffer files: one containing electron-resolved data and another containing pulse/train-resolved data. These files are essential for organizing the data at the pulse level and maintaining resolution at the electron level. The data for each train contains roughly 500 pulses, and although some data is resolved at the pulse level, each index often holds an array, necessitating the use of the \texttt{pandas} MultiIndex functionality to maintain the data’s hierarchical structure. Detector measurements, which are electron-resolved along the X, Y, and temporal axes, are typically represented as three-dimensional arrays and add further complexity to the indexing process.
+Each HDF5 file results in the generation of two primary buffer files: one containing electron-resolved data and another containing pulse/train-resolved data. These files are essential for organizing the data at the pulse level and maintaining resolution at the electron level. The data for each train contains roughly 500 pulses, and although some data is resolved at the pulse level, each index often holds an array, necessitating the use of the \texttt{pandas} MultiIndex functionality to maintain the data’s hierarchical structure. Detector measurements, which are electron-resolved along the X, Y, and temporal axes, are typically represented as three-dimensional arrays and add further complexity to the indexing process.
 
 A critical transformation step involves correcting for offsets in pulse IDs to ensure accurate synchronization of data across different channels. Any data associated with pulse IDs below zero is removed, as it is considered invalid. Similarly, \texttt{NaN} pulses are dropped to avoid introducing inconsistencies in downstream analyses. While it is possible that pulses exceeding 500 may also be invalid, these are not filtered during this stage, as that determination is deferred to the final analysis. Due to machine fluctuations, pulses may become unsorted, and hence the pulses are sorted within each train to maintain temporal order.
 
@@ -31,67 +31,6 @@ Finally, the schema of the buffer files is cross-validated against the predefine
     \includegraphics[width=0.7\linewidth]{images/elt_cropped.png}
     \caption{Complete \gls{ELT} pipeline for the data from \gls{HEXTOF} at \gls{FLASH}.}
 \end{figure}
-
-\FloatBarrier
-\section{Metrics}\label{sec:metrics}
-
-\Gls{MSE} is a common measure of the average squared differences between predicted values and actual values. It quantifies the error in a model’s predictions, where lower values indicate better performance. It is sensitive to outliers since squaring the differences amplifies larger errors.
-
-\begin{note}
-    {\Glsxtrfull{MSE}}
-    \begin{equation}\label{eq:mse}
-        \text{MSE} = \frac{1}{N} \sum_{i=1}^{N} (x_i - y_i)^2
-    \end{equation}
-    \begin{itemize}
-        \item $x_i$: pixel value of the noisy image
-        \item $y_i$: pixel value of the target image
-        \item $N$: total number of pixels
-    \end{itemize}
-\end{note}
-
-\Gls{PSNR} is a measure of the peak error between two images, often used to evaluate image compression quality. It expresses the ratio between the maximum possible power of a signal and the power of corrupting noise. Higher PSNR values indicate better quality.
-
-\begin{note}
-    {\Glsxtrfull{PSNR}}
-    \begin{equation}    
-        \text{PSNR} = 10 \log_{10} \left( \frac{L^2}{\text{MSE}} \right)
-    \end{equation}
-    \begin{itemize}
-        \item $L$: maximum pixel value of the image
-        \item \gls{MSE}: mean squared error
-    \end{itemize}
-\end{note}
-
-
-\Gls{SSIM} is a perceptual metric that quantifies the visual impact of three characteristics of an image: luminance, contrast, and structure. It evaluates the similarity between two images based on their structural information, making it more aligned with human visual perception than MSE or PSNR. Values range from -1 to 1, with 1 indicating perfect similarity.
-\begin{note}
-    {\Glsxtrfull{SSIM}}
-    \begin{equation}    
-        \text{SSIM}(x, y) = \frac{(2\mu_x \mu_y + C_1)(2\sigma_{xy} + C_2)}{(\mu_x^2 + \mu_y^2 + C_1)(\sigma_x^2 + \sigma_y^2 + C_2)}
-    \end{equation}
-    \begin{itemize}
-        \item $\mu_x, \mu_y$: mean of $x$ and $y$
-        \item $\sigma_x, \sigma_y$: standard deviation of $x$ and $y$
-        \item $\sigma_{xy}$: covariance of $x$ and $y$
-        \item $C_1 = (k_1L)^2, C_2 = (k_2L)^2$: constants to stabilize the division
-    \end{itemize}
-\end{note}
-
-\Gls{MSSSIM} extends \gls{SSIM} by evaluating image similarity across multiple scales and resolutions. By considering different image scales, it captures more information about structural variations and perceptual quality, making it particularly useful for assessing image quality in applications like compression. Similar to \gls{SSIM}, higher values indicate greater similarity.
-
-\begin{note}
-    {\Glsxtrfull{MSSSIM}}
-    \begin{equation}\label{eq:msssim}    
-        \text{MSSSIM}(x, y) = \prod_{j=1}^{J} \text{SSIM}(x_j, y_j)^{\alpha_j}
-    \end{equation}
-    \begin{itemize}
-        \item $J$: number of scales
-        \item $x_j, y_j$: images at scale $j$
-        \item $\alpha_j$: weight for scale $j$, summing to 1
-    \end{itemize}
-\end{note}
-
-The metric implementations used in this thesis are either \texttt{PIQA} library \href{https://github.com/francois-rozet/piqa}{https://github.com/francois-rozet/piqa}, or \texttt{skimage} library \href{https://scikit-image.org/}{https://scikit-image.org/}.
 
 \FloatBarrier
 \section{Experiment: Metric Comparison}\label{sec:metric_comparison_experiment}

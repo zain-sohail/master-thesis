@@ -78,7 +78,7 @@ This leads to the measure space for probability (or probability space) being $(\
     
 % \end{note}
 
-\subsection*{Distributions}
+\subsection{Distributions}
 \begin{note}
     {Poisson distribution}\label{note:poisson-distribution}
     The \gls{PMF} for Poisson distribution Poi\((\lambda)\) with \(\lambda > 0\) is defined as
@@ -265,7 +265,7 @@ For relation between Poisson, \gls{NB} and Gamma distributions, see \cite{barry2
 % \end{note}
 
 
-\subsection*{Confidence Intervals}
+\subsection{Confidence Intervals}
 Confidence Intervals are a way to quantify the uncertainty in an estimate. They provide a range of plausible values for a parameter, rather than a single point estimate. The confidence level indicates the probability that the interval contains the true parameter value. For example, a 95\% confidence interval means that if we were to repeat the experiment many times, 95\% of the intervals would contain the true parameter value.
 
 Parametric methods for computing confidence intervals rely on knowing the underlying distribution of the data, such as the normal distribution. However, in many cases, the true distribution is unknown or does not follow a standard form. In such cases, non-parametric methods such as bootstrapping can be used.
@@ -274,3 +274,63 @@ Bootstrapping involves resampling the data with replacement to create multiple b
 
 % \subsection*{Optimal parameter estimation}
 % Used in estimating distribution parameters
+
+\section{Metrics}\label{sec:metrics}
+
+\Gls{MSE} is a common measure of the average squared differences between predicted values and actual values. It quantifies the error in a model’s predictions, where lower values indicate better performance. It is sensitive to outliers since squaring the differences amplifies larger errors.
+
+\begin{note}
+    {\Glsxtrfull{MSE}}
+    \begin{equation}\label{eq:mse}
+        \text{MSE} = \frac{1}{N} \sum_{i=1}^{N} (x_i - y_i)^2
+    \end{equation}
+    \begin{itemize}
+        \item $x_i$: pixel value of the noisy image
+        \item $y_i$: pixel value of the target image
+        \item $N$: total number of pixels
+    \end{itemize}
+\end{note}
+
+\Gls{PSNR} is a measure of the peak error between two images, often used to evaluate image compression quality. It expresses the ratio between the maximum possible power of a signal and the power of corrupting noise. Higher PSNR values indicate better quality.
+
+\begin{note}
+    {\Glsxtrfull{PSNR}}
+    \begin{equation}    
+        \text{PSNR} = 10 \log_{10} \left( \frac{L^2}{\text{MSE}} \right)
+    \end{equation}
+    \begin{itemize}
+        \item $L$: maximum pixel value of the image
+        \item \gls{MSE}: mean squared error
+    \end{itemize}
+\end{note}
+
+
+\Gls{SSIM} is a perceptual metric that quantifies the visual impact of three characteristics of an image: luminance, contrast, and structure. It evaluates the similarity between two images based on their structural information, making it more aligned with human visual perception than MSE or PSNR. Values range from -1 to 1, with 1 indicating perfect similarity.
+\begin{note}
+    {\Glsxtrfull{SSIM}}
+    \begin{equation}    
+        \text{SSIM}(x, y) = \frac{(2\mu_x \mu_y + C_1)(2\sigma_{xy} + C_2)}{(\mu_x^2 + \mu_y^2 + C_1)(\sigma_x^2 + \sigma_y^2 + C_2)}
+    \end{equation}
+    \begin{itemize}
+        \item $\mu_x, \mu_y$: mean of $x$ and $y$
+        \item $\sigma_x, \sigma_y$: standard deviation of $x$ and $y$
+        \item $\sigma_{xy}$: covariance of $x$ and $y$
+        \item $C_1 = (k_1L)^2, C_2 = (k_2L)^2$: constants to stabilize the division
+    \end{itemize}
+\end{note}
+
+\Gls{MSSSIM} extends \gls{SSIM} by evaluating image similarity across multiple scales and resolutions. By considering different image scales, it captures more information about structural variations and perceptual quality, making it particularly useful for assessing image quality in applications like compression. Similar to \gls{SSIM}, higher values indicate greater similarity.
+
+\begin{note}
+    {\Glsxtrfull{MSSSIM}}
+    \begin{equation}\label{eq:msssim}    
+        \text{MSSSIM}(x, y) = \prod_{j=1}^{J} \text{SSIM}(x_j, y_j)^{\alpha_j}
+    \end{equation}
+    \begin{itemize}
+        \item $J$: number of scales
+        \item $x_j, y_j$: images at scale $j$
+        \item $\alpha_j$: weight for scale $j$, summing to 1
+    \end{itemize}
+\end{note}
+
+The metric implementations used in this thesis are either \texttt{PIQA} library \href{https://github.com/francois-rozet/piqa}{https://github.com/francois-rozet/piqa}, or \texttt{skimage} library \href{https://scikit-image.org/}{https://scikit-image.org/}.
