@@ -1,10 +1,14 @@
-In this chapter, we review the main challenges of denoising \gls{MPES} data, to enhance the interpretability of experimental results obtained from low-count datasets. We begin with exploring the various \gls{MPES} datasets used in this study, which include \gls{GrIr}, \gls{NiW}, \gls{GdW} and \gls{WSe2}, focusing on their characteristics relevant to analyzing the denoising performance.
+In this chapter, we attempt the task of denoising \gls{MPES} data, beginning with an exploration of the various \gls{MPES} datasets used in this study, which include \gls{GrIr}, \gls{NiW}, \gls{GdW} and \gls{WSe2}, and examinining the characteristics relevant to analyzing the denoising performance.
+
+Given its high electron counts, the \gls{GrIr} dataset serves as our primary reference, providing a robust target for generating higher quality (compared to other datasets) target images. This dataset forms the basis for training a deep learning model (\cref{ch:deep_learning}), while \gls{WSe2}, captured with a different experimental setup, serves as a key comparator to evaluate the generalization of denoising approaches across datasets and statistical differences due to the light sources (\cref{ch:pes-statistics}).
 
 An overview of the data reduction and image formation pipeline is provided, illustrating how single-event data from these experiments are transformed into multidimensional images suitable for analysis. We detail how the target and noisy realizations of the data are constructed, generating representations for high-count reference images and low-count noisy images that reflect realistic experimental conditions, respectively.
 
 In order to evaluate the performance of denoising algorithms on \gls{MPES} data, we present here the criteria and metrics used; in particular, focusing on perceptual metrics like the \gls{MSSSIM} (\cref{eq:msssim})\todo[disable]{Insert a reference to where you define this.}, which is more robust to the inherent noise in experimental reference images.
 
-We apply the \gls{BM3D} algorithm, both with and without application of the Anscombe \gls{VST}, to the datasets. A hyperparameter search is performed to identify the optimal denoising parameters, specifically the choice of the $\sigma$ value, for different total electron counts  \gls{ncounts}. An evaluation of the denoising performance using the \gls{BM3D} algorithm on one \todo{By saying that you do this one ``one'' of the data sets, you implicitly stress that you don't do it on all, so the reader will wonder why. Depending on why you only do this on one dataset, you could make this clear by adding some clarification, i.e., just the ``exemplarily'' could be enough.} of the \gls{MPES} datasets is then demonstrated, with a discussion on the effectiveness of \gls{BM3D} in improving image quality at various count levels and the effect of applying \gls{VST} on denoising performance.
+We apply the \gls{BM3D} algorithm, both with and without application of the Anscombe \gls{VST} to the \gls{GrIr} dataset, containing the highest total electron counts \gls{ncounts}. A hyperparameter search is performed to identify the optimal denoising parameters, specifically the choice of the $\sigma$ value, for different \gls{ncounts}. An evaluation of the denoising performance using the \gls{BM3D} algorithm is then demonstrated, as it has the highest counts to form an proper evaluation. This is proceeded with a discussion on the effectiveness of \gls{BM3D} in improving image quality at various count levels and the effect of applying \gls{VST} on denoising performance.
+
+\todo[disable]{By saying that you do this one ``one'' of the data sets, you implicitly stress that you don't do it on all, so the reader will wonder why. Depending on why you only do this on one dataset, you could make this clear by adding some clarification, i.e., just the ``exemplarily'' could be enough.}
 
 \section{Experimental Datasets}\label{section:datasets}
 We investigate three datasets--\gls{GrIr} \cite{heberMultispectralTimeresolvedEnergy2022}, \gls{NiW} \cite{shokeenRealtimeObservationNonequilibrium2024}, and \gls{GdW} \cite{kutnyakhovMultidimensionalPhotoemissionSpectra2024}--that have been studied using \gls{HEXTOF} at \gls{FLASH}. Interpretable results from these experiments require long acquisition times (\gls{total_time}), essential for capturing the underlying physical processes. This is primarily due to three reasons discussed earlier:\todo[disable]{``that will be described below''?}.
@@ -37,7 +41,7 @@ Additionally, the inherent statistical properties of the light sources (\cref{se
 
 \section{Data Processing and Image Formation}\label{sec:image-formation}
 
-In an \gls{MPES} experiment using a \gls{TOF}-based scheme, the workflow to resolve images typically follows a series of steps, outlined in \cref{fig:mpes_workflow}. Prior to this, an essential step is data reduction, a detailed description\footnote{More specific to the \gls{HEXTOF} instrument at \gls{FLASH}.} of which is outlined in Appendix~\ref{sec:elt}.
+In an \gls{MPES} experiment using a \gls{TOF}-based scheme, the workflow to resolve images typically follows a series of steps, outlined in \cref{fig:mpes_workflow}. Prior to this, an essential step is data reduction. For the specific case of \gls{HEXTOF} instrument at \gls{FLASH}, used in our studies, a detailed description of the reduction process is outlined in Appendix~\ref{sec:elt}.
 
 After the data reduction, corrections are applied to the measurement axes \todo[disable]{Minor cosmetic remark: Since you are not using \texttt{frenchspacing}, there is a double space after a ``.'' to mark the end of a sentence. This will also put such a double space after things like ``e.g.'' so it will look like an end of a sentence, even if it is not. One way to fix that would be to put a comma (before and) after ``e.g.'', i.e. ``, e.g.,''. Another way would be to put a backslash in front of the space after the ``.''. As I said though, this is a minor cosmetic issue, you can just ignore it if you want.} e.g.\ to correct space-charge distortions (see \cref{section:spectroscopy-techniques}), correct timing jitter between \gls{FEL} and pump laser etc. The corrected axes are then mapped (calibrated) to the physical axes, after which further correction steps can happen. Once calibrated, the single-event data is binned into a multidimensional volume\footnote{We make use of the Single Event DataFrame (SED) library \href{https://github.com/OpenCOMPES/sed}{https://github.com/OpenCOMPES/sed}.} that represents the full measurement, as illustrated on the right side of \cref{fig:mpes_workflow}.
 
@@ -49,15 +53,33 @@ After the data reduction, corrections are applied to the measurement axes \todo[
 \end{figure}
 
 \subsection{Constructing Images from Single-Event Data}
-% In \cref{eq:images}, we defined a $d$-dimensional latent clean image $Y$ and noisy image $X$. Let us define how these images are formed from event data. 
 
-Let us take a look at the static (at equilibrium) spectra of the \gls{GrIr} dataset. That would mean aggregating (binning) data across the three detector axes\footnote{Reader is referred to \cref{section:dld} for details regarding detection scheme.}: $x$, $y$ and $t_{\text{tof}}$, corresponding to the physical axes \gls{kx}, \gls{ky} and \gls{E}, respectively. Binning these three axes forms a 3D \gls{kx}--\gls{ky}--\gls{E} image, as depicted in \cref{fig:3d-gr-ir}, comprising energy values both above and below the Fermi level \gls{EF}. \todo[disable]{I don't understand what focussing on a region means. As far as I understand, on of the dimensions of the 3D volume is still $E$.}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\linewidth]{images/dataframe.png}
+    \caption{\textit{Single-event data table:} displaying the first and last five rows of recorded \gls{NiW} dataset. The table includes the detector dimensions $x$, $y$, and $t_{tof}$, which represent the spatial and time-of-flight coordinates for each detected electron (resolved at the electronId level). It also shows (unadjusted with respect to $t_0$) pump-probe delay stage values $t_{delay}$ (resolved per train), the sectorID (a unique identifier for each detector segment), the \gls{gmd} (GMD) readings (averaged per pulse), and (UNIX style) timeStamps (accurate to each train). Data is hierarchically indexed by trainId (\gls{train}), pulseId (\gls{pulse}), and electronId (event number within each pulse). Non-resolved values, such as those linked only to trains or pulses, are forward-filled for consistency across rows, allowing easy alignment with per-event data. To optimize binning and computations, certain columns can be selectively dropped to reduce dimensionality, such as when focusing on specific features like static spectra (e.g., $k_x$–$k_y$–$E$) or dynamic response data (e.g., energy $E$ vs. delay $t_{delay}$). Additionally, rows can be filtered to include only selected ranges, such as a particular energy interval, before the binning step.\todo[disable]{Needs better caption and reference in text}}
+    \label{fig:df}
+\end{figure}
 
-In this image, spatial dimensions ($x$ and $y$ directions) are binned with a resolution of \qty{460}{px}, corresponding to the native detector quantization. The $t_{\text{tof}}$ is also binned with \num{460} steps to match the spatial resolution\footnote{This is done to easily form equal-resolution 2D cuts across any dimension.}. Where the spatial dimensions ($x$ and $y$) are linearly mapped to the physical axes (\gls{kx}, \gls{ky}), the $E$ axis has a non-linear scaling with $t_{\text{tof}}$, making the $t_{\text{tof}}$ bins non-uniform in size when mapped to the $E$ axis. Hence, whenever we refer to binning of the $E$ axis, we are referring to binning along the $t_{\text{tof}}$ axis.
+In \cref{eq:images}, we defined a $d$-dimensional latent clean image $Y$ (and noisy image $X$). For most of the thesis, we focus on images with $d \in {2,3}$, as most denoising algorithms are designed to work with 2D or 3D images. Moreover, since even 3D images are commonly visualized as a series of 2D images, it is an intuitive place to begin. 
 
-It is often useful to bin the data at a coarser granularity than the detector's native resolution, mainly to address low-count statistics, producing a representation that has lower resolution but higher count statistics. Coarse binning can be applied to a single dimension or across multiple dimensions. For instance, \cref{fig:all-hextof-datasets-kxky} showed 2D \gls{kx}--\gls{ky} images formed by window-averaging a region along the $E$ axis. This is effectively the same as coarsely binning the $E$ axis, and selecting a single slice from this coarser 3D image. Throughout this text, we use the native detector resolution as the baseline, and for coarser analyses, we specify the window size, \gls{winsize}, to define the averaging applied along a certain dimension. \todo[disable]{But this one uses additional averaging, doesn't it? Should also be mentioned here.}
+Let us hence look at how such a 3D image is constructed from the single-event data. As shown in \cref{fig:df}, the example single-event \gls{NiW} data is stored in a table format, with each row representing a single electron-event. Of physical interest are $x$, $y$, $t_{\text{tof}}$ and $t_{delay}$ that map to the physical axes \gls{kx}, \gls{ky}, \gls{E} and \gls{tpp}, respectively, where the other columns are example diagnostic and timing quantities, although they represent only a subset of the measurable quantities and diagnostics available in the experiment.
 
-While the full dataset contains \num{1.86e8} electron counts, the selected energy region used to generate the image in \cref{fig:3d-gr-ir-186M} contains \num{1.15e8} counts. Note that the energy range of interest is typically filtered, as not all detected energies are relevant for the analysis. Additionally, as discussed in \cref{section:8q-dld}, the majority of events are counted multiple times, with the most common case being that each event is recorded twice. This suggests that the effective number of counts is approximately half of \num{1.15e8}, i.e.\ \num{5.75e7}. For consistency, \gls{ncounts} is always referring to the total dataset count (\num{1.86e8} in this case), even if the actual unique counts may be lower due to multiple counting of events, or due to filtering of the energy range.
+An example 2D image can be formed by selecting $t_{\text{tof}}$ and $t_{delay}$ columns and binning across these dimensions, with the image showing the dynamical energy response, or with $x$ and $y$ columns, forming a momentum image. By selecting three columns such as $x$, $y$ and $t_{\text{tof}}$, we form a 3D image as shown in \cref{fig:3d-gr-ir}.
+
+Since the detector can capture a broad dynamic range of quantities, spanning extensive energy and momentum ranges, filtering\footnote{The range can also be reduced post binning.} is crucial to generate meaningful images. For instance, the detector records a wide range of energies, but not all are relevant to the analysis; typically, we focus on energies close to the Fermi level. 
+
+Binning these three filtered axes forms a 3D $x$--$y$--$t_{\text{tof}}$ image. \cref{fig:3d-gr-ir} shows such images from the \gls{GrIr} dataset, with filtered energy values to be near the Fermi level \gls{EF}. Since the $t_{delay}$ axis is dropped, the dynamics are summed and this therefore, this image forms only an approximation of an image from a static momentum and energy resolved study. Nonetheless, since the dynamic effects are orders of magnitude smaller, this approximation suffices.
+
+As physical interpretation is the goal, the general scheme is to calibrate the axes to the physical quantities first, and then bin the data to form the multidimensional image. However, in this study, we do not calibrate the data and use the detector quantization as the binning resolution, as calibrating can be non-linear in dimensions such as energy. Nonetheless, we refer will generally refer to the physical axes as they conventionally are in the field.
+
+Where the spatial dimensions ($x$ and $y$) are linearly mapped to the physical axes (\gls{kx}, \gls{ky}), the $E$ axis has a non-linear (quadratic) scaling with $t_{\text{tof}}$, making the $t_{\text{tof}}$ bins non-uniform in size when mapped to the $E$ axis. The non-linear scaling can potentially change the noise-profile of the data, which has potential to impact denoising performance. It is yet to be investigated if this impact has a positive or negative output, and is a potential avenue for future work.
+
+In the aforementioned 3D images, spatial dimensions ($x$ and $y$ directions) are binned with a resolution of \qty{460}{px}, corresponding to the native detector quantization. The $t_{\text{tof}}$ is also binned with \num{460} steps to match the spatial resolution\footnote{This is done to easily form equal-resolution 2D cuts across any dimension.}. 
+
+It is often useful to bin the data at a coarser granularity than the detector's native resolution, mainly to address low-count statistics, producing a representation that has lower resolution but higher count statistics\footnote{Where this could indeed change the noise statistics, this is a fair compromise for low-count data.}. Coarse binning can be applied to a single dimension or across multiple dimensions. For instance, \cref{fig:all-hextof-datasets-kxky} showed 2D \gls{kx}--\gls{ky} images formed by \num{20} summing slices along the $E$ axis of the 3D image. This is effectively the same as coarsely binning the $E$ axis, and selecting a single slice from this coarser 3D image. Throughout this text, we use the native detector resolution as the baseline, and for coarser analyses, we specify the window size, \gls{winsize}, to define the averaging applied along a certain dimension. \todo[disable]{But this one uses additional averaging, doesn't it? Should also be mentioned here.}
+
+While the full dataset contains \num{1.86e8} electron counts, the selected energy region used to generate the image in \cref{fig:3d-gr-ir-186M} contains \num{1.15e8} counts. Note that as discussed in \cref{section:8q-dld}, the majority of events are counted multiple times, with the most common case being that each event is recorded twice. This suggests that the effective number of counts is approximately half of \num{1.15e8}, i.e.\ \num{5.75e7}. For consistency, \gls{ncounts} is always referring to the total dataset count (\num{1.86e8} in this case), even if the actual unique counts may be lower due to multiple counting of events, or due to filtering of the energy range. This reason and a difference in detector dimensions is key reason for the difficulty in comparison of \gls{GrIr} dataset with \gls{WSe2}, which is recorded with another light source--detector setup.
 
 \begin{figure}
     \centering
@@ -71,44 +93,48 @@ While the full dataset contains \num{1.86e8} electron counts, the selected energ
     \begin{subfigure}[t]{0.49\linewidth}
         \centering
         \includegraphics[width=1\linewidth]{images/3d_gr_ir_masked.png}
-        \caption{$\gls{ncounts}=\num{1.86e8}$ corresponding to $\gls{total_time}=\qty{30}{hour}$. 2D images can be formed by slicing (or window-averaging) along any of the axes, as depicted by the three lines.}
+        \caption{$\gls{ncounts}=\num{1.86e8}$ corresponding to $\gls{total_time}=\qty{30}{hour}$. 2D images can be formed by slicing (or summing slices) along any of the axes, as depicted by the three lines.}
         \label{fig:3d-gr-ir-186M}
     \end{subfigure}
-    \caption{3D images from the \gls{GrIr} dataset, with $\gls{ncounts}=\num{8e6}$ (left) \todo[disable]{insert ``(left)''} and \num{1.86e8} (right)\todo[disable]{insert ``(right)''}. The image is constructed by binning over the three physical axes $k_x$, $k_y$, $E$.}
+    \caption{3D images from the \gls{GrIr} dataset, with $\gls{ncounts}=\num{8e6}$ (left) \todo[disable]{insert ``(left)''} and \num{1.86e8} (right)\todo[disable]{insert ``(right)''}. The image is constructed by binning over the three detector axes $x$, $y$, $t_{\text{tof}}$, corresponding to the physical axes $k_x$, $k_y$, $E$. 2D images can be formed by slicing (or summing slices) along any of the axes, as depicted by the three lines (blue, green, purple) showing arbitrary summing sizes.}
     \label{fig:3d-gr-ir}
 \end{figure}
 
 \subsection{Generation of Noisy Realizations}
-With the \gls{DLD} providing a stream of single-event data, we are uniquely positioned to observe noisy realizations by taking subsets of varying electron counts \gls{ncounts} from the full dataset. These subsets can then be binned to form independent 3D images, used later for evaluating and training denoising algorithms.
+In typical detection setups, generating noisy realizations $X$ of clean images $Y$ is limited by fixed integration windows. This means that the noise levels can only be varied in discrete steps, as multiples of the integration time, or by simulating noise post-capture. In contrast, the single-event stream enables us to obtain real and adjustable noisy realizations by selecting subsets of the varying electron counts \gls{ncounts} from the full dataset, without relying on simulated noise. This flexibility, by controlling the noise levels, has a major advantage in training and evaluating denoising algorithms on a large scale of noise levels.
 
-For instance, from the complete dataset, \num{186} \todo{If you have a specif number here, I guess you mean also a specific data set. Which one is it? Due to this number, I guess \gls{GrIr}. And why 186? This looks like total number of counts divided by $10^6$, so you have data sets non-overlapping in time? Please make this clear in the text.} subsets, each with an \gls{ncounts} of \num{e6}, can be extracted. The data generation is assumed to be an \gls{iid} stochastic process, allowing for a large variety of randomly sampled subsets. However, due to the light source, which is not stable over extended periods, beyond its intrinsic fluctuations, sample degradation, temperature deviations and other reasons, this assumption is not entirely accurate.
+The noisy image $X$ can be generated by taking a \gls{ncounts} subset of the complete dataset and then binned to form independent 3D images. For example, taking non-overlapping subsets of \gls{ncounts} being \num{e6} from the \gls{GrIr} dataset, we can generate \num{186} noisy realizations. The images can then be assumed to be formed with an \gls{iid} stochastic process, as the underlying data generation process is assumed \gls{iid} (\cref{section:photoelectron-counting-stats}). This assumption is discussed in more detail in \cref{ch:deep_learning} as it has important implications for training machine learning models. It should be noted that even for non-overlapping subsets, this assumption is only valid for short time scales, as the \gls{FEL} light source is generally not stable over extended acquisition periods, and other factors such as sample degradation, temperature deviations, etc., could break this assumption.
+
+\todo[disable]{If you have a specif number here, I guess you mean also a specific data set. Which one is it? Due to this number, I guess \gls{GrIr}. And why 186? This looks like total number of counts divided by $10^6$, so you have data sets non-overlapping in time? Please make this clear in the text.}
 
 \begin{table}[h!]
     \centering
     \resizebox{0.6\textwidth}{!}
         {%
-        \begin{tabular}{lrrr}
+        \begin{tabular}{lrrrc}
             \toprule
-            & \gls{ncounts} & Average Counts & $T$ [h] \\
-            &  & Per Voxel & \\
+            \gls{ncounts} & Average Counts & $T$ [h] & Number of \\
+            & Per Voxel & & Subsets \\
             \midrule
-            $n$ & \num{1e6} & \num{5.98e-3} & $\num{0.13}$ \\
-            $2n$ & \num{2e6} & \num{1.22e-2} & $\num{0.28}$ \\
-            $4n$ & \num{4e6} & \num{2.44e-2} & $\num{0.57}$ \\
-            $8n$ & \num{8e6} & \num{4.89e-2} & $\num{1.23}$ \\
-            $16n$ & \num{1.6e7} & \num{9.77e-2} & $\num{2.62}$ \\
-            $32n$ & \num{3.2e7} & \num{2.00e-1} & $\num{5.32}$ \\
-            $48n$ & \num{4.8e7} & \num{2.90e-1} & $\num{8.14}$ \\
-            $96n$ & \num{9.6e7} & \num{5.84e-1} & $\num{16.07}$ \\
-            $186n$ & \num{1.86e8} & \num{11.3e-1} & $\num{30.78}$ \\
+            \num{1e6} & \num{5.98e-3} & $\num{0.13}$ & 186 \\
+            \num{2e6} & \num{1.22e-2} & $\num{0.28}$ & 93 \\
+            \num{4e6} & \num{2.44e-2} & $\num{0.57}$ & 46 \\
+            \num{8e6} & \num{4.89e-2} & $\num{1.23}$ & 23 \\
+            \num{1.6e7} & \num{9.77e-2} & $\num{2.62}$ & 11 \\
+            \num{3.2e7} & \num{2.00e-1} & $\num{5.32}$ & 5 \\
+            \num{4.8e7} & \num{2.90e-1} & $\num{8.14}$ & 3 \\
+            \num{9.6e7} & \num{5.84e-1} & $\num{16.07}$ & 1 \\
+            \num{1.86e8} & \num{11.3e-1} & $\num{30.78}$ & 1 \\
             \bottomrule
         \end{tabular}
         }
-    \caption{Table shows the noisy realizations generated by varying number of counts \gls{ncounts} from the \gls{GrIr} dataset. The acquisition time is proportional to \gls{ncounts} and $186n$ is used as the reference dataset.\todo[inline]{Just looking at this table and the text of Section 4.2.2, the $n$ column on the very left looks superfluous.}}
+    \caption{Summary of noisy realizations generated by varying number of electron counts \gls{ncounts} from the \gls{GrIr} dataset. The acquisition time \gls{total_time} is proportional to \gls{ncounts}, and \num{1.86e8} is used as the reference dataset.\todo[disable]{Just looking at this table and the text of Section 4.2.2, the $n$ column on the very left looks superfluous.}}
     \label{noisy-dataset-table}
 \end{table}
 
-Noisy realizations can then be formed based on different \gls{ncounts}. The total counts and average counts per voxel for each noisy realization are shown in \cref{noisy-dataset-table}. These realizations can help evaluate the performance of denoising algorithms as a function of \gls{total_time}. Lower count realizations ($\gls{ncounts}<\num{1e7}$), corresponding to shorter \gls{total_time}, are of most interest to denoise. Successful denoising of such data (such as image seen in \cref{fig:3d-gr-ir-8M}) could significantly improve experimental efficiency, allowing the investigators to steer the experiment in the right direction, crucial in time-limited \glspl{beamtime}. Hence, the realizations are sampled to cover a wide range of \gls{ncounts}, between \numrange{1e6}{1.86e8}.
+To evaluate denoising performance across different noise levels, we generate a series of noisy realizations from the \gls{GrIr} dataset, each with a distinct total count, \gls{ncounts}. The total counts and average counts per voxel and acquisition time \gls{total_time} for each \gls{ncounts} is shown in \cref{noisy-dataset-table}. These realizations allow systematic assessment of the denoising algorithm performance under varying noise levels. Lower count realizations ($\gls{ncounts}<\num{1e7}$), corresponding to shorter \gls{total_time}, are of most interest to denoise. Successful denoising of such data (such as image seen in \cref{fig:3d-gr-ir-8M}) could significantly improve experimental efficiency, allowing the investigators to steer the experiment in the right direction, crucial in time-limited \glspl{beamtime}.
+
+To balance coverage across a wide range of \gls{ncounts} from \numrange{1e6}{1.86e8} while limiting the number of generated realizations, we sampled \gls{ncounts} as successive multiples of prior values, allowing more focus on lower counts. This same approach is applied to generate noisy realizations in other datasets, ensuring comparability across a range of noise levels and acquisition times.
 
 \section{Evaluation Criteria}
 As described in the last section, a 3D image is constructed by binning over the three physical axes $k_x$, $k_y$, $E$ from different datasets. By slicing along these axes, different 2D images can be generated for analysis. We evaluate the \gls{BM3D} algorithm, with and without the Anscombe transform\footnote{This was discussed in detail in \cref{ch:denoising}.}, using the \gls{GrIr} dataset, which has the highest average counts of all datasets. Despite this, the average voxel intensity is low (refer to \cref{noisy-dataset-table}), making a true, noise-free image unavailable. This limitation complicates the task of evaluating denoising performance, as standard metrics rely on comparison with such a noise-free reference.
@@ -118,7 +144,7 @@ Image quality assessment (IQA) is a field dedicated to measuring the objective a
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{images/slices.pdf}
-    \caption{$E$, $k_y$, and $k_x$ slices at arbitrary positions of the \gls{GrIr} 3D dataset, showing the effect of averaging across different window sizes \gls{winsize}. The left most column shows a single slice ($\gls{winsize}=1$) with significant noise, while subsequent columns show window-averaged images with $\gls{winsize}=\numlist{5;10;15}$. Increasing \gls{winsize} progressively reduces noise, at the cost of feature broadening. This trade-off highlights the difficulty in obtaining a true, noise-free reference image even through averaging techniques.}
+    \caption{$E$, $k_y$, and $k_x$ slices at arbitrary positions of the \gls{GrIr} 3D dataset, showing the effect of summing with different  slices \gls{winsize}. The left most column shows a single slice ($\gls{winsize}=1$) with significant noise, while subsequent columns show slice-summed images with $\gls{winsize}=\numlist{5;10;15}$. Increasing \gls{winsize} progressively reduces noise, at the cost of feature broadening. This trade-off highlights the difficulty in obtaining a true, noise-free reference image even through averaging techniques.}
     \label{fig:slices}
 \end{figure}
 
@@ -129,12 +155,12 @@ To address this, we assess metrics that are more resilient to noisy reference im
 Given that the ideal denoising aims to produce distortion-free images, one free from artifacts and removing all unwanted signal, it makes sense to target structural similarity rather than relative intensity values against the reference. Hence, throughout this study, the images are normalized to the [\num{0}, \num{1}] range. This normalization ensures that comparisons focus on relative differences in image structures and features, rather than on absolute intensity values.
 
 \section{Denoising MPES data with BM3D}
-Let us start with attempting to denoise the noisy realization with $\gls{ncounts}=\num{1.6e7}$ ($\gls{total_time}\approx\qty{2}{h}$) of the $k_y$-$k_x$ images shown in \cref{fig:slices}. This particular slice serves as a good reference due to its clear features. We use the Anscombe--\gls{BM3D}--Inverse Anscombe scheme described in \cref{fig:anscombe-bm3d}. The noisy image is formed by window-averaging along the $E$ dimension with window size $w = 5$. The respective denoised image is compared against the reference image (with $w=15$) of $\gls{ncounts}=\num{1.86e8}$, using the \gls{MSSSIM} metric. An example noisy, denoised and target set is shown in \cref{fig:noisy-denoised-ref-16M-avg-bm3d}. 
+Let us start with attempting to denoise the noisy realization with $\gls{ncounts}=\num{1.6e7}$ ($\gls{total_time}\approx\qty{2}{h}$) of the $k_y$-$k_x$ images shown in \cref{fig:slices}. This particular slice serves as a good reference due to its clear features. We use the Anscombe--\gls{BM3D}--Inverse Anscombe scheme described in \cref{fig:anscombe-bm3d}. The noisy image is formed by slice summing along the $E$ dimension with size $w = 5$. The respective denoised image is compared against the reference image (with $w=15$) of $\gls{ncounts}=\num{1.86e8}$, using the \gls{MSSSIM} metric. An example noisy, denoised and target set is shown in \cref{fig:noisy-denoised-ref-16M-avg-bm3d}. 
 
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{images/noisy_denoised_ref_16M_avg_bm3d.pdf}
-    \caption{Noisy, denoised, and target images. The noisy and target images are window-averaged with size $w=5$ and $w=15$ along the $E$ dimension, respectively.}
+    \caption{Noisy, denoised, and target images. The noisy and target images are formed by summing slices with size $w=5$ and $w=15$ along the $E$ dimension, respectively.}
     \label{fig:noisy-denoised-ref-16M-avg-bm3d}
 \end{figure}
 
@@ -151,7 +177,7 @@ The above-mentioned evaluation is then repeated by varying $w = \numlist{1;5;10;
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{images/denoised_optimal_sigma.pdf}
-    \caption{Denoised image using the optimal $\sigma_{\text{oo}}=0.15$ (optimal value found for \num{1.6e7} counts from the hyperparameter search) denoised image with $\sigma_{\text{o}}=0.3$ (adjusted optimal value) and the target image.}
+    \caption{(left) Denoised image using the optimal $\sigma_{\text{oo}}=0.15$ (optimal value found for \num{1.6e7} counts from the hyperparameter search) (middle) denoised image with $\sigma_{\text{o}}=0.3$ (adjusted optimal value) and (right) the target image.}
     \label{fig:denoised-optimal-sigma}
 \end{figure}
 Till now, we only focused on a single \gls{ncounts} and applied denoising with a single $\sigma$ value. However, considering that the noise decreases with increased electron counts, we would expect the required level of denoising to decrease i.e. $\gls{ncounts}\propto\frac{1}{\sigma}$.
@@ -228,4 +254,4 @@ As shown in \cref{fig:bm3d-msssim}, there is a noticeable improvement in image q
 \end{figure}
 
 
-The most notable finding is that the application of the \gls{VST} leads to a slightly worse performance (\cref{fig:bm3d-msssim} orange vs. green lines), despite the expectation that it would enhance denoising performance for Poissonian noise. In previous work by \citeauthor{makitaloOptimalInversionAnscombe2011}, the authors demonstrated that applying the Anscombe transform indeed improves denoising performance. This strongly suggests that the noise statistics in the image deviate from a Poisson distribution. One reason is the window-averaging used to form the images, that might have altered the noise statistics. The other obvious reason is that the electron count statistics forming the images are not Poissonian. This shall be the topic of the next chapter. 
+The most notable finding is that the application of the \gls{VST} leads to a slightly worse performance (\cref{fig:bm3d-msssim} orange vs. green lines), despite the expectation that it would enhance denoising performance for Poissonian noise. In previous work by \citeauthor{makitaloOptimalInversionAnscombe2011}, the authors demonstrated that applying the Anscombe transform indeed improves denoising performance. This strongly suggests that the noise statistics in the image deviate from a Poisson distribution. One reason is the slice summing used to form the images, that might have altered the noise statistics. The other obvious reason is that the electron count statistics forming the images are not Poissonian. This shall be the topic of the next chapter. 

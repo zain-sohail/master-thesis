@@ -1,23 +1,16 @@
 The goal of image restoration, detached from a specific noise model, is to estimate the latent\footnote{\textit{Latent} variables are unobserved and can only be inferred from the observed data.} clean image $Y$, from an incomplete or corrupted (noisy) image $X$ where
-
 \begin{equation}\label{eq:images}
     Y, X \in \mathbb{R}^{n_1 \times n_2 \times \cdots \times n_d}
 \end{equation}
-
 are both $d$-dimensional discrete real-valued images.
-
-The voxel values (intensity or counts) of noisy $X$ and latent clean $Y$ images is denoted as $x_{\mathbf{i}}$ and $y_{\mathbf{i}}$, respectively, with
-
+The voxel values (intensity or counts) of noisy $X$ and latent clean $Y$ images are denoted as $x_{\mathbf{i}}$ and $y_{\mathbf{i}}$, respectively, with
 \begin{equation}
     x_{\mathbf{i}}, y_{\mathbf{i}} \quad \text{for} \quad \mathbf{i} \in \mathcal{I}.
 \end{equation}
-
 where $\mathcal{I}$, the index set in the $d$-dimensional space, is defined as
-
 \begin{equation}
     \mathcal{I} = \{[i_1, i_2, \dots, i_d]^T \mid i_1 \in [1, n_1], i_2 \in [1, n_2], \dots, i_d \in [1, n_d]\}
 \end{equation}
-
 \todo[disable]{It's always good to state where objects come from, i.e., in which spaces they are. Here it could be $Y\in\mathbb{R}^{n_1\times\cdot\times n_d}$ if $Y$ is a $d$-dimensional discrete real valued image.}
 \todo[disable]{$\in$?}
 \todo[disable]{This kinds of reverses the logic. Before you can connect the observation $X$ to the true image $Y$, you first need to define exactly what the true image $X$ is supposed to be. From the above I would say it's a d-array of real values.}
@@ -35,7 +28,6 @@ One widely used model is additive noise model, where the function $\mathcal{F}(Y
     X = Y + N
 \end{equation}
 \todo[disable]{This does not fit into your framework for the mapping $\mathcal{F}$, because this does not do the same at every pixel: At pixel $\mathbf{i}$, the noise $n_\mathbf{i}$ is added, but this depends on $\mathbf{i}$.}
-
 where the common assumption for $N$ is \gls{AWGN}, normal distributed $\mathcal{N}$ with mean \num{0} and variance $\sigma^2$
 \begin{equation}\label{eq:awgn}
     N \sim \mathcal{N}(0, \sigma^2)
@@ -55,33 +47,24 @@ In the spatial domain, several linear and nonlinear filtering techniques exist, 
 \subsection{Wiener Filter}
 \todo[disable]{Would be nice to have more details on the Wiener filter here. This is used in BM3D, so it's highly relevant.}
 Wiener filtering is a transform domain restoration technique operating on statistical principles. Based on the additive noise model defined in \cref{eq:observation-model-additive}, it aims to minimize the \gls{MSE} between the estimated $\hat{Y}$ and latent clean image $Y$, which can be written as:
-
 \begin{equation}\label{eq:wiener-mse}
     \hat{Y} = \arg \min_{\hat{Y}} \mathbb{E} \left[ \| Y - \hat{Y} \|^2 \right]
-\end{equation}
-
+\end{equation}\todo[author=zain]{Incorrect so fix this}
 This formulation is a case of risk minimization, a concept discussed in \cref{ch:deep_learning} in the context of learning algorithms. The noisy signal $X$ can be expressed in the frequency domain (Fourier basis) using the Fourier transform $\mathfrak{F}$ as:
-
 \begin{equation*}
     X(f) = \mathfrak{F}(X)
 \end{equation*}
-
 where $f$ is the frequency. The Wiener filter $H(f)$ is then expressed as a linear filter that scales each frequency component of the observed signal based on the \glspl{PSD} of $Y$ and $N$: 
-
 \begin{equation*}
 H(f) = \frac{S_Y(f)}{S_Y(f) + S_N(f)}
 \end{equation*}
-
 with $S_Y(f)$ and $S_N(f)$ the \gls{PSD} of latent image $Y$ and noise $N$, respectively. The most common Wiener filtering technique assumes the \gls{PSD} of $N$ to be constant, which is the case for \gls{AWGN}. However, usage of other additive noise priors is as easy as changing the \gls{PSD} of $N$.
 
 This (optimal) filter $H(f)$, based on image properties, can be applied to $X(f)$ to estimate the latent clean image in the frequency domain:
-
 \begin{equation*}
     \hat{Y}(f) = H(f) X(f)
 \end{equation*}
-
 and this can be transformed back to the spatial domain to obtain a denoised estimate
-
 \begin{equation*}
     \hat{Y} = \mathfrak{F}^{-1}(\hat{Y}(f))
 \end{equation*}
@@ -91,7 +74,7 @@ Notice from above that the Wiener filter requires access to the latent clean ima
 As the Fourier basis operates globally, applying Wiener filtering with this basis can introduce periodic artifacts, as global transforms may overemphasize large-scale image features and fail to capture fine local details. This limitation has motivated the development of local adaptive variants and the exploration of alternative transform domains such as wavelets, which better capture local image characteristics \cite{buadesReviewImageDenoising2005}.
 
 \subsection{Non-Local Means}
-\todo[disable]{Since NLM is quite related to BM3D, it would also be helpful to define this in detail here. The definition is not that involved and I would say quite instructive to understand the non-locality.}
+\todo{Since NLM is quite related to BM3D, it would also be helpful to define this in detail here. The definition is not that involved and I would say quite instructive to understand the non-locality.}
 \todo[disable]{``also''? What else uses this redundancy? BM3D, but you haven't mentioned that one yet. At leae not in this chapter.}
 
 Other than linear filters, non-linear filters such as the median filter, replace each pixel with the median value of its neighbors and are much better at removing salt-and-pepper noise. Other approaches, such as bilateral filtering, combine spatial proximity and intensity similarity, allowing for selective smoothing that  preserves sharpness around edges. 
@@ -101,11 +84,9 @@ The principle behind \gls{NLM} denoising builds on the redundancy of similar pat
 Non-Local Means (NLM) denoising is a highly effective method for removing noise by leveraging the inherent redundancy found in natural images. Unlike local filters, which operate on immediate pixel neighborhoods, NLM uses a non-local approach, meaning that it searches the entire image for patches or neighborhoods that resemble the local structure of a pixel's neighborhood, regardless of their spatial distance. The algorithm replaces a noisy pixel by computing a weighted average of all pixels in the image, with the weights determined by the similarity of their neighborhoods.
 
 The similarity between the neighborhoods of pixels $i$ and $j$ is measured using the Gaussian-weighted Euclidean distance between intensity vectors in a window surrounding each pixel:
-
 \begin{equation}
     w(i,j) = \frac{1}{x(i)} \exp \left( -\frac{\|v(\mathcal{N}_i) - v(\mathcal{N}_j)\|_{2,a}^2}{h^2} \right),
 \end{equation}
-
 where $v(\mathcal{N}_i)$ is the vector of pixel intensities within the neighborhood $\mathcal{N}_i$ of pixel $i$, and $h$ is a parameter controlling the decay of weights as a function of this distance. The normalization factor $x(i)$ ensures that the weights sum to 1 for each pixel $i$.
 
 NLM is particularly effective at preserving edges and textures in the image, as the weight $w(i,j)$ assigns higher values to pixels whose neighborhoods are similar in appearance to the target pixel's neighborhood. As a result, NLM performs well in removing noise while maintaining important image features, making it a popular choice for denoising tasks, especially when the noise is uniformly distributed across the image.
@@ -122,7 +103,7 @@ NLM is particularly effective at preserving edges and textures in the image, as 
 
 
 As shown in \cref{alg:bm3d} and \cref{fig:bm3d-schematic}
-\todo[disable]{This needs more details. Try to provide the essential formulas of what is actually computed for all steps. You don't need to put those details into the algorithm, it's better to add them to the main text.}
+\todo{This needs more details. Try to provide the essential formulas of what is actually computed for all steps. You don't need to put those details into the algorithm, it's better to add them to the main text.}
 , the \gls{BM3D} scheme works by grouping similar patches in a 2D image and applying a 3D transform\footnote{This algorithm has also been proposed for 3D images, dubbed BM4D \cite{mNonlocalTransformdomainFilter}.}. This leads to an enhanced sparse representation of the image which after filtering is transformed back to the spatial domain.
 % Main BM3D Algorithm
 \begin{algorithm}
@@ -146,17 +127,14 @@ As shown in \cref{alg:bm3d} and \cref{fig:bm3d-schematic}
 \end{algorithm}
 
 In the Grouping step, candidate blocks $B_i$ which are the least dissimilar to an $N_1 \times N_1$ reference block $B_R$ are grouped together using the normalized $l^2$-distance as dissimilarity measure:
-
 $$d(B_R, B_i) = \frac{\|B_R - B_i\|_2^2}{N_1^2}$$
-
 with group $B_G$ formed by selecting blocks that have distance below the threshold $\tau$:
-
 $$B_G = \{ B_i : d(B_R, B_i) \leq \tau \}$$
 
 The Collaborative Filtering\footnote{Interestingly, collaborative filtering has been the backbone of recommendation systems such as by Netflix and Spotify \cite{bellLessonsNetflixPrize2007,drorYahooMusicDataset2012}.}\todo[disable]{Reference for the Netfilx/Spotify statement?} shown in \cref{alg:collaborativefiltering} is then applied to the grouped blocks. This step consists of a 3D transform such as the discrete cosine transform (or the wavelet transform can be used).
-\todo[disable]{This 3D stacking and 3D filtering is a crucial component, which should be elaborated / illustrated more.}
+\todo{This 3D stacking and 3D filtering is a crucial component, which should be elaborated / illustrated more.}
 A filter is applied to the transformed blocks to remove noise, initially by hard thresholding and in the second run by Wiener filtering. The inverse 3D transform is then applied to the filtered blocks, and the filtered blocks are aggregated to form the estimate. The first run is considered the basic estimate, and it is only after Collaborative Wiener filtering that the final estimate is obtained.
-\todo[disable]{One a coarse level, this is all correct, but I would put much more detail. Also a sketch would be helpful.}
+\todo{One a coarse level, this is all correct, but I would put much more detail. Also a sketch would be helpful.}
     
 % Collaborative Filtering Algorithm
 \begin{algorithm}
@@ -181,11 +159,9 @@ In imaging systems, the observed intensity $x_{\mathbf{i}}$ at each voxel $\math
 \begin{equation*}
     x_{\mathbf{i}} \sim \text{Poi}(y_{\mathbf{i}})
 \end{equation*}
-
 where $\text{Poi}(y)$ denotes the Poisson distribution with parameter (and latent intensity) $y$. 
 
 To simplify notation moving forward, we denote the observed value as $x$ and the underlying intensity as $y$. Using this, we can express the \gls{PMF} of $x$ given $y$  as:
-
 \begin{equation}\label{eq:poisson-pmf-1}
     P(x = k| y) = \frac{y^k e^{-y}}{k!} , \quad k \in \mathbb{N}_0
 \end{equation}
@@ -195,12 +171,13 @@ Poisson distribution has the key property that the mean and variance are equal, 
 \subsection{Variance Stabilizing Transformations}
 To address this issue, suitable transformations that stabilize the variance, making it largely independent of the mean (similar to the normal distribution) can be beneficial. Transforms such as these are known as \glsxtrfullpl{VST}. \citeauthor{bartlettSquareRootTransformation1936} \cite{bartlettSquareRootTransformation1936} first showed such a transform: the square root transformation $T_1$:
 %Moreover, \glspl{VST} variance stabilization is independent of the sample size.
-
 \begin{equation}
     T_1: [0, \infty) \to [0, \infty), \quad x \to \sqrt{x}
 \end{equation}
-
-where we look at a Poisson variable $x \sim \text{Poi}(y)$.
+where we look at a Poisson variable
+\begin{equation}\label{eq:poisson-pmf-2}
+    x \sim \text{Poi}(y)
+\end{equation}
 
 \begin{figure}
     \centering
@@ -212,19 +189,15 @@ where we look at a Poisson variable $x \sim \text{Poi}(y)$.
 \end{figure}
 
 Applying this transform to Poisson data makes the transformed values approximately normally distributed as the Poisson parameter $y$ increases. The variance of Poisson variable $x$ (blue) and transformed variable using $T_1$ (orange) as a function of $y$ can be seen in \cref{fig:data-transform-anscombe}, with the variance of $\sqrt{x}$ stabilizing to $\frac{1}{4}$ with increasing $y$. \citeauthor{bartlettSquareRootTransformation1936} additionally showed that by adding a constant of $\frac{1}{2}$ to the square root transform, the convergence to normality improves, leading to the transformation:
-
 \begin{equation}
     T_2: [0, \infty) \to [0, \infty), \quad x \to \sqrt{x + \frac{1}{2}}
 \end{equation}
-
 $T_2$ (red) in \cref{fig:data-transform-anscombe} shows this faster convergence (also preventing overshoot) when compared to the $T_1$ (orange). $T_1$ (purple) and $T_2$ (green) are also shown scaled by \num{2}, effectively centering the variance\footnote{The variance scales by square of the scaling factor, i.e., $\text{Var}[aZ] = a^2 \text{Var}[x]$} around \num{1}, yielding a transformed variable that approximates a standard normal distribution.
 
 \citeauthor{anscombeTransformationPoissonBinomial1948} \cite{anscombeTransformationPoissonBinomial1948} further showed that using the  constant of $\frac{3}{8}$ is an optimal \gls{VST} $T_A$ for Poisson distributed data:
-
 \begin{equation}\label{eq:anscombe-transform}
     T_A: [0, \infty) \to [0, \infty), \quad x \to 2 \sqrt{x + \frac{3}{8}}
 \end{equation}
-
 Comparing scaled $T_2$ (purple) with $T_A$ (black) in \cref{fig:data-transform-anscombe}, it can be seen that the variance of the Anscombe transform stabilizes to \num{1} faster, while not significantly different from the $T_2$. \cref{fig:hist-anscombe} provides an alternate visualization showing the distributions at different $y$ before and after applying $T_A$. As $y$ increases, the variance of the transformed data $Var[T_A(x)]$ stabilizes to $1$, along with a bias in the expected value $\mathbb{E}[T_A(x)]$.
 
 \begin{figure}
@@ -238,30 +211,23 @@ Comparing scaled $T_2$ (purple) with $T_A$ (black) in \cref{fig:data-transform-a
 The Anscombe transform $T_A$ can hence be applied to a noisy pixel $x$ (described as $x \sim \text{Poi}(y)$) to stabilize the variance, making it suitable for denoising using \gls{AWGN} denoising algorithms. After applying $T_A$ and denoising, we obtain an estimate $d$ that approximates $\mathbb{E}[T_A(x) \mid y]$. The challenge lies in finding an appropriate inverse transformation to recover an estimate of the latent intensity $y$. 
 
 To this end, consider the algebraic inverse of $T_A$, written as:
-
 \begin{equation}
     I_A: [0, \infty) \to [0, \infty), \quad d \to \left(\frac{d}{2} \right)^2 - \frac{3}{8}
 \end{equation}
-
 Due to the non-linearity of the Anscombe transform:
 \begin{equation*}
     \mathbb{E}[T_A(x) \mid y] \neq T_A(\mathbb{E}[x \mid y])
 \end{equation*}
-
 and therefore
-
 \begin{equation*}
     I_A(\mathbb{E}[T_A(x) \mid y]) \neq \mathbb{E}[x \mid y] = y
 \end{equation*}
-
 meaning that $I_A$ provides a biased estimate of $y$, as illustrated in \cref{fig:anscombe-expectation-inversion}\footnote{Note that this Figure is similar to Figure~1 in \cite{makitaloOptimalInversionAnscombe2011}, where they present the estimate of $y$ against the transformed and denoised variable $d$. The author finds that plotting against the Poisson parameter $y$ is simpler to understand.}. In this figure, $I_A(d)$ (green line) diverges from the mean $\mathbb{E}[x]$ (dashed blue line) for all values of $y$. 
 
 To reduce this bias, \citeauthor{anscombeTransformationPoissonBinomial1948} \cite{anscombeTransformationPoissonBinomial1948} proposed an inversion $I_B$ that is asymptotically unbiased:
-
 \begin{equation}
     I_B: [0, \infty) \to [0, \infty), \quad d \to \left(\frac{d}{2} \right)^2 - \frac{1}{8}
 \end{equation}
-
 The asymptotic unbiasedness of $I_B$ can also be seen in \cref{fig:anscombe-expectation-inversion} (red line), as when $y \geq 3$ (high-counts), the expected value of $I_B(d)$ is close to $y=\mathbb{E}[x]$. However, for low-counts, the bias is even higher than the algebraic inverse.
 
 \begin{figure}
@@ -271,31 +237,22 @@ The asymptotic unbiasedness of $I_B$ can also be seen in \cref{fig:anscombe-expe
     \label{fig:anscombe-expectation-inversion}
 \end{figure}
 
-
 To address these limitations, \citeauthor{makitaloOptimalInversionAnscombe2011} introduced an exact unbiased inverse, meaning it produces a mapping $I_C$ that satisfies:
-
 \begin{equation}
     I_C: \mathbb{E}[T_A(x) \mid y] \to \mathbb{E}[x \mid y] = y
 \end{equation}
-
-To construct such an exact unbiased inverse $I_C$, the expected value of the Anscombe-transformed variable, $\mathbb{E}[T_A(x) \mid y]$, which reflects the expected value of $T_A(x) $ (where $x \sim Poi(y)$) is given by
-
+Such an exact unbiased inverse $I_C$ can be constructed by computing the expected value of the Anscombe-transformed variable, $\mathbb{E}[T_A(x) \mid y]$, reflecting the expected value of $T_A(x) $, given by
 \begin{equation}   
     \mathbb{E}[T_A(x) \mid y] = \sum_{x=0}^{\infty} T_A(x) \cdot P(x \mid y),
 \end{equation}
-
 where $T_A(x)$ is defined in \cref{eq:anscombe-transform}, and $P(x \mid y)$ in \cref{eq:poisson-pmf-1}, so we substitute this into the expectation:
-
 \begin{equation*}
     \mathbb{E}[T_A(x) \mid y] = \sum_{x=0}^{\infty} 2 \sqrt{x + \frac{3}{8}} \cdot y^x e^{-y} \frac{1}{x!}
 \end{equation*}
-
 This expectation sums over all possible values of $x$, weighting each transformed value $T_A(x)$ by its probability under the Poisson distribution with mean $y$. Calculating this expectation accurately allows the exact unbiased inverse  $I_C$  to achieve its goal: matching the expected value of the transformed variable $T_A(x)$ back to the original mean, $y$. $I_C$ can be computed using a numerical optimization algorithm, as detailed in \cite{makitaloOptimalInversionAnscombe2011}. 
 
-The authors additionally find that the maximum likelihood inversion\footnote{They also find a minimum \gls{MSE} inversion that coincides with $I_C$ when the denoising is successful i.e. the true mean is recovered.} coincides with $I_C$. This method is also shown to perform better than the asymptotically unbiased inverse $I_B$ and the algebraic inverse $I_A$ \cite{makitaloOptimalInversionAnscombe2011}, and is hence the inversion we use in the rest of this work.
-
+The authors additionally found that the maximum likelihood inversion\footnote{They also find a minimum \gls{MSE} inversion that coincides with $I_C$ when the denoising is successful i.e. the true mean is recovered.} coincides with $I_C$. This method is also shown to perform better than the asymptotically unbiased inverse $I_B$ and the algebraic inverse $I_A$ \cite{makitaloOptimalInversionAnscombe2011}, and is hence the inversion we use in the rest of this work.
 A closed form approximation of $I_C$ is also available in \cite{makitaloClosedFormApproximationExact2011}, written as:
-
 \begin{equation}
     I_D(d) = \frac{1}{4} d^2 + \frac{\sqrt{\frac{3}{2}}}{4} d^{-1} - \frac{11}{8} d^{-2} + \frac{5 \sqrt{\frac{3}{2}}}{8} d^{-3} - \frac{1}{8}
 \end{equation}

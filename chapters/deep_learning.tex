@@ -115,6 +115,8 @@ Let us now look at one broad class of learning algorithms that have shown remark
 
 We do not discuss other learning algorithms
 
+If we generate images with overlapping subsets, the formed images are not independent, as the same events could be present in multiple images. A simple example would be to generate image an image with \num{e6} counts and other with twice as many counts, where the former is a subset of the latter. This is a limitation of the method, but it is a reasonable approximation for the purpose of this study.
+
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\linewidth]{images/simple_nn_architecture.pdf}
