@@ -56,7 +56,8 @@ After the data reduction, corrections are applied to the measurement axes \todo[
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1\linewidth]{images/dataframe.png}
+    \todo[inline]{The image file seems to be missing.}
+    % \includegraphics[width=1\linewidth]{images/dataframe.png}
     \caption{\textit{Single-event data table:} displaying the first and last five rows of recorded \gls{NiW} dataset. The table includes the detector dimensions $x$, $y$, and $t_{tof}$, which represent the spatial and time-of-flight coordinates for each detected electron (resolved at the electronId level). It also shows (unadjusted with respect to $t_0$) pump-probe delay stage values $t_{delay}$ (resolved per train), the sectorID (a unique identifier for each detector segment), the \gls{gmd} (GMD) readings (averaged per pulse), and (UNIX style) timeStamps (accurate to each train). Data is hierarchically indexed by trainId (\gls{train}), pulseId (\gls{pulse}), and electronId (event number within each pulse). Non-resolved values, such as those linked only to trains or pulses, are forward-filled for consistency across rows, allowing easy alignment with per-event data. To optimize binning and computations, certain columns can be selectively dropped to reduce dimensionality, such as when focusing on specific features like static spectra (e.g., $k_x$–$k_y$–$E$) or dynamic response data (e.g., energy $E$ vs. delay $t_{delay}$). Additionally, rows can be filtered to include only selected ranges, such as a particular energy interval, before the binning step.\todo[disable]{Needs better caption and reference in text}}
     \label{fig:df}
 \end{figure}
