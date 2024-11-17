@@ -145,7 +145,7 @@ Image quality assessment (IQA) is a field dedicated to measuring the objective a
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{images/slices.pdf}
-    \caption{$E$, $k_y$, and $k_x$ slices at arbitrary positions of the \gls{GrIr} 3D dataset, showing the effect of summing with different  slices \gls{winsize}. The left most column shows a single slice ($\gls{winsize}=1$) with significant noise, while subsequent columns show slice-summed images with $\gls{winsize}=\numlist{5;10;15}$. Increasing \gls{winsize} progressively reduces noise, at the cost of feature broadening. This trade-off highlights the difficulty in obtaining a true, noise-free reference image even through averaging techniques.}
+    \caption{$E$, $k_y$, and $k_x$ slices at arbitrary positions of the \gls{GrIr} 3D dataset, showing the effect of summing with different  slices \gls{winsize}. The left most column shows a single slice ($\gls{winsize}=1$) with significant noise, while subsequent columns show slice-summed images with $\gls{winsize}=\numlist{5;10;15}$. Increasing \gls{winsize} progressively reduces noise, at the cost of feature broadening\todo[inline]{This broadeining is also often referred to as blurring.}. This trade-off highlights the difficulty in obtaining a true, noise-free reference image even through averaging techniques.}
     \label{fig:slices}
 \end{figure}
 
@@ -156,7 +156,7 @@ To address this, we assess metrics that are more resilient to noisy reference im
 Given that the ideal denoising aims to produce distortion-free images, one free from artifacts and removing all unwanted signal, it makes sense to target structural similarity rather than relative intensity values against the reference. Hence, throughout this study, the images are normalized to the [\num{0}, \num{1}] range. This normalization ensures that comparisons focus on relative differences in image structures and features, rather than on absolute intensity values.
 
 \section{Denoising MPES data with BM3D}
-Let us start with attempting to denoise the noisy realization with $\gls{ncounts}=\num{1.6e7}$ ($\gls{total_time}\approx\qty{2}{h}$) of the $k_y$-$k_x$ images shown in \cref{fig:slices}. This particular slice serves as a good reference due to its clear features. We use the Anscombe--\gls{BM3D}--Inverse Anscombe scheme described in \cref{fig:anscombe-bm3d}. The noisy image is formed by slice summing along the $E$ dimension with size $w = 5$. The respective denoised image is compared against the reference image (with $w=15$) of $\gls{ncounts}=\num{1.86e8}$, using the \gls{MSSSIM} metric. An example noisy, denoised and target set is shown in \cref{fig:noisy-denoised-ref-16M-avg-bm3d}. 
+Let us start with attempting \todo{You are not ``attempting to denoie'' you are ``denoising''.} to denoise the noisy realization with $\gls{ncounts}=\num{1.6e7}$ ($\gls{total_time}\approx\qty{2}{h}$) of the $k_y$-$k_x$ images shown in \cref{fig:slices}. This particular slice serves as a good reference due to its clear features. We use the Anscombe--\gls{BM3D}--Inverse Anscombe scheme described in \cref{fig:anscombe-bm3d}. The noisy image is formed by slice summing along the $E$ dimension with size $w = 5$\todo{From $\gls{ncounts}=\num{1.6e7}$.}. The respective denoised image is compared against the reference image (with $w=15$) of $\gls{ncounts}=\num{1.86e8}$, using the \gls{MSSSIM} metric. An example noisy, denoised and target set is shown in \cref{fig:noisy-denoised-ref-16M-avg-bm3d}. 
 
 \begin{figure}
     \centering
@@ -165,12 +165,13 @@ Let us start with attempting to denoise the noisy realization with $\gls{ncounts
     \label{fig:noisy-denoised-ref-16M-avg-bm3d}
 \end{figure}
 
-The above-mentioned evaluation is then repeated by varying $w = \numlist{1;5;10;15}$ for both noisy and target images. \cref{fig:confusion_matrix_msssim_window_avg} presents a confusion matrix that shows how the metric varies when $w$ is varied. It becomes evident that a larger $w$ yields a better comparison for denoising. This is because a larger $w$ reduces the noise in the target image, leading to a more accurate evaluation.
+The above-mentioned evaluation is then repeated by varying $w = \numlist{1;5;10;15}$ for both noisy and target images. \cref{fig:confusion_matrix_msssim_window_avg} presents a confusion matrix that shows how the metric varies when $w$ is varied\todo{This is a bit confusion. You start by saying you do this for $w=5$ (noisy) and $w=15$ (target). Then you do it for $w = \numlist{1;5;10;15}$ for both noisy and target images. I would start with the latter and then just say that \cref{fig:noisy-denoised-ref-16M-avg-bm3d} shows this example $w=5$ (noisy) and $w=15$ (target)}. It becomes evident that a larger $w$ yields a better comparison for denoising. This is because a larger $w$ reduces the noise in the target image, leading to a more accurate evaluation\todo{This assumes that the denoising has the same quality in all cases. This is not so clear since the denoising has a parameter that scales with the noise level.}.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.5\linewidth]{images/confusion_matrix_msssim_window_avg.pdf}
-    \caption{Confusion matrix showing the \gls{MSSSIM} values with different windows $w$ for input and target images. The \gls{MSSSIM} is computed for the denoised images using the Anscombe-BM3D scheme. The matrix shows that using a larger $w$ for target image leads to better comparison of denoising.}
+    \todo[inline]{The color sheme seems somewhat counter-intuitive. Red is best?}
+    \caption{Confusion matrix \todo[inline]{I don't think that this should be called confusion matrix. This is a concept for classification problems.} showing the \gls{MSSSIM} values with different windows $w$ for input and target images. The \gls{MSSSIM} is computed for the denoised images using the Anscombe-BM3D scheme. The matrix shows that using a larger $w$ for target image leads to better comparison of denoising.}
     \label{fig:confusion_matrix_msssim_window_avg}
 \end{figure}
 
