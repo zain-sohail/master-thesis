@@ -11,7 +11,7 @@ We apply the \gls{BM3D} algorithm, both with and without application of the Ansc
 \todo[disable]{By saying that you do this one ``one'' of the data sets, you implicitly stress that you don't do it on all, so the reader will wonder why. Depending on why you only do this on one dataset, you could make this clear by adding some clarification, i.e., just the ``exemplarily'' could be enough.}
 
 \section{Experimental Datasets}\label{section:datasets}
-We investigate three datasets--\gls{GrIr} \cite{heberMultispectralTimeresolvedEnergy2022}, \gls{NiW} \cite{shokeenRealtimeObservationNonequilibrium2024}, and \gls{GdW} \cite{kutnyakhovMultidimensionalPhotoemissionSpectra2024}--that have been studied using \gls{HEXTOF} at \gls{FLASH}. Interpretable results from these experiments require long acquisition times (\gls{total_time}), essential for capturing the underlying physical processes. This is primarily due to three reasons discussed earlier:\todo[disable]{``that will be described below''?}.
+We investigate three datasets--\gls{GrIr} \cite{heberMultispectralTimeresolvedEnergy2022}, \gls{NiW} \cite{shokeenRealtimeObservationNonequilibrium2024}, and \gls{GdW} \cite{kutnyakhovMultidimensionalPhotoemissionSpectra2024}--that have been studied using \gls{HEXTOF} at \gls{FLASH}. Interpretable results from these experiments require long acquisition times (\gls{total_time}), essential for capturing the underlying physical processes. This is primarily due to three reasons:\todo[disable]{``that will be described below''?}
 
 \todo[disable]{You could reference the corresponding section here}The intrinsic stochastic nature of the photoemission process requires the collection of a large number of events to approach the true value (\cref{section:photoemission-process}). Additionally, the low repetition rate and intentionally reduced flux\footnote{To mitigate the space-charge effect} of the \gls{FEL} means that the data  needs to be collected over a long period of time to get sufficient statistics (\cref{section:fel}). For example, as shown in \cref{fig:acq-time-1M}, acquiring $\num{e6}$ electron events (\gls{ncounts}) \todo[disable]{electrons? events?} requires an acquisition time of $\gls{total_time}=\qty{8}{\min}$. Lastly, the multidimensional acquisition scheme to simultaneously resolve \gls{kx}, \gls{ky}, \gls{kz}, \gls{E}, \gls{tpp}, and spin polarization necessitates exponentially \todo[disable]{You mean this scale exponentially in the number od dimensions?} more data, as the number of dimensions increases, to adequately fill the sample space in higher dimensions (\cref{section:spectroscopy-techniques}).
 
@@ -29,13 +29,13 @@ However, \gls{ncounts} is not the only factor in determining data quality. Mater
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\linewidth]{images/datasets_3_kx_ky.pdf}
-    \caption{A \gls{kx}-\gls{ky} slice of the \gls{GrIr}, \gls{NiW}, and \gls{GdW} datasets, window-averaged across \gls{E} with window size \todo[disable]{insert ``window size''}$\gls{winsize}=\num{20}$\todo[disable]{Is the size in ``bins''? I guess what this means will only become clear in Section 4.2. If this is the case, you also can reference this here, so the reader will know to look for the details furher down.}. See \cref{sec:image-formation} for details on how these images are formed.}
+    \caption{A \gls{kx}-\gls{ky} slice of the \gls{GrIr}, \gls{NiW}, and \gls{GdW} datasets, slice summed across \gls{E} with size \todo[disable]{insert ``window size''}$\gls{winsize}=\num{20}$\todo[disable]{Is the size in ``bins''? I guess what this means will only become clear in Section 4.2. If this is the case, you also can reference this here, so the reader will know to look for the details furher down.}. See \cref{sec:image-formation} for details on how these images are formed.}
     \label{fig:all-hextof-datasets-kxky}
 \end{figure}
 
 For reference, we also look at the \gls{WSe2} dataset \cite{maklarTimeresolvedARPESRAW2022}, measured with a pulsed \gls{HHG}-based \gls{XUV} source using a \gls{TOF}-\gls{MM} analyzer\footnote{The \gls{TOF}-\gls{MM} analyzer being the common aspect between the \gls{GrIr} etc./ and the \gls{WSe2} dataset.} and a single-segmented \gls{DLD}. This setup yields a significantly larger number of counts, recording $\gls{ncounts}=\num{1e9}$ within $\gls{total_time}=\qty{27}{s}$. In comparison, the \gls{GrIr} dataset, collected with a \gls{FEL} source, yields $\gls{ncounts} = \num{1e6}$ over $\gls{total_time} = \qty{8}{\min}$, thus producing about four orders of magnitude fewer events.
 
-A direct denoising comparison between these datasets, however, is not feasible due to fundamental differences in light sources and detector design. The \gls{WSe2} dataset was acquired with a single-segmented detector setup, whereas the \gls{GrIr} dataset employed a more complex 8-segment detector (\cref{section:8q-dld}) that offers enhanced multi-hit capability through overlapping segments, but impacting count statistics. This already implies that the finding equivalent noise levels between the datasets is a non-trivial task.
+A direct denoising comparison between these datasets, however, is not feasible due to fundamental differences in light sources and detector design. The \gls{WSe2} dataset was acquired with a single-segmented detector setup, whereas the \gls{GrIr} dataset employed a more complex 8-segment detector (\cref{section:8s-dld}) that offers enhanced multi-hit capability through overlapping segments, but impacting count statistics. This already implies that the finding equivalent noise levels between the datasets is a non-trivial task.
 
 Additionally, the inherent statistical properties of the light sources (\cref{section:light-sources}) impact the noise characteristics in the raw data. Consequently, in \cref{ch:pes-statistics}, the \gls{WSe2} dataset aids in understanding statistical differences between acquisition setups. However, direct denoising comparisons between \gls{HHG} and \gls{FEL} sources would not be meaningful due to these varied conditions and detector architectures.
 
@@ -57,7 +57,7 @@ After the data reduction, corrections are applied to the measurement axes \todo[
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\linewidth]{images/dataframe.png}
-    \caption{\textit{Single-event data table:} displaying the first and last five rows of recorded \gls{NiW} dataset. The table includes the detector dimensions $x$, $y$, and $t_{tof}$, which represent the spatial and time-of-flight coordinates for each detected electron (resolved at the electronId level). It also shows (unadjusted with respect to $t_0$) pump-probe delay stage values $t_{delay}$ (resolved per train), the sectorID (a unique identifier for each detector segment), the \gls{gmd} (GMD) readings (averaged per pulse), and (UNIX style) timeStamps (accurate to each train). Data is hierarchically indexed by trainId (\gls{train}), pulseId (\gls{pulse}), and electronId (event number within each pulse). Non-resolved values, such as those linked only to trains or pulses, are forward-filled for consistency across rows, allowing easy alignment with per-event data. To optimize binning and computations, certain columns can be selectively dropped to reduce dimensionality, such as when focusing on specific features like static spectra (e.g., $k_x$–$k_y$–$E$) or dynamic response data (e.g., energy $E$ vs. delay $t_{delay}$). Additionally, rows can be filtered to include only selected ranges, such as a particular energy interval, before the binning step.\todo[disable]{Needs better caption and reference in text}}
+    \caption{\textit{Single-event data table:} displaying the first and last five rows of recorded \gls{NiW} dataset. The table includes the detector dimensions $x$, $y$, and $t_{tof}$, which represent the spatial and time-of-flight coordinates for each detected electron (resolved at the electronId level). It also shows (unadjusted with respect to $t_0$) pump-probe delay stage values $t_{delay}$ (resolved per train), the sectorID (a unique identifier for each detector segment), the \gls{gmd} (GMD) readings (averaged per pulse), and (UNIX style) timeStamps (accurate to each train). Data is hierarchically indexed by trainId (\gls{train}), pulseId (\gls{pulse}), and electronId (event number within each pulse). Non-resolved values, such as those linked only to trains or pulses, are forward-filled for consistency across rows, allowing easy alignment with per-event data. To optimize binning and computations, certain columns can be selectively dropped to reduce dimensionality, such as when focusing on specific features like static spectra (e.g., $k_x$–$k_y$–$E$) or dynamic response data (e.g., energy $E$ vs.\ delay $t_{delay}$). Additionally, rows can be filtered to include only selected ranges, such as a particular energy interval, before the binning step.\todo[disable]{Needs better caption and reference in text}}
     \label{fig:df}
 \end{figure}
 
@@ -77,9 +77,9 @@ Where the spatial dimensions ($x$ and $y$) are linearly mapped to the physical a
 
 In the aforementioned 3D images, spatial dimensions ($x$ and $y$ directions) are binned with a resolution of \qty{460}{px}, corresponding to the native detector quantization. The $t_{\text{tof}}$ is also binned with \num{460} steps to match the spatial resolution\footnote{This is done to easily form equal-resolution 2D cuts across any dimension.}. 
 
-It is often useful to bin the data at a coarser granularity than the detector's native resolution, mainly to address low-count statistics, producing a representation that has lower resolution but higher count statistics\footnote{Where this could indeed change the noise statistics, this is a fair compromise for low-count data.}. Coarse binning can be applied to a single dimension or across multiple dimensions. For instance, \cref{fig:all-hextof-datasets-kxky} showed 2D \gls{kx}--\gls{ky} images formed by \num{20} summing slices along the $E$ axis of the 3D image. This is effectively the same as coarsely binning the $E$ axis, and selecting a single slice from this coarser 3D image. Throughout this text, we use the native detector resolution as the baseline, and for coarser analyses, we specify the window size, \gls{winsize}, to define the averaging applied along a certain dimension. \todo[disable]{But this one uses additional averaging, doesn't it? Should also be mentioned here.}
+It is often useful to bin the data at a coarser granularity than the detector's native resolution, mainly to address low-count statistics, producing a representation that has lower resolution but higher count statistics\footnote{Where this could indeed change the noise statistics, this is a fair compromise for low-count data.}. Coarse binning can be applied to a single dimension or across multiple dimensions. For instance, \cref{fig:all-hextof-datasets-kxky} showed 2D \gls{kx}--\gls{ky} images formed by summing \num{20} slices along the $E$ axis of the 3D image. This is effectively the same as coarsely binning the $E$ axis, and selecting a single slice from this coarser 3D image. Throughout this text, we use the native detector resolution as the baseline, and for coarser analyses, we specify the slice summing size, \gls{winsize}, to define the averaging applied along a certain dimension. \todo[disable]{But this one uses additional averaging, doesn't it? Should also be mentioned here.}
 
-While the full dataset contains \num{1.86e8} electron counts, the selected energy region used to generate the image in \cref{fig:3d-gr-ir-186M} contains \num{1.15e8} counts. Note that as discussed in \cref{section:8q-dld}, the majority of events are counted multiple times, with the most common case being that each event is recorded twice. This suggests that the effective number of counts is approximately half of \num{1.15e8}, i.e.\ \num{5.75e7}. For consistency, \gls{ncounts} is always referring to the total dataset count (\num{1.86e8} in this case), even if the actual unique counts may be lower due to multiple counting of events, or due to filtering of the energy range. This reason and a difference in detector dimensions is key reason for the difficulty in comparison of \gls{GrIr} dataset with \gls{WSe2}, which is recorded with another light source--detector setup.
+While the full dataset contains \num{1.86e8} electron counts, the selected energy region used to generate the image in \cref{fig:3d-gr-ir-186M} contains \num{1.15e8} counts. Note that as discussed in \cref{section:8s-dld}, the majority of events are counted multiple times, with the most common case being that each event is recorded twice. This suggests that the effective number of counts is approximately half of \num{1.15e8}, i.e.\ \num{5.75e7}. For consistency, \gls{ncounts} is always referring to the total dataset count (\num{1.86e8} in this case), even if the actual unique counts may be lower due to multiple counting of events, or due to filtering of the energy range. This reason and a difference in detector dimensions is key reason for the difficulty in comparison of \gls{GrIr} dataset with \gls{WSe2}, which is recorded with another light source--detector setup.
 
 \begin{figure}
     \centering
@@ -143,12 +143,12 @@ Image quality assessment (IQA) is a field dedicated to measuring the objective a
 
 \begin{figure}
     \centering
-    \includegraphics[width=1\linewidth]{images/slices.pdf}
+    \includegraphics[width=0.8\linewidth]{images/slices.pdf}
     \caption{$E$, $k_y$, and $k_x$ slices at arbitrary positions of the \gls{GrIr} 3D dataset, showing the effect of summing with different  slices \gls{winsize}. The left most column shows a single slice ($\gls{winsize}=1$) with significant noise, while subsequent columns show slice-summed images with $\gls{winsize}=\numlist{5;10;15}$. Increasing \gls{winsize} progressively reduces noise, at the cost of feature broadening. This trade-off highlights the difficulty in obtaining a true, noise-free reference image even through averaging techniques.}
     \label{fig:slices}
 \end{figure}
 
-Given the low \gls{ncounts} in the datasets of interest, a possible method to create a higher quality reference image is to window-average across neighboring slices. \cref{fig:slices} illustrates such a case, where noise is progressively reduced by averaging across windows of increasing size (see \cref{fig:3d-gr-ir} for a 3D depiction of slice axis), at the cost of feature blurring. Even with a large window size, an ideal, noise-free reference image is not obtainable.
+Given the low \gls{ncounts} in the datasets of interest, a possible method to create a higher quality reference image is to sum across neighboring slices. \cref{fig:slices} illustrates such a case, where noise is progressively reduced by summing across increasing slices (see \cref{fig:3d-gr-ir} for a 3D depiction of slice axis), at the cost of feature blurring. Even with a large slice summing, an ideal, noise-free reference image is not obtainable.
 
 To address this, we assess metrics that are more resilient to noisy reference images. In \cref{sec:metric_comparison_experiment}, we compare the performance of different metrics (\gls{PSNR}, \gls{SSIM}, \gls{MSE} and \gls{MSSSIM}) for evaluating the denoising performance. Our findings suggest that the \gls{MSSSIM} metric is particularly well-suited for evaluating the denoising performance of images, when comparing against a noisy reference image. The \gls{MSSSIM} metric, conceived by \citeauthor{wangMultiscaleStructuralSimilarity2003} \cite{wangMultiscaleStructuralSimilarity2003}, extends SSIM by incorporating multiple scales. 
 
@@ -169,7 +169,7 @@ The above-mentioned evaluation is then repeated by varying $w = \numlist{1;5;10;
 \begin{figure}
     \centering
     \includegraphics[width=0.5\linewidth]{images/confusion_matrix_msssim_window_avg.pdf}
-    \caption{Confusion matrix showing the \gls{MSSSIM} values with different windows $w$ for input and target images. The \gls{MSSSIM} is computed for the denoised images using the Anscombe-BM3D scheme. The matrix shows that using a larger $w$ for target image leads to better comparison of denoising.}
+    \caption{Confusion matrix showing the \gls{MSSSIM} values with different number of slices summed $w$ for input and target images. The \gls{MSSSIM} is computed for the denoised images using the Anscombe-BM3D scheme. The matrix shows that using a larger $w$ for target image leads to better comparison of denoising.}
     \label{fig:confusion_matrix_msssim_window_avg}
 \end{figure}
 
@@ -177,33 +177,47 @@ The above-mentioned evaluation is then repeated by varying $w = \numlist{1;5;10;
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{images/denoised_optimal_sigma.pdf}
-    \caption{(left) Denoised image using the optimal $\sigma_{\text{oo}}=0.15$ (optimal value found for \num{1.6e7} counts from the hyperparameter search) (middle) denoised image with $\sigma_{\text{o}}=0.3$ (adjusted optimal value) and (right) the target image.}
+    \caption{(Left) Denoised image using the optimal $\sigma_{\text{oo}}=0.15$ (optimal value found for \num{1.6e7} counts from the hyperparameter search) (middle) denoised image with $\sigma_{\text{o}}=0.3$ (adjusted optimal value) and (right) the target image.}
     \label{fig:denoised-optimal-sigma}
 \end{figure}
-Till now, we only focused on a single \gls{ncounts} and applied denoising with a single $\sigma$ value. However, considering that the noise decreases with increased electron counts, we would expect the required level of denoising to decrease i.e. $\gls{ncounts}\propto\frac{1}{\sigma}$.
+Till now, we only focused on a single electron count (\gls{ncounts}) and a fixed denoising parameter $\sigma$. However, considering that the noise decreases with increased electron counts, we would expect the required level of denoising to decrease accordingly i.e.\ $\gls{ncounts}\propto\frac{1}{\sigma}$.
 
-One way to find the optimal denoising strength would be to estimate the noise level and use that estimate as the $\sigma$ for denoising. A different approach would be to perform a constrained optimization to find optimal $\sigma$ denoted $\sigma_{\text{oo}}$, such that the metric \gls{MSSSIM} is maximized. For user defined parameters to an algorithm, this sort of optimization is known as a hyperparameter search. An exhaustive grid search is the simplest method, but it is computationally expensive. Therefore, we use \texttt{optuna}\footnote{\href{https://optuna.org/}{https://optuna.org/} see citation in acknowledgments.}, which performs Bayesian optimization to find the optimal parameters, optimizing for \num{50} trials.
+One way to find the optimal denoising strength would be to estimate the noise level and use that estimate as the $\sigma$ for denoising. A different approach would be to perform an optimization to find optimal $\sigma$ denoted $\sigma_{\text{oo}}$, such that an objective function, such as the \gls{MSSSIM} metric, is maximized. For user defined parameters to an algorithm, this sort of optimization is known as a hyperparameter search. 
 
-The search is conducted on a small set of \num{2} identical featured images, featuring the same characteristics as shown in \cref{fig:noisy-denoised-ref-16M-avg-bm3d}, using a window size of ($\gls{winsize} = \num{10}$) across the count range of \numrange{1e6}{4.8e7}. The values of $\sigma$ are constrained between \numrange{0}{5} to prevent the disappearance of features, as higher values can lead to significant loss of detail. The results in \cref{fig:hyperparameter-averaged-10-images} corroborate the hypothesis that the optimal $\sigma$ for denoising decreases with increasing electron counts, a linearly decreasing trend.
+Finding the optimal parameter through an exhaustive grid search is the simplest method, but it is computationally expensive. We perform a hyperparameter search with \texttt{optuna}\footnote{\href{https://optuna.org/}{https://optuna.org/} see citation in acknowledgments.}, which uses Bayesian optimization to find the optimal hyperparameters.
+
+The search is conducted on a small set of \num{5} identical featured images (same slice), featuring the same characteristics as shown in \cref{fig:noisy-denoised-ref-16M-avg-bm3d}, slice summed with $\gls{winsize} = \num{10}$ across the count range of \numrange{1e6}{4.8e7}. The search is conducted over \num{50} trials for each \gls{ncounts} and each image. The optimization maximizes \gls{MSSSIM} score by adjusting the denoising parameter $\sigma$, which is constrained between \numrange{0}{5} to prevent the disappearance of features, as higher values can lead to significant loss of detail.
 
 \begin{figure}
     \centering
-    % First subfigure (Hyperparameter Search with Averaged 10 Images using MS-SSIM)
-    \begin{subfigure}[t]{0.49\linewidth}
-        \centering
-        \includegraphics[width=\linewidth]{images/hyperparameter_msssim_averaged_10_images.pdf}
-        \caption{Hyperparameter search results using MS-SSIM metric, averaged over 10 images.}
-        \label{fig:hyperparameter-msssim-averaged-10-images}
-    \end{subfigure}
-    \hfill
-    % Second subfigure (Hyperparameter Search with Averaged 10 Images using Sigma)
+    \includegraphics[width=\textwidth]{images/optimization_against_trial.pdf}
+    \caption{Example optimization study to find optimal BM3D hyperparameter $\sigma$: The plot shows how the optimization takes course over the trials using \gls{MSSSIM} score, which serves as the objective in the hyperparameter optimization. The cumulative maximum \gls{MSSSIM} score achieved up to each trial is shown as a gray line. The color of the scatter points represent the sigma parameter for each trial, with larger and darker points indicating higher values of sigma, showing that most time is spent near the optimal sigma.}
+    \label{fig:optimization-against-trial}
+\end{figure}
+
+The optimization process for a single image (from \gls{ncounts} of \num{2e6}) is illustrated in \cref{fig:optimization-against-trial}. This figure shows the progression of the optimization process across trials. The Bayesian optimization efficiently explores the parameter space, with most trials focusing near the optimal $\sigma$ value, to maximize the \gls{MSSSIM} score.
+
+The results in \cref{fig:hyperparameter-averaged-10-images} corroborate the hypothesis that the optimal $\sigma$ for denoising decreases with increasing electron counts, a linearly decreasing trend.
+
+
+
+
+\begin{figure}
+    \centering
     \begin{subfigure}[t]{0.49\linewidth}
         \centering
         \includegraphics[width=\linewidth]{images/hyperparameter_sigma_averaged_10_images.pdf}
-        \caption{Hyperparameter search results using Sigma metric, averaged over 10 images.}
+        \caption{Optimal sigma value $\sigma_{\text{oo}}$ as a function \gls{ncounts}, showing how the optimal denoising decreases with increasing electron count.}
         \label{fig:hyperparameter-sigma-averaged-10-images}
     \end{subfigure}
-    \caption{Results of hyperparameter search for \gls{BM3D} $\sigma$ for different electron counts, using the \gls{MSSSIM} metric. The images are window-averaged with $w=10$ from the 3D volume.}
+    \hfill
+    \begin{subfigure}[t]{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/hyperparameter_msssim_averaged_10_images.pdf}
+        \caption{\gls{MSSSIM} score as a function \gls{ncounts}, indicating that the denoising performance does not scale linearly with \gls{ncounts}, even when using optimal parameters.}
+        \label{fig:hyperparameter-msssim-averaged-10-images}
+    \end{subfigure}
+    \caption{The plots show the relationship between electron counts \gls{ncounts} and \gls{BM3D} denoising performance. (Left) The optimal value of the denoising parameter, sigma $\sigma_{\text{oo}}$, and (right) the corresponding \gls{MSSSIM} score, which serves as the optimization objective. These results were obtained from \num{50} trials for each noisy image (slice summed with size $w=10$ across $E$), with the optimization focused on maximizing the \gls{MSSSIM} score by adjusting $\sigma$. The \num{95}\% confidence interval is shown, computed over \num{5} images for each count.}
     \label{fig:hyperparameter-averaged-10-images}
 \end{figure}
 
@@ -240,7 +254,7 @@ The denoising performance below \num{4e6} is poor, with or without the optimal v
 \end{figure}
 
 \subsection{Varying Total Counts}
-We now evaluate the denoising performance of \cref{alg:bm3d} (\gls{BM3D} without Anscombe) and \cref{alg:anscombe-bm3d} (\gls{BM3D} with Anscombe), using the optimal $\sigma_{\text{o}}$ values determined through the hyperparameter search. A total of \num{1847} images were extracted from two separate noisy realizations of $\gls{ncounts}=\numlist{1e6;2e6;4e6;8e6;1.6e7;3.2e7;4.8e7}$. These are window-averaged with $\gls{winsize}=10$ for both the noisy and target images. 
+We now evaluate the denoising performance of \cref{alg:bm3d} (\gls{BM3D} without Anscombe) and \cref{alg:anscombe-bm3d} (\gls{BM3D} with Anscombe), using the optimal $\sigma_{\text{o}}$ values determined through the hyperparameter search. A total of \num{1847} images were extracted from two separate noisy realizations of \gls{ncounts} of \numlist{1e6;2e6;4e6;8e6;1.6e7;3.2e7;4.8e7}. These are slice summed with $\gls{winsize}=10$ for both the noisy and target images. 
 
 As before, the \gls{MSSSIM} metric is used, with the baseline computed using the noisy images. Averaging over the large amount of images at varied counts gives us a robust estimate of the denoising performance. Using statistical bootstrapping, where the estimate is computed over multiple resamples of the data, we can also estimate the \num{95}\% confidence interval of the \gls{MSSSIM} metric.
 
@@ -249,9 +263,9 @@ As shown in \cref{fig:bm3d-msssim}, there is a noticeable improvement in image q
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{images/bm3d_msssim.pdf}
-    \caption{Denoising performance of the \gls{BM3D} algorithm, with and without the Anscombe transformation. The optimal $\sigma_{\text{o}}$ values determined through the hyperparameter search are used. The images are window-averaged with $\gls{winsize}=10$ slices for both the noisy and target images. The baseline metric is computed using the noisy image as input.}
+    \caption{Denoising performance of the \gls{BM3D} algorithm, with and without the Anscombe transformation. The optimal $\sigma_{\text{o}}$ values determined through the hyperparameter search are used. The images are slice summed with $\gls{winsize}=10$ slices for both the noisy and target images. The baseline metric is computed using the noisy image as input.}
     \label{fig:bm3d-msssim}
 \end{figure}
 
 
-The most notable finding is that the application of the \gls{VST} leads to a slightly worse performance (\cref{fig:bm3d-msssim} orange vs. green lines), despite the expectation that it would enhance denoising performance for Poissonian noise. In previous work by \citeauthor{makitaloOptimalInversionAnscombe2011}, the authors demonstrated that applying the Anscombe transform indeed improves denoising performance. This strongly suggests that the noise statistics in the image deviate from a Poisson distribution. One reason is the slice summing used to form the images, that might have altered the noise statistics. The other obvious reason is that the electron count statistics forming the images are not Poissonian. This shall be the topic of the next chapter. 
+The most notable finding is that the application of the \gls{VST} leads to a slightly worse performance (\cref{fig:bm3d-msssim} orange vs.\ green lines), despite the expectation that it would enhance denoising performance for Poissonian noise. In previous work by \citeauthor{makitaloOptimalInversionAnscombe2011}, the authors demonstrated that applying the Anscombe transform indeed improves denoising performance. This strongly suggests that the noise statistics in the image deviate from a Poisson distribution. One reason is the slice summing used to form the images, that might have altered the noise statistics. The other obvious reason is that the electron count statistics forming the images are not Poissonian. This shall be the topic of the next chapter. 
