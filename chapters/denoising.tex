@@ -17,11 +17,11 @@ where $\mathcal{I}$, the index set in the $d$-dimensional space, is defined as
 \todo[disable]{$\in$? In any case, the set of all possible indices should have a name, e.g., $\mathcal{I}$.}
 
 \todo[disable]{From where to where does $\mathcal{F}$ map? Also, this does not seem very general, since this $\mathcal{F}$ is limited to operate pixel-wise and cannot take into account the position $\mathbf{i}$ at all. It still may be general enough for what you need though. I don't know yet, since I just started reading.}
-In the most general form, the observation model can be defined as $X$ being a mapping of $Y$ through a function $\mathcal{F}$, which is generally stochastic. This can be written as:\todo[disable]{Will you give examples for $\mathcal{F}$ later? I think it would already be a good place to have a very simple example right here, e.g. additive noise. Then we probably see, that this is not truly a function, but involves a random variable.}
+In the most general form, the observation model can be defined as $X$ being a mapping of $Y$ through a function $\mathcal{F}$, which is generally stochastic. This can be written as:\todo[disable]{Will you give examples for $\mathcal{F}$ later? I think it would already be a good place to have a very simple example right here, e.g.\ additive noise. Then we probably see, that this is not truly a function, but involves a random variable.}
 \begin{equation}\label{eq:observation-model}
     X = \mathcal{F} (Y)
 \end{equation}
-where $\mathcal{F}$ can vary depending on the noise model (e.g., additive or multiplicative noise, etc.), or other corruptions such as blurring, distortions etc. \todo[disable]{To understand that, you should put an example $\mathcal{F}$ here. I'm not completely sure how you mean this exactly.}
+where $\mathcal{F}$ can vary depending on the noise model (e.g.\ additive or multiplicative noise, etc.), or other corruptions such as blurring, distortions etc. \todo[disable]{To understand that, you should put an example $\mathcal{F}$ here. I'm not completely sure how you mean this exactly.}
 
 One widely used model is additive noise model, where the function $\mathcal{F}(Y)$ simply adds noise $N$ to the clean image $Y$. In this case, the observation model can be written as:
 \begin{equation}\label{eq:observation-model-additive}
@@ -46,14 +46,11 @@ In the spatial domain, several linear and nonlinear filtering techniques exist, 
 
 \subsection{Wiener Filter}
 \todo[disable]{Would be nice to have more details on the Wiener filter here. This is used in BM3D, so it's highly relevant.}
-Wiener filtering is a transform domain restoration technique operating on statistical principles. Based on the additive noise model defined in \cref{eq:observation-model-additive}, it aims to minimize the \gls{MSE} between the estimated $\hat{Y}$ and latent clean image $Y$, which can be written as:
+Wiener filtering is a transform domain restoration technique operating in the frequency domain (Fourier basis). Based on the additive noise model defined in \cref{eq:observation-model-additive}, it aims to minimize the \gls{MSE} between the estimated $\hat{Y}$ and latent clean image $Y$, which can be written as:
 \begin{equation}\label{eq:wiener-mse}
-    \hat{Y} = \arg \min_{\hat{Y}} \mathbb{E} \left[ \| Y - \hat{Y} \|^2 \right]
+    \arg \min_{\hat{Y}} \mathbb{E} \left[ \| Y - \hat{Y} \|^2 \right]
 \end{equation}\todo[author=zain]{Incorrect so fix this}
-This formulation is a case of risk minimization, a concept discussed in \cref{ch:deep_learning} in the context of learning algorithms. The noisy signal $X$ can be expressed in the frequency domain (Fourier basis) using the Fourier transform $\mathfrak{F}$ as:
-\begin{equation*}
-    X(f) = \mathfrak{F}(X)
-\end{equation*}
+This formulation is a case of risk minimization, a concept discussed in \cref{ch:deep_learning} in the context of learning algorithms. The noisy image $X$ can be expressed in the frequency domain (Fourier basis) as $X_f$.
 where $f$ is the frequency. The Wiener filter $H(f)$ is then expressed as a linear filter that scales each frequency component of the observed signal based on the \glspl{PSD} of $Y$ and $N$: 
 \begin{equation*}
 H(f) = \frac{S_Y(f)}{S_Y(f) + S_N(f)}
@@ -251,7 +248,7 @@ where $T_A(x)$ is defined in \cref{eq:anscombe-transform}, and $P(x \mid y)$ in 
 \end{equation*}
 This expectation sums over all possible values of $x$, weighting each transformed value $T_A(x)$ by its probability under the Poisson distribution with mean $y$. Calculating this expectation accurately allows the exact unbiased inverse  $I_C$  to achieve its goal: matching the expected value of the transformed variable $T_A(x)$ back to the original mean, $y$. $I_C$ can be computed using a numerical optimization algorithm, as detailed in \cite{makitaloOptimalInversionAnscombe2011}. 
 
-The authors additionally found that the maximum likelihood inversion\footnote{They also find a minimum \gls{MSE} inversion that coincides with $I_C$ when the denoising is successful i.e. the true mean is recovered.} coincides with $I_C$. This method is also shown to perform better than the asymptotically unbiased inverse $I_B$ and the algebraic inverse $I_A$ \cite{makitaloOptimalInversionAnscombe2011}, and is hence the inversion we use in the rest of this work.
+The authors additionally found that the maximum likelihood inversion\footnote{They also find a minimum \gls{MSE} inversion that coincides with $I_C$ when the denoising is successful i.e.\ the true mean is recovered.} coincides with $I_C$. This method is also shown to perform better than the asymptotically unbiased inverse $I_B$ and the algebraic inverse $I_A$ \cite{makitaloOptimalInversionAnscombe2011}, and is hence the inversion we use in the rest of this work.
 A closed form approximation of $I_C$ is also available in \cite{makitaloClosedFormApproximationExact2011}, written as:
 \begin{equation}
     I_D(d) = \frac{1}{4} d^2 + \frac{\sqrt{\frac{3}{2}}}{4} d^{-1} - \frac{11}{8} d^{-2} + \frac{5 \sqrt{\frac{3}{2}}}{8} d^{-3} - \frac{1}{8}
