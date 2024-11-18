@@ -1,12 +1,18 @@
 In Chapter~\ref{ch:pes-statistics}, we saw that the photoemission statistics are influenced by the characteristics of the light source, that exhibit well-defined statistical properties. However, when using multidimensional detection schemes capturing millions of voxels, the complexity of the process renders the process difficult to model. Furthermore, the predictive power of such model would rely on an existing understanding the materials, the very aspect under investigation. While the physical process is intriguing to study from a physical perspective, it is not practical for the purpose of image restoration.
 
-Instead of using explicit models such as \gls{BM3D} that encode prior knowledge about the data corruption (e.g. \gls{AWGN}, or Poisson noise as discussed in \cref{sec:poisson-noise-model}), it is also possible to learn the underlying model based on the data. This approach of not hard coding knowledge, and learning complex mappings based on data is the foundation of machine and deep learning, allowing to extract meaningful information from incomplete measurements.
+Instead of using explicit models such as \gls{BM3D} that encode prior knowledge about the data corruption (e.g.\ \gls{AWGN}, or Poisson noise as discussed in \cref{sec:poisson-noise-model}), it is also possible to learn the underlying model based on the data. This approach of not hard coding knowledge, and learning complex mappings based on data is the foundation of machine and deep learning, allowing to extract meaningful information from incomplete measurements.
+\todo{This seems not quite correct. Something like this:
+In Chapter~\ref{ch:pes-statistics}, we explored how photoemission statistics are shaped by the characteristics of the light source, which exhibit well-defined statistical properties. However, with multidimensional detection schemes capturing millions of voxels, modeling the complexity of the measurement process becomes infeasible. Furthermore, such models would rely heavily on pre-existing knowledge of the materials under investigation, which are often the primary subject of inquiry. While studying the physical process in detail is fascinating, it may not be practical for tasks such as image restoration.
+
+Traditional methods like \gls{BM3D} encode prior knowledge about the corruption process, such as the assumption of \gls{AWGN} or Poisson noise (see \cref{sec:poisson-noise-model}), into their algorithmic structure. Machine learning approaches, by contrast, offer the flexibility to learn such relationships from data. However, it is important to note that they do not operate entirely free of prior assumptions. For instance, in linear regression or generalized linear models (GLMs), prior knowledge is encoded through the choice of feature functions and assumptions about the underlying relationships. Similarly, in deep learning, architectures like convolutional neural networks (CNNs) implicitly encode priors, such as spatial locality and translation invariance, into their structure.
+
+What sets machine learning apart is its ability to capture complex, nonlinear mappings and adapt to data-driven patterns that might not be explicitly designed beforehand. This flexibility allows machine learning models to extract meaningful information from incomplete or noisy measurements, even in scenarios where the explicit modeling of noise or corruption processes is infeasible.}
 
 Learning can be broadly categorized in two categories: the \textit{supervised} and the \textit{unsupervised} setting. In supervised learning, the experience (\textit{model}) is learned by exposure to data containing information additional (labeled data) to what the model is supposed to map. The exposure to such data, called \textit{training}, enables the model to establish a relationship between the inputs and their corresponding outputs. The model’s expertise can then be used to map new inputs to their corresponding outputs. In the context of image restoration, the model can gain expertise from pairs of corrupted and clean images, and then use this expertise to restore other corrupted images.
 
 Conversely, in the unsupervised setting, the model is exposed to the data without any labeled information, and the model is supposed to learn the underlying structure of the data. In context of image restoration, that would imply only giving the model the corrupted images, and expecting to map to the desired target--the clean image.
 
-This chapter, we will discuss the foundations of learning, covering the elements of how and why learning works. This is general to both the supervised and unsupervised setting. There the concepts of \textit{hypothesis class}, \textit{capacity}, \textit{realizability}, and the concept of \textit{generalization} capability are discussed. Then we take a look at a statistical learning\footnote{Machine learning and statistical learning are many times used interchangeably but the latter places more emphasis on the statistical properties of the learning algorithms.} paradigm known as \textit{\gls{ERM}}, aiming to minimize the training error/empirical risk. \Gls{ERM} comes with its own set of challenges, such as overfitting in hypothesis spaces with high \textit{capacity}, which can be mitigated by \textit{regularization}. 
+This chapter, we will discuss the foundations of learning, covering the elements of how and why learning works. This is general to both the supervised and unsupervised setting. There the concepts of \textit{hypothesis class}, \textit{capacity}, \textit{realizability}, and the concept of \textit{generalization} capability are discussed. Then we take a look at a statistical learning\footnote{Machine learning and statistical learning are many times used interchangeably but the latter places more emphasis on the statistical properties of the learning algorithms, and the former on the algorithmic aspects.} paradigm known as \textit{\gls{ERM}}, aiming to minimize the training error/empirical risk. \Gls{ERM} comes with its own set of challenges, such as overfitting in hypothesis spaces with high \textit{capacity}, which can be mitigated by \textit{regularization}. 
 
 We discuss the combination of \textit{\gls{CNN}} and \textit{Autoencoders}, commonly used in image restoration tasks. Later, \textit{Noise2Noise}, a learning framework for image restoration not requiring clean images, introduced by \citeauthor{lehtinenNoise2NoiseLearningImage2018}, is discussed. To fully explain this framework, we look at the \textit{loss function} that allows this paradigm to work. We use the concrete realization using the \texttt{UNET} architecture, introduced by \citeauthor{ronnebergerUNetConvolutionalNetworks}, and its 3D variant, \texttt{UNET3D}.
 
@@ -17,12 +23,11 @@ Much of the foundational concepts discussed are based on \cite{shalev-shwartzUnd
 \section{Foundations of Learning}
 Statistical regression is a classical example of a learning algorithm, where the goal of regression is to learn a function that maps the input data to the output data.
 Let us approach the image restoration problem from this perspective. Using the general observation model defined in \cref{eq:observation-model}, the learning problem is then to find a hypothesis $h$ that maps the degraded image $X$ to the true image $Y$ that generalizes well.
-
 \begin{equation}
     h: X \mapsto Y
 \end{equation}
 
-In Machine Learning, we do not make any explicit assumption of the \textit{data generating distribution} except that all instances of the data are \textit{\gls{iid}} and generated according to a distribution $\mathcal{D}$ i.e. $Y, X \sim \mathcal{D}$.
+In machine learning, we do not make any explicit assumption of the \textit{data generating distribution} except that all instances of the data are \textit{\gls{iid}} and generated according to a distribution $\mathcal{D}$ i.e.\ $Y, X \sim \mathcal{D}$.
 
 \subsection{Generalization}
 \textit{Generalization} refers to the ability of a learning algorithm to perform well on new, unseen data. The goal of learning is to find a hypothesis $h$ that generalizes well to new data. 
@@ -30,15 +35,12 @@ In Machine Learning, we do not make any explicit assumption of the \textit{data 
 If the data generating distribution $\mathcal{D}$ is \gls{iid} and known, the \textit{generalization error}/\textit{population risk} $\mathcal{R}(\theta)$, with model parameters $\theta$, can be minimized to find the optimal hypothesis $\hat{h}^*$. This is often the case in classical regression.
 
 $\mathcal{R}(\theta)$ is defined as expectation taken across the data generating distribution $\mathcal{D}$, with the predicted output of a hypothesis $h(x; \theta)$ and the true output $y$:
-
 \begin{equation}
     \mathcal{R}(\theta) = \mathbb{E}_{(x, y) \sim \mathcal{D}} \left[ \ell(h(x; \theta), y) \right]
 \end{equation}
-
 where the loss $\ell$ measures the difference between two quantities, such as of $h(x; \theta)$ and $y$.
 
 Through optimization, the optimal hypothesis $\hat{h}^*$ can be found that minimizes the expected risk $\mathcal{R}$:
-
 \begin{equation}
     \hat{h}^* = \argmin_{h \in \mathcal{H}} \mathcal{R}(\mathcal{D}; \theta)
 \end{equation}
@@ -48,14 +50,12 @@ We already saw Wiener filtering in \cref{eq:wiener-mse} that minimizes the \gls{
 \subsection{Hypothesis Class, Capacity and Realizability}
 The hypothesis $h$ is chosen from a hypothesis space $\mathcal{H}$, where the hypothesis space $\mathcal{H}$ is the set of functions that the learning algorithm can choose from to approximate the true function. 
 For example, in linear regression, the hypothesis space $\mathcal{H}$ consists of all possible linear functions of the form:
-
 \begin{equation}\label{eq:linear-hypothesis}
    \mathcal{H} =  \left\{ h_{\mathbf{w}}(\mathbf{x}) = \mathbf{w}^\top \mathbf{x} + w_0 \mid \mathbf{w} \in \mathbb{R}^d, w_0 \in \mathbb{R} \right\}
 \end{equation}
+where $\mathbf{w}$ is the weight vector, $\mathbf{x}$ is the input vector, and $w_0$ is the bias term.
 
-The \textit{capacity} (the measure of size\footnote{The VC dimension and Rademacher complexity are two popular measures of capacity.}) of this hypothesis space is smaller than other hypothesis spaces such as generalized linear models
-\footnote{These are linear models with a non-linear activation function, such as sigmoid function.} 
-or polynomial class of functions. Choosing a hypothesis class with a larger capacity allows for more complex functions to be learned, but we will see that this comes with a trade-off.
+The \textit{capacity} (the measure of size\footnote{The VC dimension and Rademacher complexity are two popular measures of capacity.}) of this hypothesis space is smaller than other hypothesis spaces such as polynomial class of functions. Choosing a hypothesis class with a larger capacity allows for more complex functions to be learned, but we will see that this comes with a trade-off.
 
 We want to find a space that makes our learning problem \textit{realizable}. This means that there exists a mapping in the hypothesis space that can perfectly model the true mapping. A counter example could be if our data generation function is a $sin(x)$ function, but we choose a linear hypothesis space, then our problem is not realizable. In most real-world scenarios, the true space for complex data such as images is seldom known, and we forego the realizability condition. This is the \textit{agnostic} learning setting. For classes with high capacity, even if they can not perfectly model the true function, they might approximate it well.
 
@@ -69,30 +69,23 @@ The most popular learning algorithm is known as \textit{\glsxtrlong{ERM}}. For a
 \end{equation}
 
 where $\ell$ is the loss function that measures the error between the predicted output $h(x; \theta)$ and the true output $y$ mapped from $\mathcal{G} (x)$. The \gls{ERM} algorithm finds the hypothesis $\hat{h}$ from hypothesis space $\mathcal{H}$ that minimizes the training error $\mathcal{L}$
-
 \begin{equation}
     \hat{h} = \argmin_{h \in \mathcal{H}} \mathcal{L}(\theta; \mathcal{S})
 \end{equation}
-
 We shall later see that the assumption of output  $y = \mathcal{G} (x)$ can be relaxed in the \textit{Noise2Noise} framework with an \gls{MSE} $\ell$.
 
 \subsection{Regularization}
 The \gls{ERM} algorithm runs the risk of \textit{overfitting}. This means that the hypothesis $\hat{h}$ might perform well on the training data $\mathcal{S}$ but poorly on new data drawn from the same distribution $\mathcal{D}$. Usually, this happens for rich hypothesis classes (high capacity), or $\mathcal{S}$ is not representative of $\mathcal{D}$ and the \gls{ERM} algorithm chooses a hypothesis that is too complex. 
 
 To counter this, \textit{regularization} techniques are used. A penalty term based on model parameters is added to prevent overfitting. The \gls{ERM} then finds the hypothesis $\hat{h}$ that minimizes the regularized loss function\footnote{This is also known as Regularizated Loss Minimization (RLM)}:
-
 \begin{equation}
     \hat{h} = \argmin_{h \in \mathcal{H}} \left(\mathcal{L}(\theta; \mathcal{S})  + \lambda R(\theta) \right).
 \end{equation}
-
 where $R(\theta)$ is the regularization term that penalizes complex models, and $\lambda$ is the parameter controlling the trade-off between the training error and the regularization term. Common regularization techniques include L1 (Lasso) and L2 (Ridge) regularization. L1 regularization can be written as:
-
 \begin{equation*}
     R(\theta) = \|\theta\|_1 = \sum{j} |\theta_j|
 \end{equation*}
-
 and L2 regularization as:
-
 \begin{equation*}
     R(\theta) = \|\theta\|^2_2 = \sum_{j} \theta_j^2
 \end{equation*}
@@ -101,21 +94,56 @@ Regularization can also be seen as a way of restricting the hypothesis space $\m
 
 
 \subsection{Uniform Convergence}
-It is always possible that with a small probability, the training data is not representative of the data distribution $\mathcal{D}$. Hence, every learning algorithm has a confidence and accuracy level that, in practice, is hard to quantify. For simpler cases, these bounds can be theoretically proven but practically, other evaluation methods are assumed e.g. by empirically evaluating some test data, we can ascertain if the learned model generalizes well.
+It is always possible that with a small probability, the training data is not representative of the data distribution $\mathcal{D}$. Hence, every learning algorithm has a confidence and accuracy level that, in practice, is hard to quantify. For simpler cases, these bounds can be theoretically proven but practically, other evaluation methods are assumed, e.g.\ by empirically evaluating some test data, we can ascertain if the learned model generalizes well.
 
-For a hypothesis space $\mathcal{H}$ that is finite, and \gls{iid} training data all drawn from the same distribution $\mathcal{D}$, the \gls{ERM} algorithm can be shown to have a generalization error that converges to zero as the number of training samples $n$ goes to infinity. This is known as the \textit{uniform convergence} property of the \gls{ERM} algorithm. This can further be generalized to infinite hypothesis spaces.
+For a hypothesis space $\mathcal{H}$ that is finite, and \gls{iid} training data all drawn from the same distribution $\mathcal{D}$, the \gls{ERM} algorithm can be shown to have a generalization error that converges to zero as the number of training samples $n$ goes to infinity. This is known as the \textit{uniform convergence} property of the \gls{ERM} algorithm. This can further be generalized to infinite hypothesis spaces, through non-uniform convergence. Considering however that most machine learning takes place through discrete data, making infinite hypothesis spaces finite, the finite hypothesis space is a reasonable assumption.
+
+\subsection{Bias-Variance Trade-off}
+
+\dots
+
+\section{Learning Algorithms}
+There are a myriad of learning algorithms based on \gls{ERM}, that aim to minimize the expected loss $\mathcal{L}$ over a training set $\mathcal{S}$.  We have linear regression that aims to minimize the \gls{MSE} loss, logistic regression for binary classification\footnote{with softmax regression as a generalization for multi-class classification. The term "regression" is conventionally used, but this is actually a classification task.} that minimizes the cross-entropy loss, and support vector machines, that can be framed as a hinge loss minimization problem, aim to maximize the margin between different classes.
 
 
-The finite hypothesis space assumption makes sense, considering that we learn through discrete data, and infinite hypothesis spaces become finite. 
+Linear regression is one of the simplest forms of machine learning models, seeking to model a relationship between the continuous output $y \in \mathbb{R}$ as a weighted sum of input features $\mathbf{x} \in \mathbb{R}^d$ with an additional bias term $w_0$:
 
-\section{Neural Networks for Image Restoration}
-There are a myriad of learning algorithms based on \gls{ERM}, that aim to minimize the expected loss $\mathcal{L}$ over a training set $\mathcal{S}$.  We have linear regression that aims to minimize the \gls{MSE} loss, logistic regression for binary classification (softmax as a generalization for multi-class classification) that minimizes the cross-entropy loss, and support vector machines that minimize the hinge loss to maximize the margin between different classes.
+\begin{equation}\label{eq:linear-regression}
+    y(\mathbf{x}) = \mathbf{w}^\top \mathbf{x} + w_0
+\end{equation}
+
+The model parameters are learned by \gls{ERM} i.e.\ minimizing a loss function. Using the \gls{MSE} loss, written as:
+\begin{equation}\label{eq:mse-loss}
+    \ell(\mathbf{w}, w_0) = \frac{1}{n} \sum_{i=1}^{n} (y_i - \mathbf{w}^\top \mathbf{x}_i - w_0)^2
+\end{equation}
+where $n$ is the number of training samples, and $(\mathbf{x}_i, y_i)$ are the input-output pairs. This is known as the least squares solution, and with the MSE loss, it leads to closed form solutions.
+
+We saw briefly in \cref{eq:linear-hypothesis} the hypothesis space of linear functions. 
+
+The generalized linear models apply an activation function to the linear combination of the input features
+\begin{equation}
+    y(x) = g(\mathbf{w}^\top \mathbf{x} + b)
+\end{equation}
+where the activation function $g$ can be linear or non-linear. The non-linearity 
+
+% Standard Perceptron -> Multi-Class Networks -> Non-Linear basis functions -> Feature representation Neural Networks
+
+% \quote{Perceptrons with fixed, hand-coded input features can model any
+% separable function perfectly...
+% given the right input features.
+% or some tasks this requires an exponential number of input
+% features.
+% E.g., by enumerating all possible binary input vectors as separate
+% feature units (similar to a look-up table).
+% But this approach won’t generalize to unseen test cases! It is the feature design that solves the task!}
 
 Let us now look at one broad class of learning algorithms that have shown remarkable success in countless applications, including image restoration: \textit{Neural Networks}.
 
 We do not discuss other learning algorithms
 
-If we generate images with overlapping subsets, the formed images are not independent, as the same events could be present in multiple images. A simple example would be to generate image an image with \num{e6} counts and other with twice as many counts, where the former is a subset of the latter. This is a limitation of the method, but it is a reasonable approximation for the purpose of this study.
+\section{Neural Networks for Image Restoration}
+% \quote{A CNN is a prior on the hypothesis space. In fact, it is such a strong prior that it puts 
+%  probability mass on any hypothesis that is not translationally equivariant (up to some details to do with image boundaries)}
 
 \begin{figure}[h]
     \centering
@@ -184,6 +212,8 @@ Neural networks (NNs) represent a class of models that draw inspiration from the
 
 
 \section{Training}
+
+If we generate images with overlapping subsets, the formed images are not independent, as the same events could be present in multiple images. A simple example would be to generate image an image with \num{e6} counts and other with twice as many counts, where the former is a subset of the latter. This is a limitation of the method, but it is a reasonable approximation for the purpose of this study.
 
 \begin{figure}[h]
     \centering
