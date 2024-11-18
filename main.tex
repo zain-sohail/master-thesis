@@ -17,7 +17,7 @@ fonttitle=\bfseries,#1}
 
 % Appendix
 \usepackage[toc,page]{appendix}
-\usepackage{pdfpages}
+% \usepackage{pdfpages}
 
 % Math packages
 \usepackage{amssymb}
@@ -52,6 +52,16 @@ fonttitle=\bfseries,#1}
 \usepackage[font=small,labelfont=bf]{caption}
 \captionsetup{justification=raggedright, singlelinecheck=false}
 
+
+% Hyperlinks
+\usepackage[hidelinks]{hyperref}
+\usepackage{url}
+\usepackage[capitalise, noabbrev]{cleveref}
+% \crefname{equation}{}{}
+% \usepackage{makeidx}
+% \makeindex
+
+
 % Bibliography
 \usepackage[backend=bibtex, style=ieee]{biblatex}
 \addbibresource{references.bib}  % Replace with your .bib file
@@ -61,13 +71,6 @@ fonttitle=\bfseries,#1}
     \clearfield{urlyear}
     \clearfield{urlmonth}
 }
-
-% Hyperlinks
-\usepackage[hidelinks]{hyperref}
-\usepackage{url}
-\usepackage[capitalise, noabbrev]{cleveref}
-% \usepackage{makeidx}
-% \makeindex
 
 % Acronyms and glossaries
 \usepackage[toc, acronym, symbols, automake]{glossaries-extra}
@@ -102,6 +105,7 @@ fonttitle=\bfseries,#1}
 \renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}
 \renewcommand{\chaptermark}[1]{\markboth{\chaptername\ \thechapter.\ #1}{}}
 \pagestyle{fancy}
+
 
 \begin{document}
 
@@ -174,12 +178,13 @@ fonttitle=\bfseries,#1}
 % \printindex
 
 \clearpage
-\pagenumbering{Roman}
+% \pagenumbering{Roman}
 
-\begin{appendices}
-  \input{appendix/math_notation.tex}
-  \input{appendix/supplementary.tex}
+\appendix
+% \begin{appendices}
+\input{appendix/math_notation.tex}
+\input{appendix/supplementary.tex}
   % \input{jupyter_notebooks/notebooks.tex}
-\end{appendices}
+% \end{appendices}
 
 \end{document}
