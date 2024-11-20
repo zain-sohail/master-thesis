@@ -1,12 +1,6 @@
 In Chapter~\ref{ch:pes-statistics}, we saw that the photoemission statistics are influenced by the characteristics of the light source, that exhibit well-defined statistical properties. However, when using multidimensional detection schemes capturing millions of voxels, the complexity of the process renders the process difficult to model. Furthermore, the predictive power of such model would rely on an existing understanding the materials, the very aspect under investigation. While the physical process is intriguing to study from a physical perspective, it is not practical for the purpose of image restoration.
 
 Instead of using explicit models such as \gls{BM3D} that encode prior knowledge about the data corruption (e.g.\ \gls{AWGN}, or Poisson noise as discussed in \cref{sec:poisson-noise-model}), it is also possible to learn the underlying model based on the data. This approach of not hard coding knowledge, and learning complex mappings based on data is the foundation of machine and deep learning, allowing to extract meaningful information from incomplete measurements.
-\todo{This seems not quite correct. Something like this:
-In Chapter~\ref{ch:pes-statistics}, we explored how photoemission statistics are shaped by the characteristics of the light source, which exhibit well-defined statistical properties. However, with multidimensional detection schemes capturing millions of voxels, modeling the complexity of the measurement process becomes infeasible. Furthermore, such models would rely heavily on pre-existing knowledge of the materials under investigation, which are often the primary subject of inquiry. While studying the physical process in detail is fascinating, it may not be practical for tasks such as image restoration.
-
-Traditional methods like \gls{BM3D} encode prior knowledge about the corruption process, such as the assumption of \gls{AWGN} or Poisson noise (see \cref{sec:poisson-noise-model}), into their algorithmic structure. Machine learning approaches, by contrast, offer the flexibility to learn such relationships from data. However, it is important to note that they do not operate entirely free of prior assumptions. For instance, in linear regression or generalized linear models (GLMs), prior knowledge is encoded through the choice of feature functions and assumptions about the underlying relationships. Similarly, in deep learning, architectures like convolutional neural networks (CNNs) implicitly encode priors, such as spatial locality and translation invariance, into their structure.
-
-What sets machine learning apart is its ability to capture complex, nonlinear mappings and adapt to data-driven patterns that might not be explicitly designed beforehand. This flexibility allows machine learning models to extract meaningful information from incomplete or noisy measurements, even in scenarios where the explicit modeling of noise or corruption processes is infeasible.}
 
 Learning can be broadly categorized in two categories: the \textit{supervised} and the \textit{unsupervised} setting. In supervised learning, the experience (\textit{model}) is learned by exposure to data containing information additional (labeled data) to what the model is supposed to map. The exposure to such data, called \textit{training}, enables the model to establish a relationship between the inputs and their corresponding outputs. The model’s expertise can then be used to map new inputs to their corresponding outputs. In the context of image restoration, the model can gain expertise from pairs of corrupted and clean images, and then use this expertise to restore other corrupted images.
 
@@ -14,7 +8,7 @@ Conversely, in the unsupervised setting, the model is exposed to the data withou
 
 This chapter, we will discuss the foundations of learning, covering the elements of how and why learning works. This is general to both the supervised and unsupervised setting. There the concepts of \textit{hypothesis class}, \textit{capacity}, \textit{realizability}, and the concept of \textit{generalization} capability are discussed. Then we take a look at a statistical learning\footnote{Machine learning and statistical learning are many times used interchangeably but the latter places more emphasis on the statistical properties of the learning algorithms, and the former on the algorithmic aspects.} paradigm known as \textit{\gls{ERM}}, aiming to minimize the training error/empirical risk. \Gls{ERM} comes with its own set of challenges, such as overfitting in hypothesis spaces with high \textit{capacity}, which can be mitigated by \textit{regularization}. 
 
-We discuss the combination of \textit{\gls{CNN}} and \textit{Autoencoders}, commonly used in image restoration tasks. Later, \textit{Noise2Noise}, a learning framework for image restoration not requiring clean images, introduced by \citeauthor{lehtinenNoise2NoiseLearningImage2018}, is discussed. To fully explain this framework, we look at the \textit{loss function} that allows this paradigm to work. We use the concrete realization using the \texttt{UNET} architecture, introduced by \citeauthor{ronnebergerUNetConvolutionalNetworks}, and its 3D variant, \texttt{UNET3D}.
+We discuss the combination of \textit{\gls{CNN}} and \textit{Autoencoders}, commonly used in image restoration tasks. Later, \gls{noise2noise}, a learning framework for image restoration not requiring clean images, introduced by \citeauthor{lehtinenNoise2NoiseLearningImage2018}, is discussed. To fully explain this framework, we look at the \textit{loss function} that allows this paradigm to work. We use the concrete realization using the \texttt{UNET} architecture, introduced by \citeauthor{ronnebergerUNetConvolutionalNetworks}, and its 3D variant, \texttt{UNET3D}.
 
 These methods are then applied to train a model that maps incomplete observations from \gls{PES} to the true multidimensional image, with $d=3$ dimensions. The aspects of data generation, training, and evaluation are henceforth, discussed in detail.
 
@@ -27,14 +21,12 @@ Let us approach the image restoration problem from this perspective. Using the g
     h: X \mapsto Y
 \end{equation}
 
-In machine learning, we do not make any explicit assumption of the \textit{data generating distribution} except that all instances of the data are \textit{\gls{iid}} and generated according to a distribution $\mathcal{D}$ i.e.\ $Y, X \sim \mathcal{D}$.
+In machine learning, we do not make any explicit assumption of the \textit{data generating distribution} except that all instances of the data are \textit{\gls{iid}} and generated according to a distribution $\mathcal{D}$ i.e.\ $Y, X \sim \mathcal{D}$. Continuing forward, we denote the
 
 \subsection{Generalization}
 \textit{Generalization} refers to the ability of a learning algorithm to perform well on new, unseen data. The goal of learning is to find a hypothesis $h$ that generalizes well to new data. 
 
-If the data generating distribution $\mathcal{D}$ is \gls{iid} and known, the \textit{generalization error}/\textit{population risk} $\mathcal{R}(\theta)$, with model parameters $\theta$, can be minimized to find the optimal hypothesis $\hat{h}^*$. This is often the case in classical regression.
-
-$\mathcal{R}(\theta)$ is defined as expectation taken across the data generating distribution $\mathcal{D}$, with the predicted output of a hypothesis $h(x; \theta)$ and the true output $y$:
+If the data generating distribution $\mathcal{D}$ is \gls{iid} and known, the \textit{generalization error}/\textit{population risk} $\mathcal{R}(\theta)$, with model parameters $\theta$, can be minimized to find the optimal hypothesis $\hat{h}^*$. $\mathcal{R}(\theta)$ is defined as expectation taken across the data generating distribution $\mathcal{D}$, with the predicted output of a hypothesis $h(x; \theta)$ and the true output $y$:
 \begin{equation}
     \mathcal{R}(\theta) = \mathbb{E}_{(x, y) \sim \mathcal{D}} \left[ \ell(h(x; \theta), y) \right]
 \end{equation}
@@ -45,7 +37,7 @@ Through optimization, the optimal hypothesis $\hat{h}^*$ can be found that minim
     \hat{h}^* = \argmin_{h \in \mathcal{H}} \mathcal{R}(\mathcal{D}; \theta)
 \end{equation}
 
-We already saw Wiener filtering in \cref{eq:wiener-mse} that minimizes the \gls{MSE} loss, a case of the risk minimization. Since it is a linear filter, the hypothesis space $\mathcal{H}$ is constrained to linear functions.
+We already saw Wiener filtering in \cref{sec:wiener-filter} that minimizes the \gls{MSE} loss, a case of the risk minimization. Since it is a linear filter, the hypothesis space $\mathcal{H}$ is constrained to linear functions.
 
 \subsection{Hypothesis Class, Capacity and Realizability}
 The hypothesis $h$ is chosen from a hypothesis space $\mathcal{H}$, where the hypothesis space $\mathcal{H}$ is the set of functions that the learning algorithm can choose from to approximate the true function. 
@@ -57,35 +49,32 @@ where $\mathbf{w}$ is the weight vector, $\mathbf{x}$ is the input vector, and $
 
 The \textit{capacity} (the measure of size\footnote{The VC dimension and Rademacher complexity are two popular measures of capacity.}) of this hypothesis space is smaller than other hypothesis spaces such as polynomial class of functions. Choosing a hypothesis class with a larger capacity allows for more complex functions to be learned, but we will see that this comes with a trade-off.
 
-We want to find a space that makes our learning problem \textit{realizable}. This means that there exists a mapping in the hypothesis space that can perfectly model the true mapping. A counter example could be if our data generation function is a $sin(x)$ function, but we choose a linear hypothesis space, then our problem is not realizable. In most real-world scenarios, the true space for complex data such as images is seldom known, and we forego the realizability condition. This is the \textit{agnostic} learning setting. For classes with high capacity, even if they can not perfectly model the true function, they might approximate it well.
+We want to find a space that makes our learning problem \textit{realizable}. This means that there exists a mapping in the hypothesis space that can perfectly model the true mapping. An example for an unrealizable problem is if the data generation function is a $\sin(x)$ function, but the learning algorithm has a linear hypothesis space. In most real-world scenarios, the true space for complex data such as images is seldom known, and we forego the realizability condition. This is the \textit{agnostic} learning setting. For classes with high capacity, even if they can not perfectly model the true function, they might approximate it well.
 
 \subsection{Empirical Risk Minimization}
-
-In the case where true data distribution $\mathcal{D}$ is unknown, and the learning algorithm must make predictions on new data that sampled from $\mathcal{D}$.
-The most popular learning algorithm is known as \textit{\glsxtrlong{ERM}}. For a training set $\mathcal{S} = \left\{ (x_1, y_1), \ldots, (x_n, y_n) \right\}$ where $\mathcal{S} \sim \mathcal{D}^n$, and model parameters $\theta$, the empirical risk $\mathcal{L}(\theta; \mathcal{S})$ is defined as:
-
+When the true data distribution $\mathcal{D}$ is unknown, the population risk can no longer directly be minimized. Instead, we approximate it by minimizing the empirical risk. For a training set $\mathcal{S} = \left\{ (x_1, y_1), \ldots, (x_n, y_n) \right\}$ where $\mathcal{S} \sim \mathcal{D}^n$, and model parameters $\theta$, the empirical risk $\mathcal{L}(\theta; \mathcal{S})$ is defined as:
 \begin{equation}
     \mathcal{L}(\mathcal{S}; \theta) = \frac{1}{\lvert \mathcal{S} \rvert} \sum_{(x, y) \in \mathcal{S}} \ell(h(x; \theta), y),
 \end{equation}
-
-where $\ell$ is the loss function that measures the error between the predicted output $h(x; \theta)$ and the true output $y$ mapped from $\mathcal{G} (x)$. The \gls{ERM} algorithm finds the hypothesis $\hat{h}$ from hypothesis space $\mathcal{H}$ that minimizes the training error $\mathcal{L}$
+where $\ell$ is the loss function that measures the error between the predicted output $h(x; \theta)$ and the true output $y$. \Glsxtrfull{ERM} finds the hypothesis $\hat{h}$ from hypothesis space $\mathcal{H}$ that minimizes the training error $\mathcal{L}$
 \begin{equation}
-    \hat{h} = \argmin_{h \in \mathcal{H}} \mathcal{L}(\theta; \mathcal{S})
+    \hat{h} = \argmin_{h \in \mathcal{H}} \mathcal{L}(\mathcal{S};\theta)
 \end{equation}
-We shall later see that the assumption of output  $y = \mathcal{G} (x)$ can be relaxed in the \textit{Noise2Noise} framework with an \gls{MSE} $\ell$.
+by optimizing the model parameters $\theta$.
+We shall later see that the assumption of having a true $y$ can be relaxed in the \textit{Noise2Noise} framework using \gls{MSE} as the loss $\ell$. 
 
 \subsection{Regularization}
-The \gls{ERM} algorithm runs the risk of \textit{overfitting}. This means that the hypothesis $\hat{h}$ might perform well on the training data $\mathcal{S}$ but poorly on new data drawn from the same distribution $\mathcal{D}$. Usually, this happens for rich hypothesis classes (high capacity), or $\mathcal{S}$ is not representative of $\mathcal{D}$ and the \gls{ERM} algorithm chooses a hypothesis that is too complex. 
+The \gls{ERM} algorithm runs the risk of \textit{overfitting}. This means that the hypothesis $\hat{h}$ might perform well on the training data $\mathcal{S}$ but poorly on new data drawn from the same distribution $\mathcal{D}$. Usually, this happens for rich hypothesis classes (high capacity), or when $\mathcal{S}$ is not representative of $\mathcal{D}$ and the \gls{ERM} algorithm chooses a hypothesis that is too complex. 
 
 To counter this, \textit{regularization} techniques are used. A penalty term based on model parameters is added to prevent overfitting. The \gls{ERM} then finds the hypothesis $\hat{h}$ that minimizes the regularized loss function\footnote{This is also known as Regularizated Loss Minimization (RLM)}:
 \begin{equation}
     \hat{h} = \argmin_{h \in \mathcal{H}} \left(\mathcal{L}(\theta; \mathcal{S})  + \lambda R(\theta) \right).
 \end{equation}
-where $R(\theta)$ is the regularization term that penalizes complex models, and $\lambda$ is the parameter controlling the trade-off between the training error and the regularization term. Common regularization techniques include L1 (Lasso) and L2 (Ridge) regularization. L1 regularization can be written as:
+where $R(\theta)$ is the regularization term that penalizes complex models, and $\lambda$ is the parameter controlling the trade-off between the training error and the regularization term. Common regularization techniques include $L_1$ (Lasso) and $L_2$ (Ridge) regularization. $L_1$ regularization can be written as:
 \begin{equation*}
     R(\theta) = \|\theta\|_1 = \sum{j} |\theta_j|
 \end{equation*}
-and L2 regularization as:
+and $L_2$ regularization as:
 \begin{equation*}
     R(\theta) = \|\theta\|^2_2 = \sum_{j} \theta_j^2
 \end{equation*}
@@ -100,6 +89,7 @@ For a hypothesis space $\mathcal{H}$ that is finite, and \gls{iid} training data
 
 \subsection{Bias-Variance Trade-off}
 
+\todo[inline]{Stopping point for review currently.}
 \dots
 
 \section{Learning Algorithms}
@@ -116,7 +106,7 @@ The model parameters are learned by \gls{ERM} i.e.\ minimizing a loss function. 
 \begin{equation}\label{eq:mse-loss}
     \ell(\mathbf{w}, w_0) = \frac{1}{n} \sum_{i=1}^{n} (y_i - \mathbf{w}^\top \mathbf{x}_i - w_0)^2
 \end{equation}
-where $n$ is the number of training samples, and $(\mathbf{x}_i, y_i)$ are the input-output pairs. This is known as the least squares solution, and with the MSE loss, it leads to closed form solutions.
+where $n$ is the number of training samples, and $(\mathbf{x}_i, y_i)$ are the input-target pairs. This is known as the least squares solution, and with the MSE loss, it leads to closed form solutions.
 
 We saw briefly in \cref{eq:linear-hypothesis} the hypothesis space of linear functions. 
 
@@ -189,7 +179,80 @@ Neural networks (NNs) represent a class of models that draw inspiration from the
 
 % In summary, the Universal Approximation Theorem emphasizes the considerable potential of neural networks to model intricate patterns. However, the practical success of a neural network is contingent upon careful design, tuning, and training of the model.
 
-\section{Noise2Noise: Deep Learning framework}
+\section{Noise2Noise}
+In the classical supervised-learning setting for image restoration, we assume access to clean target images for training. However, in many practical scenarios such as our \gls{MPES} data, we only have access to a noisy realization of the latent clean image. \citeauthor{lehtinenNoise2NoiseLearningImage2018} demonstrated by using only noisy observations for both inputs and targets, it is possible to train a neural network and learn a mapping to the underlying clean signal. 
+
+As seen in \cref{sec:image-formation}, the experimental setup (refer to \cref{section:hextof,section:dld}) for \gls{MPES} puts us in a unique position of having access to multiple noisy realizations of the same underlying signal. This allows us to generate training data pairs where both the input and target are noisy realizations of the same underlying signal.
+
+Let us first look at the theoretical basis of this framework shown in \cite{lehtinenNoise2NoiseLearningImage2018}, and then discuss the practical implications of using this framework for \gls{MPES} image restoration.
+
+Consider a case with $n$ \gls{iid} random observations $x_1, x_2 \dots x_n \sim \mathcal{D}$. These observations correspond to an unknown true value $y$, which we aim to estimate. The estimation problem can be framed as minimizing the risk function $\mathcal{R}(\hat{y})$, defined as the expected loss over $\mathcal{D}$. For the $L_2$ loss (\gls{MSE}), the risk minimization problem can be written as:
+\begin{equation}
+    \hat{y} = \argmin_{\hat{y}} \mathbb{E}[(\hat{y} - y)^2],
+\end{equation}
+where a closed-form solution can be derived giving us
+\begin{equation}
+    \hat{y} = \mathbb{E}[y]
+\end{equation}
+showing that minimizing the $L_2$ loss gives us the expected value of the observations. Importantly, this result holds regardless of the distribution.
+
+Training neural network regressors is a generalization of the point estimation procedure described above. Instead of estimating a scalar $\hat{y}$, a neural network learns a function $h(x; \theta)$ parameterized by $\theta$, which maps input data $x$ to predictions. If we remove the dependency on input data, a trivial regressor $h(x; \theta) = \hat{y}$ that outputs a learned scalar reduces the task to the same expectation of $y$ shown earlier.
+
+Conversely, training the network involves solving the same minimization problem for each input sample, such that the properties of the loss function are inherited by the network training process.
+
+The Noise2Noise approach leverages the observation that the optimal parameters $\theta^*$ learned by minimizing the $L_2$ loss depend only on the expectation of the targets $y$, not their specific realizations. This means that training a neural network regressor with corrupted targets $(y + n_y)$, where $n_y$ is zero-mean noise, will yield the same parameters as if training with clean targets. Formally, the key insight is that the ERM formulation remains unchanged if the corrupted targets have the same conditional expectation:
+\begin{equation}
+    \mathbb{E}[y{\prime} \mid x] = \mathbb{E}[y \mid x]
+\end{equation}
+where $y{\prime} = y + n_y$ is the corrupted target and $n_y$ is independent noise with $\mathbb{E}[n_y] = 0$.
+
+The key insight is that we can perform \gls{ERM} using only noisy realizations. For a training set $\mathcal{S}$, the empirical risk becomes:
+
+
+This scheme itself provides implicit regularization.
+
+With infinite data, we approach the solution as if we were training with clean targets. For finite data, the error variance decreases inversely with $N$ \cite[supplementary~material]{lehtinenNoise2NoiseLearningImage2018}, where $N$ is the number of samples. With finite data, the variance of the estimate depends on the variance of the noise in the targets, divided by the number of samples N. This implies that increasing the dataset size reduces the variance of the estimate. For image data, N is the total number of scalar components (pixels and channels) across the dataset. This means that having a large number of pixels or channels can effectively reduce the impact of target noise on the estimate.
+
+For corruptions that are mutually uncorrelated, 
+% \begin{equation}
+%     L(S; θ) = 1/|S| ∑_{(X₁,X₂)∈S} ℓ(h(X₁; θ), X₂)
+
+% \end{equation}
+
+
+% The theoretical foundation of Noise2Noise rests on two key principles:
+
+% 1. **Optimality Under L₂ Loss**: When using the mean squared error (L₂ loss), the optimal hypothesis h* converges to:
+   
+%    h*(X) = E[X₂|X₁=X]
+   
+%    Under zero-mean noise assumptions, this conditional expectation equals the clean image Y.
+
+% 2. **Realizability**: While the true image space is complex, modern neural networks provide a hypothesis space H with sufficient capacity to approximate the denoising mapping. This allows for effective learning even in the agnostic setting where perfect realizability is not assumed.
+
+% ## Regularization in Practice
+
+% To prevent overfitting to noise patterns, regularization becomes crucial. The regularized objective function takes the form:
+
+% h* = argmin_{h∈H} (L(S; θ) + λR(θ))
+
+% where R(θ) is a regularization term and λ controls the regularization strength. In the context of Noise2Noise:
+
+% 1. The network architecture itself provides implicit regularization
+% 2. The independence of noise realizations acts as a form of data augmentation
+% 3. Early stopping can be used as an additional regularization mechanism
+
+% ## Generalization Properties
+
+% The generalization capability of Noise2Noise depends on several factors:
+
+% 1. The hypothesis space H must be rich enough to capture the denoising mapping
+% 2. The noise realizations must be independent
+% 3. The training set S must be large enough to approximate the true data distribution D
+% 4. The regularization must effectively prevent overfitting to noise patterns
+
+% This theoretical framework explains why Noise2Noise can successfully learn to denoise images without access to clean targets, making it particularly valuable for practical applications where obtaining clean images is infeasible or impossible.
+
 % One can do a lot of different learning approaches. We will build towards the deep learning approach. Networks which can deal with image data are generally Convolutional Neural Networks. Looking at research, UNET has been used for image segmentation and denoising, which combines the concept of autoencoders and convolutional neural networks, along with skip connections.
 % We use this approach with the noise2noise framework, which is a deep learning framework for image reconstruction.
 
@@ -227,6 +290,36 @@ If we generate images with overlapping subsets, the formed images are not indepe
     \includegraphics[width=1\linewidth]{images/images_noisy_denoised_with_target.pdf}
     \caption{Noisy and denoised \gls{ky}-\gls{kx} cuts with window size $w=1$ shown for \gls{GrIr} dataset. Each column corresponds to \numlist{1e6;2e6;4e6;8e6;1.6e7;3.2e7;1.86e8} counts, respectively; where the last column is the target image with $w=1$ in row 1 and $w=15$ in row 2. Below \num{8e6} counts, none of the features are discernible for noisy images, while the denoised images show clear features similar to the target.}
     \label{fig:images-noisy-denoised-training}
+\end{figure}
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\linewidth]{images/training_progress_example2.pdf}
+    \caption{}
+    \label{fig:training-progress-example}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+
+    \begin{subfigure}[b]{0.7\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{images/loss_training_val.pdf}
+        \caption{}
+        \label{fig:loss-training-val}
+    \end{subfigure}
+
+    \begin{subfigure}[b]{0.7\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{images/ssim_training_val.pdf}
+        \caption{}
+        \label{fig:ssim-training-val}
+    \end{subfigure}
+
+    \caption{Training and validation loss and \gls{SSIM} scores for the neural network model trained on the \gls{GrIr} dataset.}
+    \label{fig:loss-ssim-training-val}
 \end{figure}
 
 \section{Testing}
