@@ -35,28 +35,14 @@ Finally, the schema of the buffer files is cross-validated against the predefine
 \FloatBarrier
 \section{Experiment: Metric Comparison}\label{sec:metric_comparison_experiment}
 
-The objective of this experiment is to evaluate the effectiveness of various image quality metrics (\gls{MSE}, \gls{PSNR}, \gls{SSIM}, and \gls{MSSSIM}) when the provided reference is noisy. Specifically, reconstructed images from a trained neural network, that has shown clear improvements in perpetual \todo{As in Chapter 4, I don't see what ``perpetual'' is supposed to mean here.} quality, are compared against the high-count but noisy reference. Examples of such images at different counts can be seen in Figure~\ref{fig:images-noisy-denoised-training}\todo{I don't fully understand what is plotted there. Perhaps you should phrase this as formula so that one can see what exactly is fed into the metrics.}, which shows how the noisy images are devoid of any features at low counts, while the denoised images show clear features similar to the target. For this analysis, it is not relevant if the high quality reconstructions are due to overfitting or not, but rather that they produce perpetually better quality images (sometimes even compared to the target). So the hope is that the metrics acknowledge this improvement.
+The objective of this experiment is to evaluate the effectiveness of various image quality metrics (\gls{MSE}, \gls{PSNR}, \gls{SSIM}, and \gls{MSSSIM}) when the provided reference is noisy. Specifically, reconstructed images from a trained neural network, that has shown clear improvements in perceptual quality\footnote{This is assessed by an expert and comparing to the high-count target.}, are compared against the high-count but noisy reference. Examples of such images at different counts can be seen in Figure~\ref{fig:images-noisy-denoised-training}, which shows how the noisy images are devoid of any features at low counts, while the denoised images show clear features similar to the target. For this analysis, it is not relevant if the high quality reconstructions are due to overfitting or not, but rather that they produce perceptually better quality images (sometimes even compared to the target). So the hope is that the metrics acknowledge this improvement.
 
+\todo[disable]{As in Chapter 4, I don't see what ``perpetual'' is supposed to mean here.}
+\todo[disable]{I don't fully understand what is plotted there. Perhaps you should phrase this as formula so that one can see what exactly is fed into the metrics.}
 
 The \gls{GrIr} dataset is used, with electron counts ranging from \numrange{1e6}{3.2e7}. For each total count, a set of 2D noisy images (referred to as noisy slices) is extracted from the dataset. Corresponding high-count 2D slices (referred to as target slices) are used as reference images for comparison (from the dataset with \num{1.86e8} counts). Likewise, reconstructed images from the neural network are also compared against the target slices.
 
-% \begin{table}[h]
-%     \centering
-%     \caption{Comparison Types and Metrics}
-%     \begin{tabular}{p{0.24\linewidth} | p{0.49\linewidth} | p{0.19\linewidth}}
-%         \hline
-%         \textbf{Comparison Type} & \textbf{Description} & \textbf{Metrics Evaluated} \\
-%         \hline
-%         Noisy & Input image is a noisy realization of target & MSE, PSNR, SSIM, MS-SSIM \\
-%         \hline
-%         Denoised & Input image is perpetually of better quality & MSE, PSNR, SSIM, MS-SSIM \\
-%         \hline
-%     \end{tabular}
-%     \caption{Comparison types and metrics evaluated in the experiment. This is repeated for single slice and window-averaged images.}
-%     \label{tab:comparison_types}
-% \end{table}
-
-The metric evaluation procedure involves a data loader, implemented using the \texttt{PyTorch Dataset} class, which iterates through the different datasets and extracts noisy and target 2D image slices (window-averaged or single slice). For each pair of noisy and target slices, the metrics are computed. The comparison results are then grouped by acquisition count and type (noisy vs. denoised).
+The metric evaluation procedure involves a data loader, implemented using the \texttt{PyTorch Dataset} class, which iterates through the different datasets and extracts noisy and target 2D image slices (window-averaged or single slice). For each pair of noisy and target slices, the metrics are computed. The comparison results are then grouped by acquisition count and type (noisy vs.\ denoised).
 
 This metric comparison is performed with \num{1638} images sliced along each dimension of the dataset. The results are aggregated and a 95\% confidence interval is calculated for each metric to assess the reliability of the comparison. 
 % Table~\ref{tab:comparison_types} summarizes the comparison types and metrics evaluated in this experiment, repeated for both single slice and window-averaged images.
@@ -75,7 +61,7 @@ This metric comparison is performed with \num{1638} images sliced along each dim
         \caption{Comparison of input and target images window averaged with $w=1$ and $w=10$, respectively. All metrics improve much faster as counts increase. With a window-averaged target, \gls{MSE} and \gls{PSNR} start to favor the noisy input. \gls{SSIM} shows improvement that the perpetually better images are preferred at all counts. \gls{MSSSIM} exhibits a further separation between noisy and denoised inputs.}
         \label{fig:metrics-comparison-averaged-target}
     \end{subfigure}
-    \caption{Evaluation of metrics (\gls{MSE}, \gls{PSNR}, \gls{SSIM}, \gls{MSSSIM}) for noisy and denoised inputs, comparing against noisy input and (less) noisy target slices.}
+    \caption{Evaluation of metrics (\gls{MSE}, \gls{PSNR}, \gls{SSIM}, \gls{MSSSIM}) for noisy and denoised inputs, comparing against noisy input and (less noisy) target slices. The lines show the mean value at each \gls{ncounts}, and the error bands shown in the plots represent a 95\% confidence interval around that mean.}
     \label{fig:combined-metrics-comparison}
 \end{figure}
 

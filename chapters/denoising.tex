@@ -163,7 +163,7 @@ giving us the additive noise model $x = y + n$, with noise being zero-mean since
 \end{equation}
 In contrast to the \gls{AWGN} model, which assumes a variance independent of the true intensity, the Poisson noise model has variance scaling with the true intensity\footnote{$\text{Var}[n] = \text{Var}[x] = y$ since $\text{Var}[y] = 0$ due to $y$ being a fixed parameter (deterministic).} $\text{Var}[n] = y$. This implies that with decreasing intensity, the fluctuations (standard deviation) increase. Consequently, \gls{AWGN} denoising algorithms, such as \gls{BM3D}, can not directly be applied to Poisson noise.
 
-\subsection{Variance Stabilizing Transformations}
+\subsection{Variance Stabilizing Transformations}\label{sec:variance-stabilizing-transformations}
 To address this issue, suitable transformations that stabilize the variance, making it largely independent of the mean (similar to the normal distribution) can be beneficial. Transforms such as these are known as \glsxtrfullpl{VST}. \citeauthor{bartlettSquareRootTransformation1936} \cite{bartlettSquareRootTransformation1936} first showed such a transform: the square root transformation $T_1$:
 %Moreover, \glspl{VST} variance stabilization is independent of the sample size.
 \begin{equation}
@@ -202,7 +202,7 @@ Comparing scaled $T_2$ (purple) with $T_A$ (black) in \cref{fig:data-transform-a
     \label{fig:hist-anscombe}
 \end{figure}
 
-\subsection{Inverse Transformations}
+\subsection{Inverse Transformations}\label{sec:inverse-transformations}
 The Anscombe transform $T_A$ can hence be applied to a noisy pixel $x$ (described as $x \sim \text{Poi}(y)$) to stabilize the variance, making it suitable for denoising using \gls{AWGN} denoising algorithms. After applying $T_A$ and denoising, we obtain an estimate $d$ that approximates $\mathbb{E}[T_A(x) \mid y]$. The challenge lies in finding an appropriate inverse transformation to recover an estimate of the latent intensity $y$. 
 
 To this end, consider the algebraic inverse of $T_A$, written as:

@@ -1,11 +1,11 @@
 \newglossaryentry{train}{
     name={\textit{train}},
-    description={Also known as \textit{Macrobunch}. A train represents a group of closely spaced electron bunches produced and accelerated by the \gls{FEL} (or more generally, any accelerator). Each train is associated with a unique identifier called \texttt{trainId}, which is used as the primary index for much of the data reduction process.}
+    description={Also known as macrobunch. A train represents a group of closely spaced electron bunches produced and accelerated by the \gls{FEL} (or more generally, any accelerator). Each train is associated with a unique identifier called \texttt{trainId}, which is used as the primary index for much of the data reduction process.}
 }
 
 \newglossaryentry{pulse}{
     name={\textit{pulse}},
-    description={Also known as \textit{\gls{microbunch}}. Each \gls{train} contains about 500 pulses produced from the \gls{SASE} process (See \gls{sase}). These are which are used as a secondary index for the data reduction process},
+    description={Also known as \gls{microbunch}. Each \gls{train} contains about 500 pulses produced from the \gls{SASE} process (see \gls{sase}). These are which are used as a secondary index for the data reduction process.},
     plural={\textit{pulses}},
 }
 
@@ -16,7 +16,7 @@
 
 \newglossaryentry{microbunch}{
     name={\textit{microbunching}},
-    description={Microbunches are produced by the interaction between the oscillating electrons in the undulator and the radiation that they produce (due to the oscillatory acceleration) leads to periodic longitudinal density modulation known as Microbunching. The in-phase emitted radition adds coherently, increasing intensity and enhancing microbunching.},
+    description={Microbunches are produced by the interaction between the oscillating electrons in the undulator and the radiation that they produce (due to the oscillatory acceleration) leads to periodic longitudinal density modulation known as Microbunching. The in-phase emitted radiation adds coherently, increasing intensity and enhancing microbunching.},
     plural={Microbunches},
 }
 
@@ -78,4 +78,10 @@
 \newglossaryentry{noise2noise}{
     name={\textit{Noise2Noise}},
     description={A training paradigm where both the input and target datasets are noisy, eliminating the need for clean reference data.}
+}
+
+%space-charge effect
+\newglossaryentry{space-charge}{
+    name={\textit{space-charge effect}},
+    description={The space-charge effect occurs when intense light pulses generates a large electron density. This leads to the Coulomb repulsion between electrons, causing a distortion in the electric field, leading to a spread in the energy of the electrons}
 }
