@@ -254,14 +254,14 @@ The denoising performance below \num{4e6} \todo[inline]{Does ``below'' mean ``lo
     \begin{subfigure}[b]{1\linewidth}
         \centering
         \includegraphics[width=1\linewidth]{images/noisy_denoised_ref_2M_avg_bm3d.pdf}
-        \caption{Dataset with $\gls{ncounts}=\num{2e6}$. The denoising performance is quite poor, even with the adjusted optimal $\sigma_{\text{o}}\approx0.4$.}
+        \caption{Dataset with $\gls{ncounts}=\num{2e6}$. The denoising performance is quite poor, even with the adjusted optimal $\sigma_{\text{o}}\approx0.41$.}
         \label{fig:noisy-denoised-ref-2M-avg-bm3d}
     \end{subfigure}
 
     \begin{subfigure}[b]{1\linewidth}
         \centering
         \includegraphics[width=1\linewidth]{images/noisy_denoised_ref_4M_avg_bm3d.pdf}
-        \caption{Dataset with $\gls{ncounts}=\num{4e6}$. The denoising performance leaves room for improvement, using the adjusted optimal $\sigma_{\text{o}}\approx0.4$.}
+        \caption{Dataset with $\gls{ncounts}=\num{4e6}$. The denoising performance leaves room for improvement, using the adjusted optimal $\sigma_{\text{o}}\approx0.42$.}
         \todo[inline]{The number of counts is twice of the example in the first row, but $\sigma_{\text{o}}$ is the same?}
         \label{fig:noisy-denoised-ref-4M-avg-bm3d}
     \end{subfigure}
@@ -269,7 +269,7 @@ The denoising performance below \num{4e6} \todo[inline]{Does ``below'' mean ``lo
     \begin{subfigure}[b]{1\linewidth}
         \centering
         \includegraphics[width=1\linewidth]{images/noisy_denoised_ref_48M_avg_bm3d.pdf}
-        \caption{Dataset with $\gls{ncounts}=\num{4.8e7}$. At this \gls{ncounts}, \gls{MSSSIM} reports lower values for the denoised images compared to the noisy images, even though the denoised image features are well-preserved.}
+        \caption{Dataset with $\gls{ncounts}=\num{4.8e7}$, using the adjusted optimal $\sigma_{\text{o}}\approx0.29$. At this \gls{ncounts}, \gls{MSSSIM} reports lower values for the denoised images compared to the noisy images, even though the denoised image features are well-preserved.}
         \todo[inline]{What is $\sigma_{\text{o}}$ here? You mention it in both rows above.}
         \label{fig:noisy-denoised-ref-48M-avg-bm3d}
     \end{subfigure}
@@ -293,4 +293,45 @@ As shown in \cref{fig:bm3d-msssim}, there is a noticeable improvement in image q
 \end{figure}
 
 
-The most notable finding is that the application of the \gls{VST} leads to a slightly worse performance (\cref{fig:bm3d-msssim} orange vs.\ green lines)\todo[inline]{It may also show that the \gls{MSSSIM} is not accurate enough. What does the ``eyaball'' metric say? A figure with example results could be helpful here.}, despite the expectation that it would enhance denoising performance for Poissonian noise. In previous work by \citeauthor{makitaloOptimalInversionAnscombe2011}, the authors demonstrated that applying the Anscombe transform indeed improves denoising performance. This strongly suggests that the noise statistics in the image deviate from a Poisson distribution. One reason is the slice summing used to form the images\todo[inline]{The sum of two independent Poisson random variables is Poisson.}, that might have altered the noise statistics. The other obvious reason is that the electron count statistics forming the images are not Poissonian. This shall be the topic of the next chapter. 
+The most notable finding is that the application of the \gls{VST} leads to a slightly worse performance (\cref{fig:bm3d-msssim} orange vs.\ green lines)\todo[inline]{It may also show that the \gls{MSSSIM} is not accurate enough. What does the ``eyaball'' metric say? A figure with example results could be helpful here.}, despite the expectation that it would enhance denoising performance for Poissonian noise. In previous work by \citeauthor{makitaloOptimalInversionAnscombe2011}, the authors demonstrated that applying the Anscombe transform indeed improves denoising performance. This strongly suggests that the noise statistics in the image deviate from a Poisson distribution. 
+
+If the Poisson noise is not voxel-wise independent, the slice summing used to form the images might have altered the noise statistics (the sum of two independent Poisson random variables is Poisson). The other obvious reason is that the electron count statistics forming the images are not Poissonian. This would result in the transforms and inverse not being optimal for the data. We shall see that the count statistics indeed deviate from Poissonian statistics in the next chapter.
+
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{1\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{images/noisy_denoised_bm3d_anscombe_8M_10slices_optimal_sigma.pdf}
+        \caption{\num{8e6} dataset. Noisy image formed by slice summing with size $w=10$, having an average count of \num{0.5639} per pixel. With optimal denoising parameter $\sigma_o = 0.48$ for this count. \gls{MSSSIM}: Noisy: 0.6624, BM3D: 0.8094, BM3D+Anscombe: 0.8126. The Anscombe transform improves perceptual results by avoiding excessive denoising of lower-count pixels.}
+    \end{subfigure}
+    \begin{subfigure}[b]{1\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{images/noisy_denoised_bm3d_anscombe_48M_single_slice_sigma_1.pdf}
+        \caption{\num{4.8e7} dataset. Noisy image from single slice ($w=1$), with an average count of \num{0.6089} per pixel. With denoising parameter $\sigma_o = 0.29$ (optimized for slice-summed images with $w = 10$). \gls{MSSSIM}: Noisy: 0.6863, BM3D: 0.8179, BM3D+Anscombe: 0.8192. The single-slice Anscombe result, in terms of perceptual quality, slightly outperforms BM3D.}
+        \label{}
+    \end{subfigure}
+    \caption{Comparison of BM3D and BM3D+Anscombe. (a) \num{8e6} dataset with $w=10$ (b) \num{4.8e7} dataset with $w=1$. Both noisy images have similar average counts per pixel with similar reported metrics, and both images are denoised stronger without Anscombe. This can highlight the changing statistics with the slice summing.
+     Target image formed by slice summing with size $w=10$.}
+    \label{}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{1\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{images/noisy_denoised_bm3d_anscombe_48M_10slices_sigma_1.pdf}
+        \caption{Dataset with 10 slices at 48M total counts (average counts per pixel $\approx$ 0.8835). Metrics: Noisy: 0.8835, Denoised Anscombe BM3D: 0.8807, Denoised BM3D: 0.8881. There is almost no perceptual difference between the two methods, as the higher pixel counts stabilize noise characteristics without requiring the Anscombe transform.}
+        \label{}
+    \end{subfigure}
+    \begin{subfigure}[b]{1\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{images/noisy_denoised_bm3d_anscombe_48M_10slices_optimal_sigma.pdf}
+        \caption{Dataset with 10 slices at 48M total counts using fixed $\sigma$ = 1. Metrics: Noisy: 0.8835, Denoised Anscombe BM3D: 0.8600, Denoised BM3D: 0.8591. This setting further confirms minimal perceptual differences between the methods.}
+    \end{subfigure}
+    \caption{Comparison of BM3D with and without the Anscombe transform for datasets with higher average counts.}
+    \label{}
+\end{figure}
+
+\todo{Add discussion regarding these figures}
