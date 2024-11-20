@@ -97,16 +97,14 @@ It must be noted that for \gls{HHG} sources, \citeauthor{gorlachQuantumopticalNa
 \end{figure}
 
 \subsection{SASE FEL Light Source}
-Analyzing this data requires a few additional considerations. In \cref{section:dld}, we already saw that the \num{8}S \gls{DLD} shows repeated counts for a single electron, due to the segmented structure. From preliminary analysis of counting statistics shown in \cref{fig:grir-stats-dld-comparison}, it can be seen that this has a significant impact on the counting statistics, where the \num{2}-event occurrence is unnaturally high compared to the others (\cref{fig:grir-stats-2-layer}). Therefore, this analysis will only consider a single layer (from the 2-layered delay-line structure), and ideally a volumetric subset from a single segment\footnote{Due to the overlap between segments.}.
-
-
-
 \begin{figure}
     \centering
     \includegraphics[width=0.8\linewidth]{images/gmd_grir.pdf}
     \caption{Beam intensity measurements, using the \gls{GMD} over the time period $T=\qty{30}{hour}$, with data window-averaged at \qty{1}{min} intervals. The fluctuations in intensity can be observed, an intrinsic property of the \gls{SASE} process. Other notable observations are the long-term drifts in intensity, and the beam interruptions (no recorded values). The orange, green and red spans indicate the time periods used for other analyses.}
     \label{fig:gmd-intensity}
 \end{figure}
+
+Analyzing this data requires a few additional considerations. In \cref{section:dld}, we already saw that the \num{8}S \gls{DLD} shows repeated counts for a single electron, due to the segmented structure. From preliminary analysis of counting statistics shown in \cref{fig:grir-stats-dld-comparison}, it can be seen that this has a significant impact on the counting statistics, where the \num{2}-event occurrence is unnaturally high compared to the others (\cref{fig:grir-stats-2-layer}). Therefore, this analysis will only consider a single layer (from the 2-layered delay-line structure), and ideally a volumetric subset from a single segment\footnote{Due to the overlap between segments.}.
 
 
 \begin{figure}
@@ -127,8 +125,7 @@ We continue looking at the \gls{GrIr} dataset from previous chapters. We look at
 
 \cref{fig:grir-stats-2} shows the interesting regime (green span). The frequency of zero counts clearly deviates from any hypothesis, and is only explainable by the beam interruption, and significant intensity difference. The intensity variation effect is clearly visible at $\Delta t = \qty{5000}{ms}$, where asides from the zero counts, the distribution is bimodal, highlight two distinct count rates.
 
-In summary, the analysis of photoelectron counting statistics from the \gls{FEL} light source highlights the complexity of the data influenced by the detector’s structure, the \gls{SASE} and long-term intensity fluctuations. The \gls{NB} distribution is shown to be a more suitable model for such case. However, for the aim of reconstructing the latent distribution from incomplete observations, the spatial correlations induced by the material under study, and the detector structure should also be considered in the estimation process.
-
+In summary, the analysis of photoelectron counting statistics from the \gls{FEL} light source highlights the complexity of the data influenced by the detector’s structure, the \gls{SASE} and long-term intensity fluctuations. The \gls{NB} distribution is shown to be a more suitable model for such case. For the aim of estimating the latent distribution from incomplete observations (denoising), the spatial correlations in the image, and the detector structure should also be considered in the estimation process. 
 
 \begin{figure}
     \centering
@@ -151,3 +148,12 @@ In summary, the analysis of photoelectron counting statistics from the \gls{FEL}
 % \end{figure}
 
 % \subsection{Analysis of Photoelectron Counting Statistics}
+
+The deviation from Poisson distribution could also explain the lack of improvement in denoising performance when employing the Anscombe-BM3D scheme for denoising (see \cref{fig:bm3d-msssim}). Applying the Anscombe transform (\cref{eq:anscombe-transform}) on \gls{NB} data reveals that the variance is not effectively stabilized, as can be seen in \cref{fig:data-transform-anscombe-nb}. Further studies are hence necessary to analyze the effect of applying the transformations and inversions, as discussed in \cref{sec:variance-stabilizing-transformations,sec:inverse-transformations}, which were developed for Poisson noise. \citeauthor{anscombeTransformationPoissonBinomial1948} identified an optimal \gls{VST} for \gls{NB} distribution \cite{anscombeTransformationPoissonBinomial1948}, which could be beneficial for the \gls{FEL} data. Additionally, designing an optimal inversion scheme could also benefit the denoising process.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{images/data_transform_anscombe_nb.pdf}
+    \caption{Effect on variance by applying the Anscombe transformation to the synthetic Poisson and \gls{NB} distributed data. The Anscombe transform, as expected, stabilizes the variance for the Poisson data. For the \gls{NB} data, the variance stabilization is not as effective as for the Poisson data. This is expected considering the transform is optimal for Poisson data.}
+    \label{fig:data-transform-anscombe-nb}
+\end{figure}
