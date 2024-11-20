@@ -13,7 +13,7 @@ For a light source with a constant flux\footnote{Flux is the average number of p
 
 Using the Poisson Limit Theorem \cite{fellerIntroductionProbabilityTheory1991a}, it can be shown that as $N \to \infty$, and the probability $p \to 0$ such that $Np = \lambda$ remains constant, there is a convergence in distribution to the Poisson distribution (\cref{note:poisson-distribution}). Hence, the Poisson distribution is a suitable model for counting statistics of photons from a coherent light source.
 
-\subsection{Photoelectron Counting}
+\subsection{Photoelectron Counting}\label{section:photoelectron-counting}
 \citeauthor{mandelFluctuationsPhotonBeams1958} \cite{mandelFluctuationsPhotonBeams1958,mandelFluctuationsPhotonBeams1959} and others have shown that the transition probability of an electron from its ground state to an unbounded state at the surface of a photodetector is directly proportional to both the duration of the time interval $\Delta t$ and the instantaneous light intensity $I(t)$. This suggests that the rate density of photoelectrons is proportional to the light intensity $\lambda(t) \propto \int_{A} I(t)$, where $A$ is the detector area.
 
 The aforementioned can be mathematically formalized through one-dimensional stochastic process known as a \gls{PP}\footnote{For a more generalized description of \gls{PP}, the reader is referred to \cite{chiuStochasticGeometryIts2013}.}. A \gls{PP} is used to model occurrences of stochastic events that happen in some space. If we look at the time domain, the \gls{PP} allows us to the model the occurrence of events in time. The process generates a series of time points $\{t_1, t_2, \dots, t_n\}$ where the events occur, within a time interval $[0, T]$.
@@ -47,10 +47,10 @@ Due to the \gls{SASE} process of an \gls{FEL} light, discussed briefly in \cref{
 
 The important thing to note here is that above discussion is about the statistics of photoelectrons from photon detection. Whereas, our experiment is of \gls{PES}, where we are then interested in the (detected) emitted electrons (electron count distributions).
 
-\section{Testing of Counting Statistics}
-There are two simple ways to test a \gls{PPP}\footnote{Specialized statistical tests do exist to directly test for a homogeneous \gls{PP}, hypothesizing complete spatial randomness. Ripley's K-function can be used as a goodness of fit test \cite[Section~2.6.4]{chiuStochasticGeometryIts2013}. However, these do not test for the doubly stochastic \gls{PPP}.}. \textit{The interval statistics}, where the time intervals between events $\Delta t$ should follow an exponential distribution for a \gls{PPP}. The other is \textit{counting statistics}, where the number of events ($\gls{ncounts}$) within a fixed time interval $\Delta t$ should follow a distribution based on \cref{{eq:mandel-photo-electron}}.
+\section{Analyzing Counting Statistics}
+There are two simple ways to analyze if a process can be modeled by the \gls{PPP}\footnote{Specialized statistical tests do exist to directly test for a homogeneous \gls{PPP}, hypothesizing complete spatial randomness. Ripley's K-function can be used as a goodness of fit test \cite[Section~2.6.4]{chiuStochasticGeometryIts2013}. However, these do not test for the doubly stochastic \gls{PPP}.}. \textit{The interval statistics}, where the time intervals between events $\Delta t$ should follow an exponential distribution for a \gls{PPP}. The other is \textit{counting statistics}, where the number of events ($\gls{ncounts}$) within a fixed time interval $\Delta t$ should follow a distribution based on \cref{{eq:mandel-photo-electron}}.
 
-We consider the latter case, for two reasons. First, from the discussion above, we have well-established hypotheses between the expected distributions for different light sources. Second, the timing information from the light source is coarser than the electron detection time. While the \gls{DLD} detector measures the \gls{TOF} of each electron, allowing us to get individual timing, the detector's dead-time could influence the time-interval statistics. Therefore, we analyze the \textit{counting statistics}.
+We consider the latter case, for two reasons. First, from the discussion in \cref{section:photoelectron-counting}, we have well-established hypotheses between the expected distributions for different light sources. Second, the timing information from the light source is coarser than the electron detection time. While the \gls{DLD} detector measures the \gls{TOF} of each electron, allowing us to get individual timing, the detector's dead-time could influence the time-interval statistics. Therefore, we analyze the \textit{counting statistics}.
 
 \begin{figure}
     \centering
@@ -133,7 +133,7 @@ In summary, the analysis of photoelectron counting statistics from the \gls{FEL}
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{images/hist_counts_facetgrid_2_grir.pdf}
-    \caption{Distribution of photoelectron counts at time intervals $\Delta t =$ \qtylist{10;50;100;500;1000;5000}{ms} for a selected volumetric subset of the full \gls{GrIr} dataset. The total counts in this selected region are $\gls{ncounts}=\num{5e5}$ with total observation time $T\approx\qty{3.5}{h}$  (See green region in \cref{fig:gmd-intensity}). Neither Poisson nor \gls{NB} statistics provide a good fit for any of the time intervals. The frequency of zero counts is significantly higher, and the distribution is bimodal at $\Delta t = \qty{5000}{ms}$, indicating a significant intensity difference.}
+    \caption{Distribution of photoelectron counts at time intervals $\Delta t =$ \qtylist{10;50;100;500;1000;5000}{ms} for a selected volumetric subset of the full \gls{GrIr} dataset. The total counts in this selected region are $\gls{ncounts}=\num{5e5}$ with total observation time $T\approx\qty{3.5}{h}$  (See green region in \cref{fig:gmd-intensity}). No fits are provided as the deviation is apparent. The frequency of zero counts is significantly higher, and the distribution is bimodal at $\Delta t = \qty{5000}{ms}$, indicating a significant intensity difference.}
     \label{fig:grir-stats-2}
 \end{figure}
 
