@@ -158,7 +158,7 @@ Poisson distribution has the key property that the mean and variance are equal, 
     n = x - \mathbb{E}[x] = x - y
 \end{equation}
 giving us the additive noise model $x = y + n$, with noise being zero-mean since
-\begin{equation}
+\begin{equation}\label{eq:zero-mean-noise}
     \mathbb{E}[n] = \mathbb{E}[x] - \mathbb{E}[y] = y - y = 0
 \end{equation}
 In contrast to the \gls{AWGN} model, which assumes a variance independent of the true intensity, the Poisson noise model has variance scaling with the true intensity\footnote{$\text{Var}[n] = \text{Var}[x] = y$ since $\text{Var}[y] = 0$ due to $y$ being a fixed parameter (deterministic).} $\text{Var}[n] = y$. This implies that with decreasing intensity, the fluctuations (standard deviation) increase. Consequently, \gls{AWGN} denoising algorithms, such as \gls{BM3D}, can not directly be applied to Poisson noise.

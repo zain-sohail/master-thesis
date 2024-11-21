@@ -53,10 +53,10 @@ The \textit{capacity} (the measure of size\footnote{The VC dimension and Rademac
 
 We want to find a space that makes our learning problem \textit{realizable}. This means that there exists a mapping in the hypothesis space that can perfectly model the true mapping. An example for an unrealizable problem is if the data generation function is a $\sin(x)$ function, but the learning algorithm has a linear hypothesis space. In most real-world scenarios, the true space for complex data such as images is seldom known, and we forego the realizability condition. This is the \textit{agnostic} learning setting. For classes with high capacity, even if they can not perfectly model the true function, they might approximate it well.
 
-\subsection{Empirical Risk Minimization}
+\subsection{Empirical Risk Minimization}\label{sec:erm}
 When the true data distribution $\mathcal{D}$ is unknown, the population risk can no longer directly be minimized. Instead, we approximate it by minimizing the empirical risk. For a training set $\mathcal{S} = \left\{ (x_1, y_1), \ldots, (x_n, y_n) \right\}$ where $\mathcal{S} \sim \mathcal{D}^n$, and model parameters $\theta$, the empirical risk $\mathcal{L}(\theta; \mathcal{S})$ is defined as:
 \begin{equation}
-    \mathcal{L}(\mathcal{S}; \theta) = \frac{1}{\lvert \mathcal{S} \rvert} \sum_{(x, y) \in \mathcal{S}} \ell(h(x; \theta), y),
+    \mathcal{L}(\theta; \mathcal{S}) = \frac{1}{\lvert \mathcal{S} \rvert} \sum_{(x, y) \in \mathcal{S}} \ell(h(x; \theta), y),
 \end{equation}
 where $\ell$ is the loss function that measures the error between the predicted output $h(x; \theta)$ and the true output $y$. \Glsxtrfull{ERM} finds the hypothesis $\hat{h}$ from hypothesis space $\mathcal{H}$ that minimizes the training error $\mathcal{L}$
 \begin{equation}
@@ -65,8 +65,10 @@ where $\ell$ is the loss function that measures the error between the predicted 
 by optimizing the model parameters $\theta$.
 We shall later see that the assumption of having a true $y$ can be relaxed in the \textit{Noise2Noise} framework using \gls{MSE} as the loss $\ell$. 
 
+The gap between the $\mathcal{L}(\theta; \mathcal{S})$ and $\mathcal{R}(\theta)$ is known as generalization error and a hypothesis with a large gap generally implies \textit{overfitting}.
+
 \subsection{Regularization}
-The \gls{ERM} algorithm runs the risk of \textit{overfitting}. This means that the hypothesis $\hat{h}$ might perform well on the training data $\mathcal{S}$ but poorly on new data drawn from the same distribution $\mathcal{D}$. Usually, this happens for rich hypothesis classes (high capacity), or when $\mathcal{S}$ is not representative of $\mathcal{D}$ and the \gls{ERM} algorithm chooses a hypothesis that is too complex. 
+The \gls{ERM} algorithm runs the risk of overfitting. This means that the hypothesis $\hat{h}$ might perform well on the training data $\mathcal{S}$ but poorly on new data drawn from the same distribution $\mathcal{D}$. Usually, this happens for rich hypothesis classes (high capacity), or when $\mathcal{S}$ is not representative of $\mathcal{D}$ and the \gls{ERM} algorithm chooses a hypothesis that is too complex. 
 
 To counter this, \textit{regularization} techniques are used. A penalty term based on model parameters is added to prevent overfitting. The \gls{ERM} then finds the hypothesis $\hat{h}$ that minimizes the regularized loss function\footnote{This is also known as Regularizated Loss Minimization (RLM)}:
 \begin{equation}
@@ -95,7 +97,7 @@ For a hypothesis space $\mathcal{H}$ that is finite, and \gls{iid} training data
 \dots
 
 \section{Learning Algorithms}
-There are a myriad of learning algorithms based on \gls{ERM}, that aim to minimize the expected loss $\mathcal{L}$ over a training set $\mathcal{S}$.  We have linear regression that aims to minimize the \gls{MSE} loss, logistic regression for binary classification\footnote{with softmax regression as a generalization for multi-class classification. The term "regression" is conventionally used, but this is actually a classification task.} that minimizes the cross-entropy loss, and support vector machines, that can be framed as a hinge loss minimization problem, aim to maximize the margin between different classes.
+There are a myriad of learning algorithms based on \gls{ERM}, that aim to minimize the expected loss $\mathcal{L}$ over a training set $\mathcal{S}$.  We have linear regression that aims to minimize the \gls{MSE} loss, logistic regression for binary classification\footnote{With softmax regression as a generalization for multi-class classification. The term "regression" is conventionally used, but this is actually a classification task.} that minimizes the cross-entropy loss, and support vector machines, that can be framed as a hinge loss minimization problem, aim to maximize the margin between different classes.
 
 
 Linear regression is one of the simplest forms of machine learning models, seeking to model a relationship between the continuous output $y \in \mathbb{R}$ as a weighted sum of input features $\mathbf{x} \in \mathbb{R}^d$ with an additional bias term $w_0$:
@@ -182,23 +184,37 @@ Neural networks (NNs) represent a class of models that draw inspiration from the
 % In summary, the Universal Approximation Theorem emphasizes the considerable potential of neural networks to model intricate patterns. However, the practical success of a neural network is contingent upon careful design, tuning, and training of the model.
 
 \section{Noise2Noise}
-In the classical supervised-learning setting for image restoration, we assume access to clean target images for training. However, in many practical scenarios such as our \gls{MPES} data, we only have access to a noisy realization of the latent clean image. \citeauthor{lehtinenNoise2NoiseLearningImage2018} demonstrated by using only noisy observations for both inputs and targets, it is possible to train a neural network and learn a mapping to the underlying clean signal. 
+In the classical supervised-learning setting for image restoration, we assume access to clean target images for training. However, in many practical scenarios such as our \gls{MPES} data, we only have access to a noisy realization of the latent clean image. 
+
+\citeauthor{lehtinenNoise2NoiseLearningImage2018} demonstrated that by using only noisy observations for both inputs and targets, it is possible to train a neural network and learn a (restoration) mapping to the underlying clean signal \cite{lehtinenNoise2NoiseLearningImage2018}. Using the $L_2$ loss, a training set $\mathcal{S}^\prime = \{(x_1, x_1^\prime), \dots, (x_n, x_n^\prime)\}$ where $\mathcal{S}^\prime \sim \mathcal{D}^n$, $\mathcal{S}^\prime$ has noisy realizations of the same underlying signal $y \sim \mathcal{D}$, the \gls{ERM} defined in \cref{sec:erm} becomes:
+\begin{equation}
+    \hat{h} = \argmin_{h \in \mathcal{H}} \frac{1}{\lvert \mathcal{S^\prime} \rvert} \sum_{(x, x^\prime) \in \mathcal{S}^\prime} (h(x; \theta) - x^\prime)^2
+\end{equation}
+which only works using the $L_2$ loss. For zero-mean noise\footnote{We have discussed this for the case of Poisson noise in \cref{sec:poisson-noise-model}, specifically \cref{eq:poisson-noise,eq:zero-mean-noise}.}, the $L_2$ loss recovers the clean signal on expectation.
+\begin{equation}
+    \mathbb{E}[x_1 \mid y] = \mathbb{E}[x_1^\prime \mid y] = y
+\end{equation}
+
 
 As seen in \cref{sec:image-formation}, the experimental setup (refer to \cref{section:hextof,section:dld}) for \gls{MPES} puts us in a unique position of having access to multiple noisy realizations of the same underlying signal. This allows us to generate training data pairs where both the input and target are noisy realizations of the same underlying signal.
 
-Let us first look at the theoretical basis of this framework shown in \cite{lehtinenNoise2NoiseLearningImage2018}, and then discuss the practical implications of using this framework for \gls{MPES} image restoration.
 
-Consider a case with $n$ \gls{iid} random observations $x_1, x_2 \dots x_n \sim \mathcal{D}$. These observations correspond to an unknown true value $y$, which we aim to estimate. The estimation problem can be framed as minimizing the risk function $\mathcal{R}(\hat{y})$, defined as the expected loss over $\mathcal{D}$. For the $L_2$ loss (\gls{MSE}), the risk minimization problem can be written as:
-\begin{equation}
-    \hat{y} = \argmin_{\hat{y}} \mathbb{E}[(\hat{y} - y)^2],
-\end{equation}
-where a closed-form solution can be derived giving us
-\begin{equation}
-    \hat{y} = \mathbb{E}[y]
-\end{equation}
-showing that minimizing the $L_2$ loss gives us the expected value of the observations. Importantly, this result holds regardless of the distribution.
 
-Training neural network regressors is a generalization of the point estimation procedure described above. Instead of estimating a scalar $\hat{y}$, a neural network learns a function $h(x; \theta)$ parameterized by $\theta$, which maps input data $x$ to predictions. If we remove the dependency on input data, a trivial regressor $h(x; \theta) = \hat{y}$ that outputs a learned scalar reduces the task to the same expectation of $y$ shown earlier.
+Differing from the 
+
+
+
+% Consider a case with $n$ \gls{iid} random observations $x_1, x_2 \dots x_n \sim \mathcal{D}$. These observations correspond to an unknown true value $y$, which we aim to estimate. The estimation problem can be framed as minimizing the risk function $\mathcal{R}(\hat{y})$. For the $L_2$ loss (\gls{MSE}), the risk minimization problem can be written as:
+% \begin{equation}
+%     \hat{y} = \argmin_{\hat{y}} \mathbb{E}[(\hat{y} - y)^2],
+% \end{equation}
+% where a closed-form solution can be derived giving us
+% \begin{equation}
+%     \hat{y} = \mathbb{E}[y]
+% \end{equation}
+% showing that minimizing the $L_2$ loss gives us the expected value of the observations. Importantly, this result holds regardless of the distribution.
+
+% Training neural network regressors is a generalization of the point estimation procedure described above. Instead of estimating a scalar $\hat{y}$, a neural network learns a function $h(x; \theta)$ parameterized by $\theta$, which maps input data $x$ to predictions. If we remove the dependency on input data, a trivial regressor $h(x; \theta) = \hat{y}$ that outputs a learned scalar reduces the task to the same expectation of $y$ shown earlier.
 
 Conversely, training the network involves solving the same minimization problem for each input sample, such that the properties of the loss function are inherited by the network training process.
 
@@ -213,7 +229,7 @@ The key insight is that we can perform \gls{ERM} using only noisy realizations. 
 
 This scheme itself provides implicit regularization.
 
-With infinite data, we approach the solution as if we were training with clean targets. For finite data, the error variance decreases inversely with $N$ \cite[supplementary~material]{lehtinenNoise2NoiseLearningImage2018}, where $N$ is the number of samples. With finite data, the variance of the estimate depends on the variance of the noise in the targets, divided by the number of samples N. This implies that increasing the dataset size reduces the variance of the estimate. For image data, N is the total number of scalar components (pixels and channels) across the dataset. This means that having a large number of pixels or channels can effectively reduce the impact of target noise on the estimate.
+With infinite data, we approach the solution as if we were training with clean targets. For finite data, the error variance decreases inversely with number of samples $n$ \cite[supplementary~material]{lehtinenNoise2NoiseLearningImage2018}. With finite data, the variance of the estimate depends on the variance of the noise in the targets, divided by the number of samples N. This implies that increasing the dataset size reduces the variance of the estimate. For image data, N is the total number of scalar components (pixels and channels) across the dataset. This means that having a large number of pixels or channels can effectively reduce the impact of target noise on the estimate.
 
 For corruptions that are mutually uncorrelated, 
 % \begin{equation}
