@@ -39,17 +39,17 @@ Through optimization, the optimal hypothesis $\hat{h}^*$ can be found that minim
     \hat{h}^* = \argmin_{h \in \mathcal{H}} \mathcal{R}(\mathcal{D}; \theta)
 \end{equation}
 
-Risk can be understood as point estimation problem for each training pair \cite{lehtinenNoise2NoiseLearningImage2018}. A point estimate for a set of observations $x_1 \dots x_n$ can be found by minimizing the deviation with respect to a number $\hat{x}$ 
-\begin{equation}
-    \argmin_{\hat{x}} \mathbb{E}[\ell(\hat{x};x)],
-\end{equation}
-for $L_2$ loss this minimum is the mean of the observations
-\begin{equation}
-    \hat{x} = \mathbb{E}[x]
-\end{equation}
-and $L_1$ loss recovers the sample median.
+% Risk can be understood as point estimation problem for each training pair \cite{lehtinenNoise2NoiseLearningImage2018}. A point estimate for a set of observations $x_1 \dots x_n$ can be found by minimizing the deviation with respect to a number $\hat{x}$ 
+% \begin{equation}
+%     \argmin_{\hat{x}} \mathbb{E}[\ell(\hat{x};x)],
+% \end{equation}
+% for $L_2$ loss this minimum is the mean of the observations
+% \begin{equation}
+%     \hat{x} = \mathbb{E}[x]
+% \end{equation}
+% and $L_1$ loss recovers the sample median.
 
-By including a dependency 
+% By including a dependency 
 
 \subsection{Hypothesis Class, Capacity and Realizability}
 The hypothesis $h$ is chosen from a hypothesis space $\mathcal{H}$, where the hypothesis space $\mathcal{H}$ is the set of functions that the learning algorithm can choose from to approximate the true function. 
