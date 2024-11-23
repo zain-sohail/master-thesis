@@ -25,31 +25,19 @@ Let us approach the image restoration problem from this perspective. Using the g
 
 In machine learning, we do not make any explicit assumption of the \textit{data generating distribution} except that all instances of the data are \textit{\gls{iid}} and generated according to a distribution $\mathcal{D}$ i.e.\ $Y, X \sim \mathcal{D}$. Continuing forward, since the discussion is not restricted to images, we denote input and target as $x$ and $y$ respectively. 
 
-\subsection{Generalization}
-\textit{Generalization} refers to the ability of a learning algorithm to perform well on new, unseen data. The goal of learning is to find a hypothesis $h$ that generalizes well to new data. 
+\subsection{Generalization}\label{sec:generalization}
+\Gls{generalization} refers to the ability of a learning algorithm to perform well on new, unseen data. The goal of learning is to find a hypothesis $h$ that generalizes well to new data. 
 
 If the data generating distribution $\mathcal{D}$ is \gls{iid} and known, the \textit{generalization error}/\textit{population risk} $\mathcal{R}(\theta)$, with model parameters $\theta$, can be minimized to find the optimal hypothesis $\hat{h}^*$. $\mathcal{R}(\theta)$ is defined as expectation taken across the data generating distribution $\mathcal{D}$, with the predicted output of a hypothesis $h(x; \theta)$ and the true output $y$:
-\begin{equation}
+\begin{equation}\label{eq:risk}
     \mathcal{R}(\theta) = \mathbb{E}_{(x, y) \sim \mathcal{D}} \left[ \ell(h(x; \theta), y) \right]
 \end{equation}
 where the loss $\ell$ measures the difference between two quantities, such as of $h(x; \theta)$ and $y$.
 
 Through optimization, the optimal hypothesis $\hat{h}^*$ can be found that minimizes the expected risk $\mathcal{R}$:
-\begin{equation}
+\begin{equation}\label{eq:risk-min}
     \hat{h}^* = \argmin_{h \in \mathcal{H}} \mathcal{R}(\mathcal{D}; \theta)
 \end{equation}
-
-% Risk can be understood as point estimation problem for each training pair \cite{lehtinenNoise2NoiseLearningImage2018}. A point estimate for a set of observations $x_1 \dots x_n$ can be found by minimizing the deviation with respect to a number $\hat{x}$ 
-% \begin{equation}
-%     \argmin_{\hat{x}} \mathbb{E}[\ell(\hat{x};x)],
-% \end{equation}
-% for $L_2$ loss this minimum is the mean of the observations
-% \begin{equation}
-%     \hat{x} = \mathbb{E}[x]
-% \end{equation}
-% and $L_1$ loss recovers the sample median.
-
-% By including a dependency 
 
 \subsection{Hypothesis Class, Capacity and Realizability}
 The hypothesis $h$ is chosen from a hypothesis space $\mathcal{H}$, where the hypothesis space $\mathcal{H}$ is the set of functions that the learning algorithm can choose from to approximate the true function. 
@@ -64,7 +52,7 @@ The \textit{capacity} (the measure of size\footnote{The VC dimension and Rademac
 We want to find a space that makes our learning problem \textit{realizable}. This means that there exists a mapping in the hypothesis space that can perfectly model the true mapping. An example for an unrealizable problem is if the data generation function is a $\sin(x)$ function, but the learning algorithm has a linear hypothesis space. In most real-world scenarios, the true space for complex data such as images is seldom known, and we forego the realizability condition. This is the \textit{agnostic} learning setting. For classes with high capacity, even if they can not perfectly model the true function, they might approximate it well.
 
 \subsection{Empirical Risk Minimization}\label{sec:erm}
-When the true data distribution $\mathcal{D}$ is unknown, the population risk can no longer directly be minimized. Instead, we approximate it by minimizing the empirical risk. For a training set $\mathcal{S} = \left\{ (x_1, y_1), \ldots, (x_n, y_n) \right\}$ where $\mathcal{S} \sim \mathcal{D}^n$, and model parameters $\theta$, the empirical risk $\mathcal{L}(\theta; \mathcal{S})$ (also known as training error)  is defined as:
+When the true data distribution $\mathcal{D}$ is unknown, the population risk can no longer directly be minimized. Instead, we approximate it by minimizing the empirical risk. For a training set $\mathcal{S} = \left\{ (x_1, y_1), \ldots, (x_n, y_n) \right\}$ where $\mathcal{S} \sim \mathcal{D}^n$, and model parameters $\theta$, the empirical risk $\mathcal{L}(\theta; \mathcal{S})$ (also known as \gls{training_error}) is defined as:
 \begin{equation}
     \mathcal{L}(\theta; \mathcal{S}) = \frac{1}{\lvert \mathcal{S} \rvert} \sum_{(x, y) \in \mathcal{S}} \ell(h(x; \theta), y),
 \end{equation}
@@ -102,230 +90,161 @@ It is always possible that with a small probability, the training data is not re
 For a hypothesis space $\mathcal{H}$ that is finite, and \gls{iid} training data all drawn from the same distribution $\mathcal{D}$, the \gls{ERM} algorithm can be shown to have a generalization error that converges to zero as the number of training samples $n$ goes to infinity. This is known as the \textit{uniform convergence} property of the \gls{ERM} algorithm. This can further be generalized to infinite hypothesis spaces, through non-uniform convergence. However, considering that most machine learning takes place through discrete data, making infinite hypothesis spaces finite, the finite hypothesis space is a reasonable assumption.
 \todo[inline]{Stopping point for review currently.}
 \dots
-\section{Noise2Noise}
-\todo[inline,author=zain]{In principle, I want to describe CNNs first and then Noise2Noise, but since this requires more theoretical backing, I'd like if you can check this first.}
-In the classical supervised-learning setting for image restoration, we assume access to clean target images for training. Similar to \cref{sec:erm}, training can be formulated as
-\begin{equation}
-    \hat{h} = \argmin_{h \in \mathcal{H}} \frac{1}{\lvert \mathcal{S} \rvert} \sum_{(X, Y) \in \mathcal{S}} \ell(h(X; \theta), Y),
-\end{equation}
-where $\mathcal{S} \sim \mathcal{D}^n$ is the training set with images $\mathcal{S} = \{(X_1, Y_1), \dots, (X_n, Y_n)\}$ with $(X, Y)$  the noisy and target images.
-
-However, in many practical scenarios such as our \gls{MPES} data, the true image $Y$ is not available, and the noisy realization of sufficiently high quality. In the instance when multiple noisy realizations of the same underlying signal are available, \citeauthor{lehtinenNoise2NoiseLearningImage2018} demonstrated that it is possible to train a neural network to learn a restoration mapping to the underlying clean signal using only noisy observations for both inputs and targets \cite{lehtinenNoise2NoiseLearningImage2018}.
-
-Let us now discuss why instead of using clean targets, noisy targets can work just as well. The key idea to make this work is to use the $L_2$ loss, and the important assumption is having zero-mean noise. 
-
-
-Generalizing this to learning mappings, that \gls{ERM} does, 
-This $L_2$ loss has a property that it recovers the true signal on expectation, provided zero-mean noise\footnote{We have discussed an example of Poisson noise being zero-mean in \cref{sec:poisson-noise-model}, specifically \cref{eq:poisson-noise,eq:zero-mean-noise}, and hence, the $L_2$ loss could also recover, on expectation, the true value of a Poisson noise corrupted variable.} i.e.\
-\begin{equation*}
-    \mathbb{E}[x_1 \mid y] = \mathbb{E}[x_1^\prime \mid y] = y
-\end{equation*}
-This statement holds for the $L_2$ loss regardless of the distribution. Thus, with infinite training data, minimizing the empirical risk using noisy observations (\cref{eq:erm-noise2noise}) is equivalent to minimizing it with clean targets (\cref{eq:erm}). 
-
-
-For finite data, however, the variance of the estimate depends on the variance of the noise in the targets, divided by the number of samples $N$ \cite[supplementary~material]{lehtinenNoise2NoiseLearningImage2018}. This means that increasing the dataset size reduces the variance of the estimate, bringing it closer to the hypothesis had we minimized with clean targets. For image data, $N$ corresponds to the total number of scalar components\footnote{Number of images $n$ x number of voxels per image x number of color channels.} across the dataset, so having more voxels effectively brings us closer to the infinite data case.
-
-Let us formalize the Noise2Noise training with finite examples. Consider a training set $\mathcal{S}^\prime = \{(x_1, x_1^\prime), \dots, (x_n, x_n^\prime)\}$ where $\mathcal{S}^\prime \sim \mathcal{D}^n$, each pair $(x, x^\prime)$ independent noisy realizations of the same underlying signal $y \sim \mathcal{D}$. Using the $L_2$ loss, we can redefine \gls{ERM} formulation from \cref{sec:erm} as
-\begin{equation}\label{eq:erm-noise2noise}
-    \hat{h} = \argmin_{h \in \mathcal{H}} \frac{1}{\lvert \mathcal{S^\prime} \rvert} \sum_{(x, x^\prime) \in \mathcal{S}^\prime} (h(x; \theta) - x^\prime)^2
-\end{equation}
-giving us a hypothesis $\hat{h}$ that minimizes the training error using only noisy observations.
-
-
-The $L_2$ loss is widely known to encourage predictions that align with the mean of the target distribution. In tasks like superresolution, training a neural network regressor using low-resolution and high-resolution image pairs with $L_2$ loss often results in spatial blurriness in the network’s predictions. This happens because the network learns to output the average of all plausible explanations due to the loss’s averaging property. However, for the Noise2Noise framework, this averaging property of $L_2$ loss becomes a key advantage. Because the $L_2$ loss depends only on the expectation of the targets and not their specific realizations, the network learns the correct underlying mapping even when the training targets are corrupted by noise. Remarkably, the optimal network parameters remain unchanged if the noisy targets are replaced with other zero-mean corrupted distributions that have the same conditional expectation. This makes the $L_2$ loss particularly suited for scenarios where clean data is unavailable.
-
-Here, we assumed that the learning with clean targets is generally successful, while in fact, as we saw before, \gls{ERM} is prone to overfit (generalizes poorly) in high-capacity hypothesis spaces. Using noisy targets actually has the unexpected benefit to act as a form of regularization. This regularization effect occurs because the noisy targets perturb the training objective, preventing the network from relying excessively on exact matches between inputs and outputs. For image restoration tasks, this can lead to better generalization, as the network focuses on recovering the underlying clean signal structure rather than spurious details in the data.
-
-
-
-As seen in \cref{sec:image-formation}, the experimental setup (refer to \cref{section:hextof,section:dld}) for \gls{MPES} puts us in a unique position of having access to multiple noisy realizations of the same underlying signal. This allows us to generate training data pairs where both the input and target are noisy realizations of the same underlying signal.
-
-
-
-Differing from the 
-
-
-
-% Consider a case with $n$ \gls{iid} random observations $x_1, x_2 \dots x_n \sim \mathcal{D}$. These observations correspond to an unknown true value $y$, which we aim to estimate. The estimation problem can be framed as minimizing the risk function $\mathcal{R}(\hat{y})$. For the $L_2$ loss (\gls{MSE}), the risk minimization problem can be written as:
-% \begin{equation}
-%     \hat{y} = \argmin_{\hat{y}} \mathbb{E}[(\hat{y} - y)^2],
-% \end{equation}
-% where a closed-form solution can be derived giving us
-% \begin{equation}
-%     \hat{y} = \mathbb{E}[y]
-% \end{equation}
-% showing that minimizing the $L_2$ loss gives us the expected value of the observations. Importantly, this result holds regardless of the distribution.
-
-% Training neural network regressors is a generalization of the point estimation procedure described above. Instead of estimating a scalar $\hat{y}$, a neural network learns a function $h(x; \theta)$ parameterized by $\theta$, which maps input data $x$ to predictions. If we remove the dependency on input data, a trivial regressor $h(x; \theta) = \hat{y}$ that outputs a learned scalar reduces the task to the same expectation of $y$ shown earlier.
-
-Conversely, training the network involves solving the same minimization problem for each input sample, such that the properties of the loss function are inherited by the network training process.
-
-
-\begin{equation}
-    \mathbb{E}[y{\prime} \mid x] = \mathbb{E}[y \mid x]
-\end{equation}
-where $y{\prime} = y + n_y$ is the corrupted target and $n_y$ is independent noise with $\mathbb{E}[n_y] = 0$.
-
-The key insight is that we can perform \gls{ERM} using only noisy realizations. For a training set $\mathcal{S}$, the empirical risk becomes:
-
-
-This scheme itself provides implicit regularization.
-
-With infinite data, we approach the solution as if we were training with clean targets. For finite data, the error variance decreases inversely with number of samples $n$ \cite[supplementary~material]{lehtinenNoise2NoiseLearningImage2018}. With finite data, the variance of the estimate depends on the variance of the noise in the targets, divided by the number of samples N. This implies that increasing the dataset size reduces the variance of the estimate. For image data, N is the total number of scalar components (pixels and channels) across the dataset. This means that having a large number of pixels or channels can effectively reduce the impact of target noise on the estimate.
-
-For corruptions that are mutually uncorrelated, 
-% \begin{equation}
-%     L(S; θ) = 1/|S| ∑_{(X₁,X₂)∈S} ℓ(h(X₁; θ), X₂)
-
-% \end{equation}
-
-
-% The theoretical foundation of Noise2Noise rests on two key principles:
-
-% 1. **Optimality Under L₂ Loss**: When using the mean squared error (L₂ loss), the optimal hypothesis h* converges to:
-   
-%    h*(X) = E[X₂|X₁=X]
-   
-%    Under zero-mean noise assumptions, this conditional expectation equals the clean image Y.
-
-% 2. **Realizability**: While the true image space is complex, modern neural networks provide a hypothesis space H with sufficient capacity to approximate the denoising mapping. This allows for effective learning even in the agnostic setting where perfect realizability is not assumed.
-
-% ## Regularization in Practice
-
-% To prevent overfitting to noise patterns, regularization becomes crucial. The regularized objective function takes the form:
-
-% h* = argmin_{h∈H} (L(S; θ) + λR(θ))
-
-% where R(θ) is a regularization term and λ controls the regularization strength. In the context of Noise2Noise:
-
-% 1. The network architecture itself provides implicit regularization
-% 2. The independence of noise realizations acts as a form of data augmentation
-% 3. Early stopping can be used as an additional regularization mechanism
-
-% ## Generalization Properties
-
-% The generalization capability of Noise2Noise depends on several factors:
-
-% 1. The hypothesis space H must be rich enough to capture the denoising mapping
-% 2. The noise realizations must be independent
-% 3. The training set S must be large enough to approximate the true data distribution D
-% 4. The regularization must effectively prevent overfitting to noise patterns
-
-% This theoretical framework explains why Noise2Noise can successfully learn to denoise images without access to clean targets, making it particularly valuable for practical applications where obtaining clean images is infeasible or impossible.
-
-% One can do a lot of different learning approaches. We will build towards the deep learning approach. Networks which can deal with image data are generally Convolutional Neural Networks. Looking at research, UNET has been used for image segmentation and denoising, which combines the concept of autoencoders and convolutional neural networks, along with skip connections.
-% We use this approach with the noise2noise framework, which is a deep learning framework for image reconstruction.
-
-% For classical learning algorithms, the learning problem is not always realizable, meaning that not always is the 
-% ERM 
-% Linear separators are restrictive
-% Deep learning is just linear sepeartor problem with a non linear function applied to it like RELU
-
-
-
-% Important to take care not to train with empty data. \cite{lehtinenNoise2NoiseLearningImage2018}
-
-% Here we take care of data generation. Finite Capture Budget. We use the Graphene on Iridium dataset. The Noisy realizations are just less counts binned. 
-% E.g. 96M counts as Noisy and 186M counts as Target. Or 8M counts as Noisy and 96M counts as Target.
-\subsection{Convolutional Neural Networks}
-\subsection{Autoencoder}
-\cite{goodfellowDeepLearning2016}
-\subsection{UNET}
-
-
-
-
-
 \section{Learning Algorithms}
-There are a myriad of learning algorithms based on \gls{ERM}, that aim to minimize the expected loss $\mathcal{L}$ over a training set $\mathcal{S}$.  We have linear regression that aims to minimize the \gls{MSE} loss, logistic regression for binary classification\footnote{With softmax regression as a generalization for multi-class classification. The term "regression" is conventionally used, but this is actually a classification task.} that minimizes the cross-entropy loss, and support vector machines, that can be framed as a hinge loss minimization problem, aim to maximize the margin between different classes.
+There are a myriad of supervised learning algorithms built upon the foundation of \gls{ERM}, that aim to minimize the expected loss by minimizing the empirical risk (\cref{eq:erm}). Some examples include linear regression that minimizes the \gls{MSE} loss, logistic regression for binary classification\footnote{With softmax regression as a generalization for multi-class classification. The term "regression" is conventionally used, but this is actually a classification task.} that minimizes the cross-entropy loss, and support vector machines, that can be framed as a hinge loss minimization problem, aim to maximize the margin between different classes \cite{bishopPatternRecognitionMachine2006}.
 
+Let us develop towards one broad class of learning algorithms that have shown remarkable success in countless applications \todocite{prob DL denoising citations would help here}, including image restoration: \textit{Neural Networks}.
 
-Linear regression is one of the simplest forms of machine learning models, seeking to model a relationship between the continuous output $y \in \mathbb{R}$ as a weighted sum of input features $\mathbf{x} \in \mathbb{R}^d$ with an additional bias term $w_0$:
-
+\subsection{Linear Regression and Perceptrons}
+Linear regression\footnote{We briefly saw in \cref{eq:linear-hypothesis} the hypothesis space of linear regression being all linear functions.} is among thesimplest forms of machine learning models, seeking to model a relationship between the continuous output $y \in \mathbb{R}$ as a weighted sum of input features $\mathbf{x} \in \mathbb{R}^d$ with an added bias term $w_0$:
 \begin{equation}\label{eq:linear-regression}
     y(\mathbf{x}) = \mathbf{w}^\top \mathbf{x} + w_0
 \end{equation}
-
-The model parameters are learned by \gls{ERM} i.e.\ minimizing a loss function. Using the \gls{MSE} loss, written as:
+The model parameters can be learned based on \gls{ERM} i.e.\ minimizing a loss function to learn the weights. For example, using the \gls{MSE} loss, the objective becomes:
 \begin{equation}\label{eq:mse-loss}
     \ell(\mathbf{w}, w_0) = \frac{1}{n} \sum_{i=1}^{n} (y_i - \mathbf{w}^\top \mathbf{x}_i - w_0)^2
 \end{equation}
-where $n$ is the number of training samples, and $(\mathbf{x}_i, y_i)$ are the input-target pairs. This is known as the least squares solution, and with the MSE loss, it leads to closed form solutions.
+where $n$ is the number of training samples, and $(\mathbf{x}_i, y_i)$ are the input-target pairs. This can be minimized in closed-form to find the optimal weights $\hat{\mathbf{w}}$ and bias $\hat{w}_0$ \cite{bishopPatternRecognitionMachine2006}.
 
-We saw briefly in \cref{eq:linear-hypothesis} the hypothesis space of linear functions. 
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/nn_perceptron.pdf}
+        \caption{A computational graph of a standard perceptron. The input features $\mathbf{x}$ are linearly combined with the weights $\mathbf{w}$ and bias $w_0$ to produce the output $y$.}
+        \label{fig:nn-perceptron}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/nn_multiclass.pdf}
+        \caption{A computational graph of a multi-output perceptron. The input features $\mathbf{x}$ are linearly combined with the weights $\mathbf{w}$ to produce outputs $y_k$ for each dimension $k$.}
+        \label{fig:nn-multiclass}
+    \end{subfigure}
+    \caption{Computational graphs for perceptron architectures. (a) Standard perceptron. (b) Multi-output perceptron.}
+    \label{fig:nn-combined}
+\end{figure}
 
-The generalized linear models apply an activation function to the linear combination of the input features
-\begin{equation}
-    y(x) = g(\mathbf{w}^\top \mathbf{x} + b)
+\cref{eq:linear-regression} can be expressed as a computational graph, as shown in \cref{fig:nn-perceptron}. This architecture is commonly referred to as the standard perceptron, the simplest of neural networks.
+
+\subsection{Generalization of Linear Models}
+Linear regression can be extended to more complex settings, such as multi-output models (e.g.\ multi-class classification or multidimensional regression), with $y_k$ representing the output for the $k$-th dimension, and $x_0$ often set to $1$ as a convention for including the bias term $w_{k0}$:
+\begin{equation}\label{eq:multi-output}
+    y_k(\mathbf{x}) = \sum_{j=0}^{d} w_{kj} x_j
 \end{equation}
-where the activation function $g$ can be linear or non-linear. The non-linearity 
+Such an architecture is known as a single layer perceptron, and can be visualized as shown in \cref{fig:nn-multiclass}.
 
-% Standard Perceptron -> Multi-Class Networks -> Non-Linear basis functions -> Feature representation Neural Networks
+This can be further generalized by introducing non-linear basis functions $\phi_j(\mathbf{x})$, transforming the input features $\mathbf{x}$ before the linear combination:
+\begin{equation}
+    y(\mathbf{x}) = \sum_{j=0}^{d} w_j \phi_j(\mathbf{x})
+\end{equation}
+These non-linear transformations allow models to approximate non-linear relationships in data. Due to this, the loss can no longer be minimized in closed-form so iterative optimization algorithms such as gradient descent are used \cite{bishopPatternRecognitionMachine2006}.
+Conventionally, these were basis functions were predefined and hand-crated based on domain knowledge, but we next look at deep learning models that can learn these basis functions.
 
-% \quote{Perceptrons with fixed, hand-coded input features can model any
-% separable function perfectly...
-% given the right input features.
-% or some tasks this requires an exponential number of input
-% features.
-% E.g., by enumerating all possible binary input vectors as separate
-% feature units (similar to a look-up table).
-% But this approach won’t generalize to unseen test cases! It is the feature design that solves the task!}
+\subsection{Deep Learning}
+Multi-layer perceptrons build upon the foundations of linear models but eliminate the need to predefine input transformations. This is done by learning the parametrized basis functions from the data. 
 
-Let us now look at one broad class of learning algorithms that have shown remarkable success in countless applications, including image restoration: \textit{Neural Networks}.
+One way to generalize the linear model is by applying a non-linear activation function $g$ to each input in \cref{eq:multi-output}. For example:
+\begin{equation}
+y_k(\mathbf{x}) = g\left(\sum_{j=0}^{d} w_{kj} x_j \right).
+\end{equation}
+To achieve this, neural networks add multiple layers to the computational graph, with each layer applying a linear transformation followed by a non-linear activation. A simple architecture is shown in \cref{fig:simple-nn-architecture} (with the addition of non-linearities), illustrating how the standard perceptron is extended to deeper networks.
 
-We do not discuss other learning algorithms
-
-\section{Neural Networks for Image Restoration}
-% \quote{A CNN is a prior on the hypothesis space. In fact, it is such a strong prior that it puts 
-%  probability mass on any hypothesis that is not translationally equivariant (up to some details to do with image boundaries)}
+Due to the non-linearities and layered structure, neural networks have high-capacity hypothesis spaces, suited to approximate the complex mappings such as multidimensional data such as images. 
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\linewidth]{images/simple_nn_architecture.pdf}
-    % \includesvg{images/simple_nn_architecture.svg}
-    \caption{An example trained fully connected neural network architecture with an input layer, two hidden layers, and an output layer. The weights are represented by the lines connecting the neurons, with opacity indicating the weights' strength.}
+    \caption{An example trained fully connected neural network architecture with an input layer, two hidden layers, and an output layer. The input features are transformed through weights and biases, followed by a non-linear activation function in the first hidden layer. This process is repeated in the second hidden layer from outputs of the first (hidden) layer, producing the final outputs. The weights are represented by the lines connecting the neurons, with opacity indicating the weights' strength.}
     \label{fig:simple-nn-architecture}
 \end{figure}
-Neural networks (NNs) represent a class of models that draw inspiration from the structural and functional characteristics of the biological brain. These models are designed to approximate complex functions by learning from data. A neural network consists of interconnected nodes, referred to as "neurons," which process input data to generate output. In the realm of supervised learning, neural networks are utilized to map input data—such as images—to desired outputs, for instance, restored or enhanced images.
 
-\subsection{Basic Structure of Neural Networks}
+Activation functions are generally differentiable non-linear functions that introduce non-linearity into the network, allowing it to model complex relationships in the data. Common activation functions include the sigmoid function, that maps input values to a range between $0$ and $1$, useful to interpret probabilistically, and used in binary classification tasks. 
+\begin{equation}
+    S(x) = \frac{1}{1 + e^{-x}}
+\end{equation}
+Current state-of-the-art architectures often employ Rectified Linear Unit (ReLU) or its variants as the activation function, owing to their superior performance in training deep networks. ReLU defined as
+\begin{equation}
+    \text{ReLU}(x) = \max(0, x)
+\end{equation}
+sets negative inputs to zero while preserving positive inputs.
 
-% A typical neural network comprises several layers of neurons. The input layer serves as the first layer, receiving the input data, with each node corresponding to a specific feature of that data. Following the input layer, the network contains one or more hidden layers. These intermediate layers are crucial for computation and learning, as each neuron within a hidden layer computes a weighted sum of its inputs, applies a nonlinear activation function, and transmits the resulting value to the subsequent layer. Finally, the output layer produces the final output of the network based on the computations performed in the hidden layers.
+While ReLU is not differentiable at $x = 0$, it is widely favored due to its simplicity and effectiveness in training deep networks. Variants of ReLU, such as Leaky ReLU and Parametric ReLU have been introduced to address the issue of dead neurons, where neurons cease to learn during training. Leaky ReLU introduces a gradient for negative inputs
+\begin{equation}
+    \text{Leaky ReLU}(x) = \max(\alpha x, x)
+\end{equation}
+defined by a small constant $\alpha$. Parametric ReLU extends this concept by allowing the gradient to be learned during training.
 
-% Connections between neurons are associated with weights that determine the strength and direction of the signals transmitted between them. The learning process of the network is achieved through the adjustment of these weights, which is accomplished via a method known as backpropagation. This process aims to minimize the error between the predicted output and the actual target by modifying the weights according to the gradient of the loss function.
+Training a neural network involves two primary phases: the forward pass and the backward pass. During the forward pass, the input data is propagated through the network, layer by layer, to generate an output. Following this, the backward pass occurs, in which the error, defined as the difference between the predicted output and the true output, is propagated back through the network using the gradient of the loss function. This step is crucial for updating the weights of the network.
+The training process utilizes optimization algorithms, such as Stochastic Gradient Descent (SGD) \cite{sutskeverImportanceInitializationMomentum2013} or Adam Optimization \cite{kingmaAdamMethodStochastic2017}, which iteratively adjust the network's weights to reduce the loss.
 
-\subsection{Activation Functions}
+\section{Neural Networks for Image Restoration}
+In the classical supervised-learning setting for image restoration, training assumes access to clean target images. Similar to \cref{sec:erm}, training can be formulated as
+\begin{equation}
+    \hat{h} = \argmin_{h \in \mathcal{H}} \frac{1}{\lvert \mathcal{S} \rvert} \sum_{(X, Y) \in \mathcal{S}} \ell(h(X; \theta), Y),
+\end{equation}
+where $\mathcal{S} \sim \mathcal{D}^n$ is the training set with images $\mathcal{S} = \{(X_1, Y_1), \dots, (X_n, Y_n)\}$ with $(X, Y)$  the noisy and clean target images.
 
-% To introduce non-linearity into the model, each neuron typically applies an activation function to the weighted sum of its inputs. Common activation functions include the sigmoid function, which maps input values to a range between 0 and 1, making it particularly useful in binary classification tasks. The Rectified Linear Unit (ReLU) sets negative inputs to zero while preserving positive inputs, and it is widely favored due to its simplicity and effectiveness in training deep networks. Additionally, the hyperbolic tangent (tanh) function maps input values to a range between -1 and 1, and it is often employed in the hidden layers of neural networks. The selection of an appropriate activation function significantly influences the network's performance and its ability to learn complex patterns within the data.
+\todo[author=zain,inline]{Finish the three subsections}
+\subsection{Convolutional Neural Networks}
+While Multilayered Perceptrons work great, for high dimensional data such as images, the number of parameters can become prohibitively large. 
+"A CNN is a prior on the hypothesis space. In fact, it is such a strong prior that it puts 
+ probability mass on any hypothesis that is not translationally equivariant (up to some details to do with image boundaries)"
 
-\subsection{Training Neural Networks}
+\subsection{Autoencoder}
+\cite{goodfellowDeepLearning2016}
+\subsection{UNET}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\linewidth]{images/unet_architecture.pdf}
+    \caption{}
+    \label{fig:unet-architecture}
+\end{figure}
 
-% Training a neural network involves two primary phases: the forward pass and the backward pass. During the forward pass, the input data is propagated through the network, layer by layer, to generate an output. Following this, the backward pass occurs, in which the error—defined as the difference between the predicted output and the true output—is propagated back through the network using the gradient of the loss function. This step is crucial for updating the weights of the network.
+\section{Noise2Noise Framework}
+In many practical scenarios such as our \gls{MPES} data, obtaining the true clean image $Y$ is not feasible, although sufficiently high quality noisy data exists. In the instance when multiple noisy realizations of the same underlying signal are available, \citeauthor{lehtinenNoise2NoiseLearningImage2018} demonstrated that it is possible to train a neural network to learn a restoration mapping to the underlying clean signal using only noisy observations for both inputs and targets \cite{lehtinenNoise2NoiseLearningImage2018}, a framework known as \textit{Noise2Noise}. 
 
-% The objective of training is to minimize the loss function, which quantifies the discrepancy between the predicted output and the true output. Common loss functions include Mean Squared Error (MSE), which is often used in regression tasks, and Cross-Entropy, which is prevalent in classification tasks. The training process utilizes optimization algorithms, such as Stochastic Gradient Descent (SGD) or Adam, which iteratively adjust the network's weights to reduce the loss.
+In the following sections, we see why Noise2Noise works and how it is applied to our image restoration problem.
+\subsection{Point Estimation and Loss Functions}
+We discussed in \cref{sec:generalization} that we aim to learn a hypothesis that generalizes to new data coming from the distribution $\mathcal{D}$. This can be done by minimizing the risk (\cref{eq:risk-min}). 
 
-\subsection{Universal Approximation Theorem}
+Consider an example point estimation problem where the objective is to find the scalar $\hat{x}$ that minimizes the expected deviation with respect to a set of observations $x_1, x_2, \dots, x_n$. This can be formalized as:
+\begin{equation}
+    \hat{x} = \argmin_{\hat{x}} \mathbb{E}[\ell(\hat{x}; x)]
+\end{equation}
+Different loss functions yield varying estimates based on the observations. For the case of $L_2$ loss, the minimization recovers the mean of the observations:
+\begin{equation}\label{eq:l2-estimate}
+    \hat{x} = \mathbb{E}[x]
+\end{equation}
+Similarly, for the $L_1$ loss, the estimate is the median of observations.
 
-% A fundamental result in the theoretical framework of neural networks is the Universal Approximation Theorem. This theorem posits that a feedforward neural network, possessing at least one hidden layer and a sufficient number of neurons, can approximate any continuous function on a compact subset of \(\mathbb{R}^n\) to any desired degree of accuracy, provided that the network employs a non-linear activation function.
+\subsection{Zero-Mean Noise}
+Combining \cref{eq:risk} and \cref{eq:risk-min} can write the risk minimization problem as:
+\begin{equation}
+    \argmin_{h \in \mathcal{H}} \mathbb{E}_{x \sim \mathcal{D}} \left[\mathbb{E}_{y|x \sim \mathcal{D}} \left[ \ell(h(x; \theta), y) \right]\right]
+\end{equation}
+where using the law of total probability, the joint expectation $p(x,y)$ can be factorized to $p(x) \cdot p(y | x)$, and hence the expectation as well. This formulation is equivalent to solving the point estimation problem for each input sample separately. Due to this, the neural network inherits the properties of the loss function.
 
+We established in \cref{eq:l2-estimate} that minimizing the $L_2$ loss recovers the mean of the observations. Now, consider the case where the training targets $y$ are corrupted with zero-mean noise, $\mathbb{E}[n] = 0$. The expectation remains unchanged i.e.\ $\mathbb{E}[y] = \mathbb{E}[x^\prime|y]$, with $x^\prime$ being the corrupted data. For example, we previously demonstrated Poisson noise being zero-mean  in \cref{sec:poisson-noise-model} (see \cref{eq:poisson-noise,eq:zero-mean-noise}), and hence, the $L_2$ loss could also recover, on expectation, the true value of a Poisson noise corrupted variable.
 
-% The theorem can be formally articulated as follows: For any continuous function \(f: \mathbb{R}^n \to \mathbb{R}\) and for any \(\epsilon > 0\), there exists a feedforward neural network \(N\) with at least one hidden layer, a finite number of neurons, and an activation function (such as sigmoid or ReLU), such that for every \(x \in \mathbb{R}^n\), the inequality 
+This principle can extend to neural network training as we already said that the network inherits the properties of the loss. When minimizing the risk, a neural network trained with zero-mean noise-corrupted targets will converge to the same optimal hypothesis as it would with clean targets. This holds true in the context of \gls{ERM} as well. With infinite training data, minimizing the empirical risk using noisy observations is mathematically equivalent to minimizing it with clean targets (\cref{eq:erm}).
 
-% $|f(x) - N(x)| < \epsilon$
+\subsection{Noise2Noise Training for Finite Data}
+Let us formalize the Noise2Noise training for a realistic case of finite examples. Consider a training set $\mathcal{S}^\prime = \{(X_1, X_1^\prime), \dots, (X_n, X_n^\prime)\}$ where $\mathcal{S}^\prime \sim \mathcal{D}^n$, each pair $(X, X^\prime)$ independent noisy realizations of the same underlying signal $y \sim \mathcal{D}$. Using the $L_2$ loss, we can redefine \gls{ERM} formulation from \cref{sec:erm} as
+\begin{equation}\label{eq:erm-noise2noise}
+    \hat{h} = \argmin_{h \in \mathcal{H}} \frac{1}{\lvert \mathcal{S^\prime} \rvert} \sum_{(X, X^\prime) \in \mathcal{S}^\prime} (h(X; \theta) - X^\prime)^2
+\end{equation}
+giving us a hypothesis $\hat{h}$ that minimizes the training error using only noisy observations for both inputs and targets.
 
-% holds true. This result underscores the potential of neural networks; with an adequate number of neurons, they are capable of approximating complex, high-dimensional functions, independent of the underlying distribution of the data.
+For finite data, the quality of the estimate depends on the variance of the noise in the targets, divided by the number of samples $N$ \cite[supplementary~material]{lehtinenNoise2NoiseLearningImage2018}. This means that increasing the dataset size reduces the variance of the estimate, bringing it closer to the hypothesis had we minimized with clean targets. For image data, $N$ corresponds to the total number of scalar components\footnote{Number of images $n$ x number of voxels per image x number of color channels.} across the dataset, so having more voxels and data effectively brings us closer to the infinite data case.
 
-% The Universal Approximation Theorem carries significant implications for the field of machine learning. Primarily, it highlights the expressive power of neural networks, which, in theory, can approximate any function. This versatility renders them highly effective for a wide array of tasks, including image classification, restoration, and speech recognition. 
+\subsection{Regularization through Noisy Targets}
+It is important to note that the earlier discussion assumed that learning with clean targets is inherently successful, while in fact, as we discussed before, \gls{ERM} is prone to overfit (generalizes poorly) in high-capacity hypothesis spaces. Using noisy targets actually has the unexpected benefit to act as a form of regularization. The noise in the targets perturbs the training objective, preventing the network from relying excessively on precise input-output mappings. For image restoration tasks, this can lead to better generalization, as the network focuses on recovering the underlying clean signal structure rather than spurious details in the data.
 
-% While the theorem assures that a shallow network, possessing a single hidden layer, can approximate any function, practical applications often benefit from the utilization of deeper networks, which contain multiple hidden layers. Deeper networks typically require fewer neurons to achieve a comparable level of approximation and possess the capability to learn hierarchical representations of data. This characteristic is particularly advantageous in tasks involving images and language.
+\section{Training an MPES denoiser}
+As seen in \cref{sec:image-formation}, the experimental setup (refer to \cref{section:hextof,section:dld}) for \gls{MPES} puts us in a unique position of having access to multiple noisy realizations of the same underlying signal. This allows us to generate training data pairs where both the input and target are noisy realizations of the same underlying signal.
 
-% Despite the theoretical capabilities outlined by the Universal Approximation Theorem, practical challenges persist in training these models effectively. Issues such as local minima, vanishing gradients, and overfitting can complicate the training process. Furthermore, the number of neurons necessary to achieve the desired accuracy may be prohibitively large, leading to substantial computational demands.
-
-% In summary, the Universal Approximation Theorem emphasizes the considerable potential of neural networks to model intricate patterns. However, the practical success of a neural network is contingent upon careful design, tuning, and training of the model.
-
-
-
-\section{Training}
+Using \cref{eq:erm-noise2noise}
 
 If we generate images with overlapping subsets, the formed images are not independent, as the same events could be present in multiple images. A simple example would be to generate image an image with \num{e6} counts and other with twice as many counts, where the former is a subset of the latter. This is a limitation of the method, but it is a reasonable approximation for the purpose of this study.
 
@@ -335,6 +254,21 @@ If we generate images with overlapping subsets, the formed images are not indepe
     \caption{Flowchart illustrating the input-target dataset pairs used for neural network training, derived from subsets of the \gls{GrIr} dataset. A total of \num{34} unique noisy subsets are represented, with each dataset corresponding to one blue box in the chart. The different combinations shown in the chart generate \num{51} input-target pairs across various counts, including \numlist{1e6;2e6;4e6;8e6;1.6e7;3.2e7;4.8e7;9.6e7}. Notably, the \num{4.8e7} and \num{9.6e7} counts serve as the target datasets, with \num{9.6e7} additionally functioning as the target for the \num{4.8e7} datasets.}
     \label{fig:training-data}
 \end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/training_3d_patch_example.pdf}
+    \caption{}
+    % \label{fig:images-noisy-denoised-training}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\linewidth]{images/noisy_denoised_3d.pdf}
+    \caption{}
+    % \label{fig:images-noisy-denoised-training}
+\end{figure}
+
 
 \begin{figure}[h]
     \centering
