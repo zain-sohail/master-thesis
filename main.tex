@@ -1,7 +1,7 @@
 \documentclass[a4paper,11pt,twoside,openany]{book}
 
 % Page layout and formatting
-\usepackage[inner=3cm,outer=2cm,top=2.5cm,bottom=2cm]{geometry}
+\usepackage[a4paper,inner=3cm,outer=2cm,top=2.5cm,bottom=2.5cm]{geometry}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
 \usepackage{float}
@@ -72,6 +72,7 @@ fonttitle=\bfseries,#1}
     \clearfield{urlmonth}
 }
 
+
 % Acronyms and glossaries
 \usepackage[toc, acronym, symbols, automake]{glossaries-extra}
 \makeglossaries
@@ -96,13 +97,16 @@ fonttitle=\bfseries,#1}
 \renewcommand{\baselinestretch}{1}  % Line spacing
 \setlength{\parskip}{0.25em}        % Paragraph spacing
 \setlength{\headheight}{15pt}       % Header height
-\titleformat{\chapter}[display]{\normalfont\bfseries}{}{0pt}{\Huge}
+% \titleformat{\chapter}[display]{\normalfont\bfseries}{}{0pt}{\Huge}
+\titleformat{\chapter}[hang]
+  {\normalfont\huge\bfseries}{\thechapter.}{20pt}{\Huge}
+  \titlespacing*{\chapter}{0pt}{*4}{*2}
 
 % Fancyhdr settings
-\fancyhead{}
-\fancyfoot[C]{\thepage}
-\fancyhead[LE]{\leftmark}
-\fancyhead[RO]{\rightmark}
+\fancyhead[LE]{\bfseries\leftmark} % Left header for even pages
+\fancyhead[RO]{\bfseries\rightmark} % Right header for odd pages
+\fancyfoot[C]{\thepage}            % Page number in footer
+\fancyhead[LO,RE]{}                % Clear headers for symmetry
 \renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}
 \renewcommand{\chaptermark}[1]{\markboth{\chaptername\ \thechapter.\ #1}{}}
 \pagestyle{fancy}

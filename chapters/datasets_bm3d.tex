@@ -183,7 +183,7 @@ Let us start with  denoising the noisy realization with $\gls{ncounts}=\num{1.6e
 
 We compare the effect of varying the slice summing size $w$ on the reported \gls{MSSSIM} score. Denoising the image with \gls{ncounts} of \num{1.6e7}, we compute the metric with $w = \numlist{1;5;10;15}$ (slice summing along the $E$ dimension) for all combinations of noisy and target (\gls{ncounts} of \num{1.86e8}) images. An example noisy ($w = 5$), denoised and target ($w=15$) set is shown in \cref{fig:noisy-denoised-ref-16M-avg-bm3d}. 
 
-The matrix in \cref{fig:confusion_matrix_msssim_window_avg} shows that a larger $w$ yields a better comparison for denoising.  This is possibly because a larger $w$ reduces the noise in the target image, leading to a more accurate representation of a clean target image. However, it should also be addressed that the denoising quality is not uniform across all $w$ values, as the denoising algorithm has a parameter that, we will see in \cref{section:finding-optimal-sigma}, scales with the noise level. The results presented in \cref{fig:combined-metrics-comparison} with (a) $w=1$ and (b) $w=10$ support the idea that a larger $w$ is beneficial for denoising, as the reported metric values improve significantly with the increased $w$.
+The matrix in \cref{fig:confusion_matrix_msssim_window_avg} shows that a larger $w$ yields a better comparison for denoising.  This is possibly because a larger $w$ reduces the noise in the target image, leading to a more accurate representation of a clean target image. However, it should also be addressed that the denoising quality is not uniform across all $w$ values, as the denoising algorithm has a parameter that, we will see in \cref{section:finding-optimal-sigma}, scales with the noise level. The results presented in \cref{fig:combined-metrics-comparison} with (a) $w=1$ and (b) $w=10$ support the idea that a larger $w$ is beneficial for denoising, as the reported metric values improve significantly with the increased $w$. For a reasonable assessment, where the features are still sharp (not blurred due to slice summing), we hence employ $w=10$ for the analysis of the \gls{BM3D} algorithm.
 
 
 \todo[disable]{This is a bit confusion. You start by saying you do this for $w=5$ (noisy) and $w=15$ (target). Then you do it for $w = \numlist{1;5;10;15}$ for both noisy and target images. I would start with the latter and then just say that \cref{fig:noisy-denoised-ref-16M-avg-bm3d} shows this example $w=5$ (noisy) and $w=15$ (target)}
@@ -208,7 +208,11 @@ A different approach would be to perform an \todo[disable]{Why constrained?} opt
 
 Finding the optimal parameter through an exhaustive grid search is the simplest method, but it is computationally expensive. We perform a hyperparameter search with \texttt{optuna}\footnote{\href{https://optuna.org/}{https://optuna.org/} see citation in acknowledgments.}\todo{I think there is also a paper to cite for Optuna.}, which uses Bayesian optimization to find the optimal hyperparameters.
 
-The search is conducted \todo{Is this done for \cref{alg:bm3d} or \cref{alg:anscombe-bm3d}? Or both? I couldn't find this info in the text.} on a small set of \num{5} identical featured \todo{What does ``identical featured'' mean? Are this just two images that are very similar to the one in \cref{fig:noisy-denoised-ref-16M-avg-bm3d}? How is this similarity measured? In the ``eyeball'' metric?} images (same slice), featuring the same characteristics as shown in \cref{fig:noisy-denoised-ref-16M-avg-bm3d}, slice summed with $\gls{winsize} = \num{10}$\todo{Why $w=10$?} across the count range of \numrange{1e6}{4.8e7}. The search is conducted over \num{50} trials for each \gls{ncounts} and each image. The optimization maximizes \gls{MSSSIM} score by adjusting the denoising parameter $\sigma$, which is constrained between \numrange{0}{5} to prevent the disappearance of features, as higher values can lead to significant loss of detail\todo{And negative values of $\sigma$ are impossible.}.
+% The search is conducted \todo{Is this done for \cref{alg:bm3d} or \cref{alg:anscombe-bm3d}? Or both? I couldn't find this info in the text.} on a small set of \num{5} identical featured \todo{What does ``identical featured'' mean? Are this just two images that are very similar to the one in \cref{fig:noisy-denoised-ref-16M-avg-bm3d}? How is this similarity measured? In the ``eyeball'' metric?} images (same slice), featuring the same characteristics as shown in \cref{fig:noisy-denoised-ref-16M-avg-bm3d}, slice summed with $\gls{winsize} = \num{10}$\todo{Why $w=10$?} across the count range of \numrange{1e6}{4.8e7}. The search is conducted over \num{50} trials for each \gls{ncounts} and each image. The optimization maximizes \gls{MSSSIM} score by adjusting the denoising parameter $\sigma$, which is constrained between \numrange{0}{5} to prevent the disappearance of features, as higher values can lead to significant loss of detail\todo{And negative values of $\sigma$ are impossible.}.
+
+The search is conducted for \cref{alg:anscombe-bm3d} on a small set of \num{5} identical-featured images. These images are independent noisy realizations extracted from the complete dataset (see \cref{section:noisy-realizations}), and the same slice (or slice sums) is used from each independent image to ensure consistency. These images feature characteristics similar to those shown in \cref{fig:noisy-denoised-ref-16M-avg-bm3d}, with slices summed using $\gls{winsize} = \num{10}$.
+
+The search is conducted over \num{50} trials for each \gls{ncounts} and each image. The optimization maximizes \gls{MSSSIM} score by adjusting the denoising parameter $\sigma$, which is constrained between \numrange{0}{5} to prevent the disappearance of features, as higher values can lead to significant loss of detail\todo{And negative values of $\sigma$ are impossible.}.
 
 \begin{figure}
     \centering
@@ -246,58 +250,11 @@ The results in \cref{fig:hyperparameter-averaged-10-images} corroborate the hypo
 
 While using \gls{MSSSIM} as the objective function for optimization is good at showing the denoising performance improvement, it leads to more cautious results (low $\sigma_{\text{oo}}$ values) as those fare better against the target, which has the relevant features but is also noisy. To counter that, we scale the optimum $\sigma_{\text{oo}}$ values by a factor of 2 to get a more aggressive denoising and denote that as $\sigma_{\text{o}}$ and use this for denoising. A comparison of the denoised image using the adjusted optimal $\sigma_{\text{o}}$ and the optimal $\sigma_{\text{oo}}$ is shown in \cref{fig:denoised-optimal-sigma}.
 
-The denoising performance below \num{4e6} \todo{Does ``below'' mean ``lower equal''? \num{4e6} doesn't look so bad to me, but the text seem to indicate that both results are poor.} is poor, with or without the optimal value $\sigma_{\text{oo}}$, even though the \gls{MSSSIM} reports high values. \cref{fig:noisy-denoised-ref-2M-avg-bm3d} and \cref{fig:noisy-denoised-ref-4M-avg-bm3d} show the denoised images for \num{2e6} and \num{4e6} counts, with an average count of \num{0.14} and \num{0.27} \todo{This doesn't seem to fit to the values in \cref{noisy-dataset-table}. Do you perhaps mean total count instead of average count? Or average total count? Where I'm not sure what you are averaging over.} in the noisy image, respectively, whereas the average count in target image is \num{12.9}. It can be seen that the perceptual \todo{Again, I don't understand ``perpetual'' in this context.} quality of the denoised images is poor, with the features not being well-preserved. This highlights that \gls{BM3D} is not well suited for denoising such low-count images.
-
-\begin{figure}
-    \centering
-
-    \begin{subfigure}[b]{1\linewidth}
-        \centering
-        \includegraphics[width=1\linewidth]{images/noisy_denoised_ref_2M_avg_bm3d.pdf}
-        \caption{Dataset with $\gls{ncounts}=\num{2e6}$. The denoising performance is quite poor, even with the adjusted optimal $\sigma_{\text{o}}\approx0.41$.}
-        \label{fig:noisy-denoised-ref-2M-avg-bm3d}
-    \end{subfigure}
-
-    \begin{subfigure}[b]{1\linewidth}
-        \centering
-        \includegraphics[width=1\linewidth]{images/noisy_denoised_ref_4M_avg_bm3d.pdf}
-        \caption{Dataset with $\gls{ncounts}=\num{4e6}$. The denoising performance leaves room for improvement, using the adjusted optimal $\sigma_{\text{o}}\approx0.42$.}
-        \todo[inline]{The number of counts is twice of the example in the first row, but $\sigma_{\text{o}}$ is the same?}
-        \label{fig:noisy-denoised-ref-4M-avg-bm3d}
-    \end{subfigure}
-
-    \begin{subfigure}[b]{1\linewidth}
-        \centering
-        \includegraphics[width=1\linewidth]{images/noisy_denoised_ref_48M_avg_bm3d.pdf}
-        \caption{Dataset with $\gls{ncounts}=\num{4.8e7}$, using the adjusted optimal $\sigma_{\text{o}}\approx0.29$. At this \gls{ncounts}, \gls{MSSSIM} reports lower values for the denoised images compared to the noisy images, even though the denoised image features are well-preserved.}
-        \todo[inline]{What is $\sigma_{\text{o}}$ here? You mention it in both rows above.}
-        \label{fig:noisy-denoised-ref-48M-avg-bm3d}
-    \end{subfigure}
-
-    \caption{Comparison of noisy, denoised, and target images for $\gls{ncounts}=$\numlist{2e6;4e6;4.8e7}, where the noisy and target images were formed using with $\gls{winsize}=\num{10}$ over \gls{E} to form \gls{kx}-\gls{ky} images. The \gls{BM3D} algorithm with Anscombe transform was used for denoising.}
-    \label{fig:combined-noisy-denoised}
-\end{figure}
-
-\subsection{Varying Total Counts}
-We now evaluate the denoising performance of \cref{alg:bm3d} (\gls{BM3D} without Anscombe) and \cref{alg:anscombe-bm3d} (\gls{BM3D} with Anscombe), using the optimal $\sigma_{\text{o}}$ values determined through the hyperparameter search. A total of \num{1847} images \todo{How many per $\gls{ncounts}$ value?} were extracted from two separate noisy realizations of \gls{ncounts} of \numlist{1e6;2e6;4e6;8e6;1.6e7;3.2e7;4.8e7}. These are slice summed with $\gls{winsize}=10$ for both the noisy and target images. 
-
-As before, the \gls{MSSSIM} metric is used, with the baseline computed using the noisy images. Averaging over the large amount of images at varied counts gives us a robust estimate of the denoising performance. Using statistical bootstrapping (see \cref{section:confidence-intervals})\todo[disable]{Please elaborate what you mean with ``statistical bootstrapping''. Is this more than just computing this for different samples and then computing the mean and confidence interval from those values?}, where the estimate is computed over multiple resamples of the data, we can also estimate the \num{95}\% confidence interval of the \gls{MSSSIM} metric\todo{Does this mean these ``bands'' in the figure show the \num{95}\% confidence interval? This needs to be mentioned in the figure caption.}.
-
-As shown in \cref{fig:bm3d-msssim}, there is a noticeable improvement in image quality with counts up to $\gls{ncounts}=\num{4e7}$, with \gls{MSSSIM} values increasing from \num{0.6} to \num{0.83}. Beyond this count, the metric starts reporting lower values for denoised results, whereas visual inspection reveals that the denoised images contain similar information as the target, smoother with preserved features. We can see this in \cref{fig:noisy-denoised-ref-48M-avg-bm3d}, where the denoised image has a lower \gls{MSSSIM} value compared to the noisy image, but the features are well-preserved. This necessitates the need for higher quality target images for better evaluation.\todo{In particular, this also shows that \gls{MSSSIM} has be interpreted carefully, but we just don't have a better measure.}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=1\linewidth]{images/bm3d_msssim.pdf}
-    \caption{Denoising performance of the \gls{BM3D} algorithm, with and without the Anscombe transformation. The optimal $\sigma_{\text{o}}$ values determined through the hyperparameter search are used\todo[inline]{As I asked above, where the parameters computed for \cref{alg:bm3d} and \cref{alg:anscombe-bm3d} separately? Or just for one and also applied to the other?}. The images are slice summed with $\gls{winsize}=10$ slices for both the noisy and target images. The baseline metric is computed using the noisy image as input.}
-    \label{fig:bm3d-msssim}
-\end{figure}
+The denoising performance below \num{4e6} \todo{Does ``below'' mean ``lower equal''? \num{4e6} doesn't look so bad to me, but the text seem to indicate that both results are poor.} is poor, with or without the optimal value $\sigma_{\text{oo}}$, even though the \gls{MSSSIM} reports high values. \cref{fig:noisy-denoised-ref-2M-avg-bm3d} and \cref{fig:noisy-denoised-ref-4M-avg-bm3d} show the denoised images for \num{2e6} and \num{4e6} counts, with an average count of \num{0.14} and \num{0.27} \todo{This doesn't seem to fit to the values in \cref{noisy-dataset-table}. Do you perhaps mean total count instead of average count? Or average total count? Where I'm not sure what you are averaging over.} in the noisy image, respectively, whereas the average count in target image is \num{12.9}. It can be seen that the perceptual \todo[disable]{Again, I don't understand ``perpetual'' in this context.} quality of the denoised images is poor, with the features not being well-preserved. This highlights that \gls{BM3D} is not well suited for denoising such low-count images.
 
 
-The most notable finding is that the application of the \gls{VST} leads to a slightly worse performance (\cref{fig:bm3d-msssim} orange vs.\ green lines)\todo{It may also show that the \gls{MSSSIM} is not accurate enough. What does the ``eyaball'' metric say? A figure with example results could be helpful here.}, despite the expectation that it would enhance denoising performance for Poissonian noise. In previous work by \citeauthor{makitaloOptimalInversionAnscombe2011}, the authors demonstrated that applying the Anscombe transform indeed improves denoising performance. This strongly suggests that the noise statistics in the image deviate from a Poisson distribution. 
-
-If the Poisson noise is not voxel-wise independent, the slice summing used to form the images might have altered the noise statistics (the sum of two independent Poisson random variables is Poisson). The other obvious reason is that the electron count statistics forming the images are not Poissonian. This would result in the transforms and inverse not being optimal for the data. We shall see that the count statistics indeed deviate from Poissonian statistics in the next chapter.
-
-
+\subsection{Comparing BM3D with and without Anscombe}
+We now do a visual evaluation of the denoising performance with \cref{alg:bm3d} (\gls{BM3D} without Anscombe) and \cref{alg:anscombe-bm3d} (\gls{BM3D} with Anscombe), using the optimal $\sigma_{\text{o}}$ values determined through the hyperparameter search.
 \begin{figure}
     \centering
     \begin{subfigure}[b]{1\linewidth}
@@ -316,7 +273,6 @@ If the Poisson noise is not voxel-wise independent, the slice summing used to fo
     \label{}
 \end{figure}
 
-
 \begin{figure}
     \centering
     \begin{subfigure}[b]{1\linewidth}
@@ -334,4 +290,53 @@ If the Poisson noise is not voxel-wise independent, the slice summing used to fo
     \label{}
 \end{figure}
 
-\todo[author=zain]{Add discussion regarding these figures}
+\todo[author=zain,inline]{Add discussion regarding these figures}
+
+\subsection{Varying Total Counts}
+The denoising performance is now evaluated for varying \gls{ncounts} using the \gls{MSSSIM} metric. A total of \num{1847} images \todo{How many per $\gls{ncounts}$ value?} were extracted from two separate independent noisy datasets for each \gls{ncounts} of \numlist{1e6;2e6;4e6;8e6;1.6e7;3.2e7;4.8e7}. These are slice summed with $\gls{winsize}=10$ for both the noisy and target images. 
+
+As before, the \gls{MSSSIM} metric is used, with the baseline computed using the noisy images. Averaging over the large amount of images at varied counts gives us a robust estimate of the denoising performance. Using statistical bootstrapping (see \cref{section:confidence-intervals})\todo[disable]{Please elaborate what you mean with ``statistical bootstrapping''. Is this more than just computing this for different samples and then computing the mean and confidence interval from those values?}, where the estimate is computed over multiple resamples of the data, we can also estimate the \num{95}\% confidence interval of the \gls{MSSSIM} metric\todo{Does this mean these ``bands'' in the figure show the \num{95}\% confidence interval? This needs to be mentioned in the figure caption.}.
+
+As shown in \cref{fig:bm3d-msssim}, there is a noticeable improvement in image quality with counts up to $\gls{ncounts}=\num{4e7}$, with \gls{MSSSIM} values increasing from \num{0.6} to \num{0.83}. Beyond this count, the metric starts reporting lower values for denoised results, whereas visual inspection reveals that the denoised images contain similar information as the target, smoother with preserved features. We can see this in \cref{fig:noisy-denoised-ref-48M-avg-bm3d}, where the denoised image has a lower \gls{MSSSIM} value compared to the noisy image, but the features are well-preserved. This necessitates the need for higher quality target images for better evaluation.\todo{In particular, this also shows that \gls{MSSSIM} has be interpreted carefully, but we just don't have a better measure.}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{images/bm3d_msssim.pdf}
+    \caption{Denoising performance of the \gls{BM3D} algorithm, with and without the Anscombe transformation. The optimal $\sigma_{\text{o}}$ values determined through the hyperparameter search are used\todo[inline]{As I asked above, where the parameters computed for \cref{alg:bm3d} and \cref{alg:anscombe-bm3d} separately? Or just for one and also applied to the other?}. The images are slice summed with $\gls{winsize}=10$ slices for both the noisy and target images. The baseline metric is computed using the noisy image as input.}
+    \label{fig:bm3d-msssim}
+\end{figure}
+
+
+The most notable finding is that the application of the \gls{VST} leads to a slightly worse performance (\cref{fig:bm3d-msssim} orange vs.\ green lines)\todo{It may also show that the \gls{MSSSIM} is not accurate enough. What does the ``eyaball'' metric say? A figure with example results could be helpful here.}, despite the expectation that it would enhance denoising performance for Poissonian noise. In previous work by \citeauthor{makitaloOptimalInversionAnscombe2011}, the authors demonstrated that applying the Anscombe transform indeed improves denoising performance. This strongly suggests that the noise statistics in the image deviate from a Poisson distribution. 
+
+If the Poisson noise is not voxel-wise independent, the slice summing used to form the images might have altered the noise statistics (the sum of two independent Poisson random variables is Poisson). The other obvious reason is that the electron count statistics forming the images are not Poissonian. This would result in the transforms and inverse not being optimal for the data. We shall see that the count statistics indeed deviate from Poissonian statistics in the next chapter.
+
+\begin{figure}
+    \centering
+
+    \begin{subfigure}[b]{1\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{images/noisy_denoised_ref_2M_avg_bm3d.pdf}
+        \caption{Dataset with $\gls{ncounts}=\num{2e6}$. The denoising performance is quite poor, even with the adjusted optimal $\sigma_{\text{o}}\approx0.41$.}
+        \label{fig:noisy-denoised-ref-2M-avg-bm3d}
+    \end{subfigure}
+
+    \begin{subfigure}[b]{1\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{images/noisy_denoised_ref_4M_avg_bm3d.pdf}
+        \caption{Dataset with $\gls{ncounts}=\num{4e6}$. The denoising performance leaves room for improvement, using the adjusted optimal $\sigma_{\text{o}}\approx0.42$.}
+        \todo[disable]{The number of counts is twice of the example in the first row, but $\sigma_{\text{o}}$ is the same?}
+        \label{fig:noisy-denoised-ref-4M-avg-bm3d}
+    \end{subfigure}
+
+    \begin{subfigure}[b]{1\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{images/noisy_denoised_ref_48M_avg_bm3d.pdf}
+        \caption{Dataset with $\gls{ncounts}=\num{4.8e7}$, using the adjusted optimal $\sigma_{\text{o}}\approx0.29$. At this \gls{ncounts}, \gls{MSSSIM} reports lower values for the denoised images compared to the noisy images, even though the denoised image features are well-preserved.}
+        \todo[disable]{What is $\sigma_{\text{o}}$ here? You mention it in both rows above.}
+        \label{fig:noisy-denoised-ref-48M-avg-bm3d}
+    \end{subfigure}
+
+    \caption{Comparison of noisy, denoised, and target images for $\gls{ncounts}=$\numlist{2e6;4e6;4.8e7}, where the noisy and target images were formed using with $\gls{winsize}=\num{10}$ over \gls{E} to form \gls{kx}-\gls{ky} images. The \gls{BM3D} algorithm with Anscombe transform was used for denoising.}
+    \label{fig:combined-noisy-denoised}
+\end{figure}
