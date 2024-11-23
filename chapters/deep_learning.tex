@@ -88,8 +88,8 @@ Regularization can also be seen as a way of restricting the hypothesis space $\m
 It is always possible that with a small probability, the training data is not representative of the data distribution $\mathcal{D}$. Hence, every learning algorithm has a confidence and accuracy level that, in practice, is hard to quantify. For simpler cases, these bounds can be theoretically proven but practically, other evaluation methods are assumed, e.g.\ by empirically evaluating some test data, we can ascertain if the learned model generalizes well.
 
 For a hypothesis space $\mathcal{H}$ that is finite, and \gls{iid} training data all drawn from the same distribution $\mathcal{D}$, the \gls{ERM} algorithm can be shown to have a generalization error that converges to zero as the number of training samples $n$ goes to infinity. This is known as the \textit{uniform convergence} property of the \gls{ERM} algorithm. This can further be generalized to infinite hypothesis spaces, through non-uniform convergence. However, considering that most machine learning takes place through discrete data, making infinite hypothesis spaces finite, the finite hypothesis space is a reasonable assumption.
-\todo[inline]{Stopping point for review currently.}
-\dots
+% \todo[inline]{Stopping point for review currently.}
+% \dots
 \section{Learning Algorithms}
 There are a myriad of supervised learning algorithms built upon the foundation of \gls{ERM}, that aim to minimize the expected loss by minimizing the empirical risk (\cref{eq:erm}). Some examples include linear regression that minimizes the \gls{MSE} loss, logistic regression for binary classification\footnote{With softmax regression as a generalization for multi-class classification. The term "regression" is conventionally used, but this is actually a classification task.} that minimizes the cross-entropy loss, and support vector machines, that can be framed as a hinge loss minimization problem, aim to maximize the margin between different classes \cite{bishopPatternRecognitionMachine2006}.
 
