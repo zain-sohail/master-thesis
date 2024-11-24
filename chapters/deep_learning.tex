@@ -1,3 +1,4 @@
+\todo{I would put more references into this Chpater.}
 In Chapter~\ref{ch:pes-statistics}, we saw that the photoemission statistics are influenced by the characteristics of the light source, that exhibit well-defined statistical properties. Understanding these specific characteristics can be helpful in designing tailored, model-based denoisers. For Poisson noise, we employed the Anscombe transform combined with \gls{BM3D} (\cref{sec:poisson-noise-model}). While the Anscombe transform is capable of stabilizing Poisson-distributed noise into approximately Gaussian noise for moderate to high counts, it is less effective for very low counts ($<3$), where the approximation breaks down. Similarly, a \gls{VST} tailored for \gls{NB} statistics in conjunction with \gls{BM3D} could be more effective to reduce noise.
 
 Model-based approaches such as these can be powerful but assume that the noise characteristics are accurately known and that the underlying signal conforms to the priors encoded. However, \gls{FEL}-based photoemission experiments involve complex and heterogeneous noise sources. Factors such as long-term fluctuations in \gls{FEL} intensity (\cref{section:fel-stats}), advanced detector designs (\cref{section:8s-dld}) and environmental variations can lead to deviations from idealized models like Poisson or \gls{NB} noise prior. Adapting model-based methods to account for these complexities requires significant effort and may still fall short when dealing with unknown or dynamically changing noise patterns.
@@ -67,13 +68,13 @@ We shall later see that the assumption of having access to a true $y$ can be rel
 The gap between the $\mathcal{L}(\theta; \mathcal{S})$ and $\mathcal{R}(\theta)$ is known as generalization error and a hypothesis with a large gap generally implies \textit{overfitting}.
 
 \subsection{Regularization}
-The \gls{ERM} algorithm runs the risk of overfitting. This means that the hypothesis $\hat{h}$ might perform well on the training data $\mathcal{S}$ but poorly on new data drawn from the same distribution $\mathcal{D}$. Usually, this happens for rich hypothesis classes (high capacity), or when $\mathcal{S}$ is not representative of $\mathcal{D}$ and the \gls{ERM} algorithm chooses a hypothesis that is too complex. 
+The \gls{ERM} algorithm runs \todo{``has'' instead of ``runs''?} the risk of overfitting. This means that the hypothesis $\hat{h}$ might perform well on the training data $\mathcal{S}$ but poorly on new data drawn from the same distribution $\mathcal{D}$. Usually, this happens for rich hypothesis classes (high capacity)\todo{This ``rich'' / ``high'' is not absolute, but always relative to the size of the training data.}, or when $\mathcal{S}$ is not representative of $\mathcal{D}$ \todo{When can this happen? Not enough training data would be an obvious cause. Are there others you can think of? If not, you could just state ``not enough training data''.} and the \gls{ERM} algorithm chooses a hypothesis that is too complex\todo{What is the complexity of a single element of the hypothesis class supposed to be? I don't really have an idea what you could mean here. In your setting the hypothesis class will be networks of the same architecture with different weights. So you would say that depening on the weight values a given network is more or less complex?}. 
 
 To counter this, \textit{regularization} techniques are used. A penalty term based on model parameters is added to prevent overfitting. The \gls{ERM} then finds the hypothesis $\hat{h}$ that minimizes the regularized loss function\footnote{This is also known as Regularizated Loss Minimization.}:
 \begin{equation}
     \hat{h} = \argmin_{h \in \mathcal{H}} \left(\mathcal{L}(\theta; \mathcal{S})  + \lambda R(\theta) \right).
 \end{equation}
-where $R(\theta)$ is the regularization term that penalizes complex models, and $\lambda$ is the parameter controlling the trade-off between the training error and the regularization term. Common regularization techniques include $L_1$ (Lasso) and $L_2$ (Ridge) regularization. $L_1$ regularization can be written as:
+where $R(\theta)$ is the regularization term that penalizes complex \todo{This would even imply that larger weight mean more complex, e.g., replacing $\theta$ by $2\theta$ increases the value of the regularizer, but I don't see how you could argue that $h(\cdot;2\theta)$ is more complex than $h(\cdot;\theta)$.} models, and $\lambda$ is the parameter controlling the trade-off between the training error and the regularization term. Common regularization techniques include $L_1$ (Lasso) and $L_2$ (Ridge) regularization\todo{If you throw out the names ``Lasso'' and ``Ridge'', you should hint where they come from. The meaning of $1$ and $2$ are obvious and need to explanation.}. $L_1$ regularization can be written as:
 \begin{equation*}
     R(\theta) = \|\theta\|_1 = \sum{j} |\theta_j|
 \end{equation*}
@@ -81,8 +82,9 @@ and $L_2$ regularization as:
 \begin{equation*}
     R(\theta) = \|\theta\|^2_2 = \sum_{j} \theta_j^2
 \end{equation*}
+\todo{I think you have not once mentioned so far in this chapter that $\theta$ is a vector. You need this here in order to spell our these regularizers.}
 
-Regularization can also be seen as a way of restricting the hypothesis space $\mathcal{H}$ by encoding prior knowledge into the model. In the case of image restoration, it might be known a priori that the image is smooth, and  can encode this prior knowledge by adding a penalty term that penalizes sharp changes in the image.
+Regularization can also be seen as a way of restricting the hypothesis space $\mathcal{H}$ by encoding prior knowledge into the model\todo{Which prior knowledge do the two example regularizers above encode?}. In the case of image restoration, it might be known a priori that the image is smooth, and  can encode this prior knowledge by adding a penalty term that penalizes sharp changes in the image\todo{Do you have an example reference where this is done?}.
 
 
 \subsection{Uniform Convergence}
