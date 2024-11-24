@@ -174,7 +174,7 @@ Current state-of-the-art architectures often employ Rectified Linear Unit (ReLU)
 sets negative inputs to zero while preserving positive inputs.
 
 While ReLU is not differentiable at $x = 0$, it is widely favored due to its simplicity and effectiveness in training deep networks. Variants of ReLU, such as Leaky ReLU and Parametric ReLU have been introduced to address the issue of dead neurons, where neurons cease to learn during training. Leaky ReLU introduces a gradient for negative inputs
-\begin{equation}
+\begin{equation}\label{eq:leaky-relu}
     \text{Leaky ReLU}(x) = \max(\alpha x, x)
 \end{equation}
 defined by a small constant $\alpha$. Parametric ReLU extends this concept by allowing the gradient to be learned during training.
@@ -182,24 +182,15 @@ defined by a small constant $\alpha$. Parametric ReLU extends this concept by al
 Training a neural network involves two primary phases: the forward pass and the backward pass. During the forward pass, the input data is propagated through the network, layer by layer, to generate an output. Following this, the backward pass occurs, in which the error, defined as the difference between the predicted output and the true output, is propagated back through the network using the gradient of the loss function. This step is crucial for updating the weights of the network.
 The training process utilizes optimization algorithms, such as Stochastic Gradient Descent (SGD) \cite{sutskeverImportanceInitializationMomentum2013} or Adam Optimization \cite{kingmaAdamMethodStochastic2017}, which iteratively adjust the network's weights to reduce the loss.
 
-\section{Neural Networks for Image Restoration}
+\section{Neural Networks for Image Restoration using Noise2Noise Framework}
 In the classical supervised-learning setting for image restoration, training assumes access to clean target images. Similar to \cref{sec:erm}, training can be formulated as
 \begin{equation}
     \hat{h} = \argmin_{h \in \mathcal{H}} \frac{1}{\lvert \mathcal{S} \rvert} \sum_{(X, Y) \in \mathcal{S}} \ell(h(X; \theta), Y),
 \end{equation}
 where $\mathcal{S} \sim \mathcal{D}^n$ is the training set with images $\mathcal{S} = \{(X_1, Y_1), \dots, (X_n, Y_n)\}$ with $(X, Y)$  the noisy and clean target images.
 
-\todo[author=zain,inline]{Finish the three subsections}
-\subsection{Convolutional Neural Networks}
-While Multilayered Perceptrons work great, for high dimensional data such as images, the number of parameters can become prohibitively large. 
-"A CNN is a prior on the hypothesis space. In fact, it is such a strong prior that it puts 
- probability mass on any hypothesis that is not translationally equivariant (up to some details to do with image boundaries)"
+Most often, instead of a multilayered perceptron architecture, \gls{CNN} are preferred for image restoration tasks. \gls{CNN} are well-suited for image data due to their ability to learn spatial hierarchies of features through convolution operations. he convolutional layers in a \gls{CNN} automatically detect patterns such as edges, textures, and shapes, while the pooling layers downsample the data to reduce both the number of parameters and computational complexity. The output of the convolutional layers, known as feature maps, captures these learned patterns, and max-pooling further enhances efficiency by retaining the most significant values in a region, reducing spatial dimensions. This pooling process also contributes to the network’s robustness to spatial variance. Furthermore, \glspl{CNN} impose a strong prior on the hypothesis space, assuming that the data is translationally invariant, which is a reasonable assumption for images \cite{goodfellowDeepLearning2016}. In the context of this work, we will explore a specific realization of \glspl{CNN}, namely the UNet, which is known for its effective use in image restoration tasks.
 
-\subsection{Autoencoder}
-\cite{goodfellowDeepLearning2016}
-
-
-\section{Noise2Noise Framework}
 In many practical scenarios such as our \gls{MPES} data, obtaining the true clean image $Y$ is not feasible, although sufficiently high quality noisy data exists. In the instance when multiple noisy realizations of the same underlying signal are available, \citeauthor{lehtinenNoise2NoiseLearningImage2018} demonstrated that it is possible to train a neural network to learn a restoration mapping to the underlying clean signal using only noisy observations for both inputs and targets \cite{lehtinenNoise2NoiseLearningImage2018}, a framework known as \textit{Noise2Noise}. 
 
 In the following sections, we see why Noise2Noise works and how it is applied to our image restoration problem.
@@ -279,9 +270,7 @@ We employ a patch-based approach to getting training pairs. Firstly, to increase
 
 To further augment the data, random rotations and flips are applied to the extracted patches. This augmentation not only increases the variability in the training data but also helps the neural network generalize better during inference.
 
-\section{Model Architecture: UNET3D}
-\todo{Make this better}
-
+\subsection{Model Architecture: UNET3D}
 \begin{figure}
     \centering
     \includegraphics[width=0.8\linewidth]{images/unet_architecture.pdf}
@@ -289,33 +278,35 @@ To further augment the data, random rotations and flips are applied to the extra
     \label{fig:unet-architecture}
 \end{figure}
 
-While in principle any denoising \gls{CNN} architecture could be used, we employ the UNET architecture, a popular choice for image restoration tasks, especially in medical imaging, where it has shown remarkable success \cite{ronnebergerUNetConvolutionalNetworks}. We use the extension of UNET to 3D data \cite{cicek3DUNetLearning2016} to train using 3D patches. Compared to deeper models, UNET is faster to train due to its relatively shallow architecture, making the 3D learning possible. 
+While in principle any denoising \gls{CNN} architecture could be used, we employ the UNET architecture, a popular choice for image restoration tasks, especially in medical imaging, where it has shown remarkable success \cite{ronnebergerUNetConvolutionalNetworks}. We extend the UNET architecture to train 3D data using 3D patches \cite{cicek3DUNetLearning2016}. Due to its relatively shallow architecture in comparison to deeper models, UNET accelerates the 3D learning process.
 
-The architecture, as illustrated in \cref{fig:unet-architecture}, consists of an encoder-decoder structure with skip connections. The encoder compresses spatial information using a series of convolutional layers and 3D max-pooling operations, progressively reducing the spatial dimensions while increasing the feature channels. And the decoder reconstructs the data to its original dimensions using upsampling layers and convolutional operations.
+The name, UNET, takes after the architecture’s structure, a distinctive “U-shaped”, as illustrated in \cref{fig:unet-architecture}. UNET, similar to an autoencoder, consists of an encoder-decoder structure, forming the left and right halves of the “U-shape”. The difference from traditional autoencoders is the presence of skip connections (purple arrow) that link corresponding encoder and decoder levels. These connections allow the network to reuse features from the encoder during the decoding process, aiding gradient flow during training. The skip connections are also particularly useful in recovering fine-grained details lost during downsampling in the encoder.
 
-The use of skip-connections link corresponding encoder and decoder levels, allowing feature reuse and aiding gradient flow during training. These connections help recover fine-grained details lost during downsampling in the encoder.
+The encoder compresses spatial information using a series of convolutional layers and 3D max-pooling operations. This progressively reduces the spatial dimensions while increasing the feature channels. On the other hand, the decoder reconstructs the data to its original dimension using upsampling layers and convolution operations. 
 
-The model leverages 3D convolutions, allowing it to capture spatial features across the depth, height, and width dimensions simultaneously. Downsampling within the encoder is achieved through 3D max-pooling layers with $2 \times 2 \times 2$ kernels, while the decoder employs 3D upsampling to restore spatial dimensions. The input data is processed in patches of size $60 \times 240 \times 240$ voxels, which are reduced and then restored in the encoder-decoder pipeline. As illustrated in \cref{fig:unet-architecture}, intermediate feature maps progressively decrease in spatial dimensions (e.g., $230 \times 230 \times 20 \to 115 \times 115 \times 10 \to 57 \times 57 \times 5$) in the encoder and are restored in reverse order in the decoder. \todo{write about fmaps [16, 32, 64, 128, 256]}
+The model leverages 3D convolutions, allowing it to capture spatial features across the depth, height, and width dimensions simultaneously. Downsampling within the encoder is achieved through 3D max-pooling layers $2 \times 2 \times 2$ kernels, while the decoder employs 3D upsampling to restore spatial dimensions. The input data is processed in patches of size $60 \times 240 \times 240$ voxels\footnote{This is just how we train the data but \glspl{CNN} can process any arbitrary resolution, provided sufficient memory. In fact, during inference, we employ a larger patch size.}, which are reduced and then restored in the encoder-decoder pipeline. As illustrated in \cref{fig:unet-architecture}, intermediate feature maps progressively decrease in spatial dimensions (e.g., $230 \times 230 \times 20 \to 115 \times 115 \times 10 \to 57 \times 57 \times 5$) in the encoder and are restored in reverse order in the decoder. \todo{write about fmaps [16, 32, 64, 128, 256]}
 
-The model uses Leaky ReLU activation functions with a negative slope of 0.01, which enhances gradient flow in regions with low activation values. Group normalization (of size 8) is employed instead of batch normalization to improve training stability and performance, particularly for small batch sizes. The final layer of the network consists of a $1 \times 1 \times 1$ convolution, which maps the feature space to a single output channel, producing the denoised result.
+The model uses Leaky ReLU activation functions, as seen in \cref{eq:leaky-relu}, with a negative slope of 0.01, which enhances gradient flow in regions with low activation values. Within each feature channel, group normalization (of size 8) is employed to improve training stability and performance. Group normalization performs normalization independent of the batch sizes by dividing the channels into groups and computing the mean and variance within each group across the channels. However, Batch Normalization calculates the mean and variance across the whole batch for every channel of features and is suited for larger batch sizes.
 
-Due to memory limitations, we use a mini-batch size of \num{16}. Batch normalization for small batch sizes is known to be unstable, and hence we use group normalization \cite{wuGroupNormalization2018} instead. Group normalization divides the channels into groups and computes the mean and variance within each group, reducing the issue of small batch sizes.
+Additionally, due to memory limitations, we use a batch size of \num{16}. Hence, within each feature, group normalization (of size 8) is applied here instead, since batch normalization is known to be unstable, particularly for small batch sizes. Group normalization performs normalization independent of the batch sizes by dividing the channels into groups and computing the mean and variance within each group across the channels \cite{wuGroupNormalization2018}. However, Batch Normalization calculates the mean and variance across the whole batch for every channel of features and is suited for larger batch sizes.
 
+The final layer of the network consists of a $1 \times 1 \times 1$ convolution, which maps the feature space to a single output channel, producing the denoised result.
 
 
 \subsection{Training and Validation}
-For training, the model is optimized using the Adam optimizer with an initial learning rate of \num{0.001} and beta values of \num{0.9} and \num{0.99}. The learning rate is adjusted dynamically using a \texttt{ReduceLROnPlateau} scheduler, which reduces the rate by a factor of \num{0.1} if the primary evaluation metric does not improve for \num{10} validation runs. The training is conducted with a batch size of \num{16}, for a maximum of \num{1e3} epochs or until \num{1e5} iterations are completed. Validation is performed every \num{1e3} iterations using \gls{SSIM} as the primary metric and \gls{PSNR} as evaluation metrics. This training was performed prior to the results regarding \gls{MSSSIM} in \cref{sec:metric_comparison_experiment}. Therefore, while \gls{SSIM} was used here, a better validation could be obtained using \gls{MSSSIM} in future work.
-
-For validation, we split our 3D dataset with a 80-20 ratio along the $E$ dimension, with the first 80\% used for training and the remaining 20\% for validation. Most of the key features exist in the training set but due to limited data availability, we can only employ low quality features for validation. We use the highest count dataset to validate against. The validation set is used to monitor the model's performance and prevent overfitting. 
-
-Checkpoints are saved after every validation run, enabling resumption from the last checkpoint if interrupted. Furthermore, the model with the best validation \gls{SSIM} score is saved separately. The training progress for a single (training) example is shown in \cref{fig:training-progress-example}, where the denoising performance shows perceptually significant improvements already at early stages of training.
-
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{images/training_progress_example2.pdf}
     \caption{Denoising predictions at step \numlist{1000;5000;10000} during training are shown, along with the input and target images. The key features, though blurry, are quickly discernible in the denoised images, even at early stages of training.}
     \label{fig:training-progress-example}
 \end{figure}
+For training, the model is optimized using the Adam optimizer with an initial learning rate of \num{0.001} and beta values of \num{0.9} and \num{0.99}. The learning rate is adjusted dynamically using a \texttt{ReduceLROnPlateau} scheduler, which reduces the rate by a factor of \num{0.1} if the primary evaluation metric does not improve for \num{10} validation runs. The training is conducted with a batch size of \num{16}, for a maximum of \num{1e3} epochs or until \num{1e5} iterations are completed. Validation is performed every \num{1e3} iterations using \gls{SSIM} as the primary metric and \gls{PSNR} as evaluation metrics. This training was performed prior to the results regarding \gls{MSSSIM} in \cref{sec:metric_comparison_experiment}. Therefore, while \gls{SSIM} was used here, a better validation could be obtained using \gls{MSSSIM} in future work.
+
+For validation, we split our 3D dataset with a 80-20 ratio along the $E$ dimension, with the first 80\% used for training and the remaining 20\% for validation. Most of the key features exist in the training set but due to limited data availability, we can only employ low quality features for validation. We use the highest count dataset to validate against. The validation set is used to monitor the model's performance and prevent overfitting. 
+
+Checkpoints are saved after every validation run, enabling resumption from the last checkpoint if interrupted. Furthermore, the model with the best validation \gls{SSIM} score is saved separately. The training progress for a single (training) example is shown in \cref{fig:training-progress-example}, where the denoising performance shows perceptually significant improvements already at early stages of training.
+
+
 
 \begin{figure}
     \centering
@@ -365,7 +356,7 @@ The metric assessment using \gls{SSIM}, shown in \cref{fig:ssim-training-val}, a
 
 
 
-\section{Evaluating Model Denoising Performance}
+\subsection{Evaluating Model Denoising Performance}
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{images/nn_denoised_counts_best_last_ex_bm3d.pdf}
