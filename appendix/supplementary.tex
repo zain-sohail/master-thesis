@@ -96,38 +96,38 @@ Model Architecture: UNET 2D and 3D
 
 Trained on A100 GPU 80 GB using Maxwell Cluster at DESY. 
 
+% \FloatBarrier
+% \section{Supplementary Figures for Deep Learning based Denoising}
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=1\linewidth]{images/nn_denoised_ex_single_slice.pdf}
+%     \caption{Noisy, denoised, and target \gls{E}-\gls{kx} cuts with window size $w=1$ shown for \gls{GdW} dataset. Each row corresponds \numlist{1e6;4e6;1.6e7} counts, respectively.}
+%     \label{fig:nn-denoised-ex-single-slice}
+% \end{figure}
+
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=1\linewidth]{images/nn_denoised_ex_20_slice.pdf}
+%     \caption{Noisy, denoised, and target \gls{E}-\gls{kx} cuts with window size $w=20$ shown for \gls{GdW} dataset. Each row corresponds \numlist{1e6;4e6;1.6e7} counts, respectively.}
+%     \label{fig:nn-denoised-ex-20-slice}
+% \end{figure}
+
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=1\linewidth]{images/nn_denoised_xy_single_slice.pdf}
+%     \caption{Noisy, denoised, and target \gls{ky}-\gls{kx} cuts with window size $w=1$ shown for \gls{GdW} dataset. Each row corresponds \numlist{1e6;4e6;1.6e7} counts, respectively.}
+%     \label{fig:nn-denoised-xy-single-slice}
+% \end{figure}
+
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=1\linewidth]{images/nn_denoised_xy_20_slice.pdf}
+%     \caption{Noisy, denoised, and target \gls{ky}-\gls{kx} cuts with window size $w=20$ shown for \gls{GdW} dataset. Each row corresponds \numlist{1e6;4e6;1.6e7} counts, respectively.}
+%     \label{fig:nn-denoised-xy-20-slice}
+% \end{figure}
+
 \FloatBarrier
-\section{Supplementary Figures for Deep Learning based Denoising}
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=1\linewidth]{images/nn_denoised_ex_single_slice.pdf}
-    \caption{Noisy, denoised, and target \gls{E}-\gls{kx} cuts with window size $w=1$ shown for \gls{GdW} dataset. Each row corresponds \numlist{1e6;4e6;1.6e7} counts, respectively.}
-    \label{fig:nn-denoised-ex-single-slice}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=1\linewidth]{images/nn_denoised_ex_20_slice.pdf}
-    \caption{Noisy, denoised, and target \gls{E}-\gls{kx} cuts with window size $w=20$ shown for \gls{GdW} dataset. Each row corresponds \numlist{1e6;4e6;1.6e7} counts, respectively.}
-    \label{fig:nn-denoised-ex-20-slice}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=1\linewidth]{images/nn_denoised_xy_single_slice.pdf}
-    \caption{Noisy, denoised, and target \gls{ky}-\gls{kx} cuts with window size $w=1$ shown for \gls{GdW} dataset. Each row corresponds \numlist{1e6;4e6;1.6e7} counts, respectively.}
-    \label{fig:nn-denoised-xy-single-slice}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=1\linewidth]{images/nn_denoised_xy_20_slice.pdf}
-    \caption{Noisy, denoised, and target \gls{ky}-\gls{kx} cuts with window size $w=20$ shown for \gls{GdW} dataset. Each row corresponds \numlist{1e6;4e6;1.6e7} counts, respectively.}
-    \label{fig:nn-denoised-xy-20-slice}
-\end{figure}
-
-\FloatBarrier
-\section{Supplementary Figures for Photoelectron Counting Statistics}
+\section{Supplementary Figures}
 The following section outlines the counting statistics observed for \gls{PES} at two different light sources: a pulsed laser (\gls{WSe2} dataset), and a \gls{SASE} \gls{FEL} light source (\gls{GrIr} dataset). 
 
 \cref{fig:wse2-stats-2} shows the distribution of photoelectron counts for different time intervals ($\Delta t$) within a volumetric subset of the full \gls{WSe2} dataset. The count distributions for smaller time intervals ($\Delta t = \qtylist{2;10;20}{ms}$) follow Poisson statistics, as expected from an uncorrelated photoemission process where spatial and temporal fluctuations are minimal. However, for longer time intervals ($\Delta t = \qty{50}{ms}$), the distribution starts to deviate from the Poisson distribution. This deviation suggests that spatial correlations, due to the material properties of the sample, become significant enough to impact the distribution. While the impact of pulse light source should be minimal since the time intervals we look at are much longer than the pulse durations, the spatial correlations could be due to the material properties of the sample.
@@ -149,6 +149,25 @@ The \gls{GrIr} dataset reveals more complex photoelectron count statistics over 
     \caption{Distribution of photoelectron counts at time intervals $\Delta t =$ \qtylist{10;50;100;500;1000;5000}{ms} for a selected volumetric subset of the full \gls{GrIr} dataset. Poisson statistics provide a good fit at $\Delta t \leq \qty{100}{ms}$. However, for intervals $\Delta t =$ \qtylist{0.5;1;5}{s} the distribution exhibits over dispersion with a right-skewed tail, characteristic of the \gls{NB} distribution. The total counts in this selected region are $\gls{ncounts}=\num{1e6}$ with total observation time $T\approx\qty{4}{h}$  (See red region in \cref{fig:gmd-intensity}). The smaller $\Delta t$ values may represent the limiting case of the \gls{NB} distribution approaching Poisson statistics.}
     \label{fig:grir-stats-3}
 \end{figure}
+
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\linewidth]{images/nn_denoised_counts_best_last_xy_bm3d.pdf}
+    \caption{}
+    \label{fig:nn-denoised-counts-best-last-xy-bm3d}
+\end{figure}
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\linewidth]{images/nn_denoised_counts_best_last_ex_bm3d_slice_sum_last_model.pdf}
+    \caption{}
+    \label{fig:nn-denoised-counts-best-last-xy-bm3d-slice-sum-last-model}
+\end{figure}
+
+
 % \subsection{Mathematical Formulation}
 % As shown in \cref{alg:bm3d} and \cref{fig:bm3d-schematic}, the \gls{BM3D} scheme is a two-stage image denoising algorithm that exploits non-local image similarities. The algorithm processes a noisy image $X$ to produce a denoised estimate $\hat{Y}$ through collaborative filtering of similar patches.
 
