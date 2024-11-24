@@ -957,6 +957,16 @@
   file = {/Users/zain/Zotero/storage/S9VYCTDP/Macklin et al. - 1993 - High-order harmonic generation using intense femtosecond pulses.pdf}
 }
 
+@article{maggionimNonlocalTransformdomainFilter,
+  title = {Nonlocal Transform-Domain Filter for Volumetric Data Denoising and Reconstruction},
+  author = {{Maggioni M} and {Katkovnik V} and {Egiazarian K} and {Foi A}},
+  journal = {PubMed},
+  urldate = {2024-10-17},
+  abstract = {We present an extension of the BM3D filter to volumetric data. The proposed algorithm, BM4D, implements the grouping and collaborative filtering paradigm, where mutually similar d-dimensional patches are stacked together in a (d+1)-dimensional array and jointly filtered in transform domain. While in {\dots}},
+  langid = {english},
+  file = {/Users/zain/Zotero/storage/9YDQT7SC/22868570.html}
+}
+
 @inproceedings{makinenExactTransformDomainNoise2019,
   title = {Exact {{Transform-Domain Noise Variance}} for {{Collaborative Filtering}} of {{Stationary Correlated Noise}}},
   booktitle = {2019 {{IEEE International Conference}} on {{Image Processing}} ({{ICIP}})},
@@ -1136,16 +1146,6 @@
   langid = {english},
   keywords = {Matter waves and particle beams,Nanophotonics and plasmonics},
   file = {/Users/zain/Zotero/storage/YXAFHT9R/Meier et al. - 2023 - Few-electron correlations after ultrafast photoemission from nanometric needle tips.pdf}
-}
-
-@article{mNonlocalTransformdomainFilter,
-  title = {Nonlocal Transform-Domain Filter for Volumetric Data Denoising and Reconstruction},
-  author = {M, Maggioni and V, Katkovnik and K, Egiazarian and A, Foi},
-  journal = {PubMed},
-  urldate = {2024-10-17},
-  abstract = {We present an extension of the BM3D filter to volumetric data. The proposed algorithm, BM4D, implements the grouping and collaborative filtering paradigm, where mutually similar d-dimensional patches are stacked together in a (d+1)-dimensional array and jointly filtered in transform domain. While in {\dots}},
-  langid = {english},
-  file = {/Users/zain/Zotero/storage/9YDQT7SC/22868570.html}
 }
 
 @misc{MultidimensionalPhotoemissionSpectroscopy,
@@ -1699,6 +1699,18 @@
   abstract = {Quantitative analysis of plant and animal morphogenesis requires accurate segmentation of individual cells in volumetric images of growing organs. In the last years, deep learning has provided robust automated algorithms that approach human performance, with applications to bio-image analysis now starting to emerge. Here, we present PlantSeg, a pipeline for volumetric segmentation of plant tissues into cells. PlantSeg employs a convolutional neural network to predict cell boundaries and graph partitioning to segment cells based on the neural network predictions. PlantSeg was trained on fixed and live plant organs imaged with confocal and light sheet microscopes. PlantSeg delivers accurate results and generalizes well across different tissues, scales, acquisition settings even on non plant samples. We present results of PlantSeg applications in diverse developmental contexts. PlantSeg is free and open-source, with both a command line and a user-friendly graphical interface.},
   langid = {english},
   file = {/Users/zain/Zotero/storage/HH9BYDI8/Wolny et al. - 2020 - Accurate and versatile 3D segmentation of plant tissues at cellular resolution.pdf}
+}
+
+@misc{wuGroupNormalization2018,
+  title = {Group {{Normalization}}},
+  author = {Wu, Yuxin and He, Kaiming},
+  year = {2018},
+  publisher = {arXiv},
+  doi = {10.48550/ARXIV.1803.08494},
+  urldate = {2024-11-24},
+  abstract = {Batch Normalization (BN) is a milestone technique in the development of deep learning, enabling various networks to train. However, normalizing along the batch dimension introduces problems --- BN's error increases rapidly when the batch size becomes smaller, caused by inaccurate batch statistics estimation. This limits BN's usage for training larger models and transferring features to computer vision tasks including detection, segmentation, and video, which require small batches constrained by memory consumption. In this paper, we present Group Normalization (GN) as a simple alternative to BN. GN divides the channels into groups and computes within each group the mean and variance for normalization. GN's computation is independent of batch sizes, and its accuracy is stable in a wide range of batch sizes. On ResNet-50 trained in ImageNet, GN has 10.6\% lower error than its BN counterpart when using a batch size of 2; when using typical batch sizes, GN is comparably good with BN and outperforms other normalization variants. Moreover, GN can be naturally transferred from pre-training to fine-tuning. GN can outperform its BN-based counterparts for object detection and segmentation in COCO, and for video classification in Kinetics, showing that GN can effectively replace the powerful BN in a variety of tasks. GN can be easily implemented by a few lines of code in modern libraries.},
+  copyright = {arXiv.org perpetual, non-exclusive license},
+  keywords = {Computer Vision and Pattern Recognition (cs.CV),FOS: Computer and information sciences,Machine Learning (cs.LG)}
 }
 
 @article{xianOpensourceEndtoendWorkflow2020,

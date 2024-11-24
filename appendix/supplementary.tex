@@ -35,7 +35,7 @@ Finally, the schema of the buffer files is cross-validated against the predefine
 \FloatBarrier
 \section{Experiment: Metric Comparison}\label{sec:metric_comparison_experiment}
 
-The objective of this experiment is to evaluate the effectiveness of various image quality metrics (\gls{MSE}, \gls{PSNR}, \gls{SSIM}, and \gls{MSSSIM}) when the provided reference is noisy. Specifically, reconstructed images from a trained neural network, that has shown clear improvements in perceptual quality\footnote{This is assessed by an expert and comparing to the high-count target.}, are compared against the high-count but noisy reference. Examples of such images at different counts can be seen in Figure~\ref{fig:images-noisy-denoised-training}, which shows how the noisy images are devoid of any features at low counts, while the denoised images show clear features similar to the target. For this analysis, it is not relevant if the high quality reconstructions are due to overfitting or not, but rather that they produce perceptually better quality images (sometimes even compared to the target). So the hope is that the metrics acknowledge this improvement.
+The objective of this experiment is to evaluate the effectiveness of various image quality metrics (\gls{MSE}, \gls{PSNR}, \gls{SSIM}, and \gls{MSSSIM}) when the provided reference is noisy. Specifically, denoised images from a trained neural network, that has shown clear improvements in perceptual quality\footnote{This is assessed by an expert, comparing with the high-count target.}, are compared against the high-count but noisy reference. Examples of such images at different counts can be seen in Figure~\ref{fig:images-noisy-denoised-training}, which shows how the noisy images are devoid of any features at low counts, while the denoised images show clear features similar to the target. For this analysis, it is not relevant if the high quality reconstructions are due to overfitting or not, but rather that they produce perceptually better quality images (sometimes even compared to the target). So the hope is that the metrics acknowledge this improvement.
 
 \todo[disable]{As in Chapter 4, I don't see what ``perpetual'' is supposed to mean here.}
 \todo[disable]{I don't fully understand what is plotted there. Perhaps you should phrase this as formula so that one can see what exactly is fed into the metrics.}
@@ -48,14 +48,14 @@ This metric comparison is performed with \num{1638} images sliced along each dim
 % Table~\ref{tab:comparison_types} summarizes the comparison types and metrics evaluated in this experiment, repeated for both single slice and window-averaged images.
 \begin{figure}
     \centering
-    \begin{subfigure}[t]{0.48\textwidth}
+    \begin{subfigure}[t]{0.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/metrics_comparison_denoised_noisy.pdf}
         \caption{Comparison of input and target images window averaged with $w=1$. All metrics improve as counts increase, though \gls{MSE} and \gls{PSNR} show better results for noisy inputs, while \gls{SSIM} and \gls{MSSSIM} favor denoised inputs. \gls{MSSSIM} shows the greatest improvement, indicating it is less sensitive to noise and focused more on perpetual quality.}
         \label{fig:metrics-comparison}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[t]{0.48\textwidth}
+    \begin{subfigure}[t]{0.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/metrics_comparison_denoised_noisy_averaged.pdf}
         \caption{Comparison of input and target images window averaged with $w=1$ and $w=10$, respectively. All metrics improve much faster as counts increase. With a window-averaged target, \gls{MSE} and \gls{PSNR} start to favor the noisy input. \gls{SSIM} shows improvement that the perpetually better images are preferred at all counts. \gls{MSSSIM} exhibits a further separation between noisy and denoised inputs.}
@@ -92,10 +92,11 @@ Additionally, we investigate the effect of window-averaged reference images on t
 
 \FloatBarrier
 \section{Deep Learning Infrastructure}
-Model Architecture: UNET 2D and 3D
+Initially, we briefly explored using a UNet2D model for denoising. However, due to the low count rates in the training data, slice-summing was required to achieve meaningful results. To better capture the structural features of the data, we opted for a UNet3D model, which processes volumetric information directly. Although it is theoretically possible to train networks with even higher-dimensional convolutions, this becomes computationally prohibitive due to the exponential increase in the number of parameters. Even with 3D convolutions, the parameter count is significantly larger compared to 2D convolutions, making efficient resource utilization critical.
 
-Trained on A100 GPU 80 GB using Maxwell Cluster at DESY. 
+The neural network, with trainable parameters \num{4119227}, was trained on an NVIDIA A100 GPU with \num{80} GB of memory, using the Maxwell Cluster at DESY. With a patch size of $60 \times 240 \times 240$, a batch size of \num{16} can be fit in memory. While this works with UNET3D, other \glspl{CNN} with 3D convolutions would require a much larger memory footprint. 
 
+To optimize training, the learning rate was reduced after \num{10} validation iterations if no improvement in validation loss was observed. While this approach likely facilitated convergence in \gls{SSIM} values, it may have led to the network settling in suboptimal local minima. This is reflected in the lack of improvement in \gls{SSIM} values for some cases, particularly when compared to the best-performing model. This suggests that the learning rate drop, while effective in some scenarios, could hinder progress in others.
 % \FloatBarrier
 % \section{Supplementary Figures for Deep Learning based Denoising}
 % \begin{figure}[h]
@@ -128,24 +129,24 @@ Trained on A100 GPU 80 GB using Maxwell Cluster at DESY.
 
 \FloatBarrier
 \section{Supplementary Figures}
-The following section outlines the counting statistics observed for \gls{PES} at two different light sources: a pulsed laser (\gls{WSe2} dataset), and a \gls{SASE} \gls{FEL} light source (\gls{GrIr} dataset). 
+% The following section outlines the counting statistics observed for \gls{PES} at two different light sources: a pulsed laser (\gls{WSe2} dataset), and a \gls{SASE} \gls{FEL} light source (\gls{GrIr} dataset). 
 
-\cref{fig:wse2-stats-2} shows the distribution of photoelectron counts for different time intervals ($\Delta t$) within a volumetric subset of the full \gls{WSe2} dataset. The count distributions for smaller time intervals ($\Delta t = \qtylist{2;10;20}{ms}$) follow Poisson statistics, as expected from an uncorrelated photoemission process where spatial and temporal fluctuations are minimal. However, for longer time intervals ($\Delta t = \qty{50}{ms}$), the distribution starts to deviate from the Poisson distribution. This deviation suggests that spatial correlations, due to the material properties of the sample, become significant enough to impact the distribution. While the impact of pulse light source should be minimal since the time intervals we look at are much longer than the pulse durations, the spatial correlations could be due to the material properties of the sample.
+% \cref{fig:wse2-stats-2} shows the distribution of photoelectron counts for different time intervals ($\Delta t$) within a volumetric subset of the full \gls{WSe2} dataset. The count distributions for smaller time intervals ($\Delta t = \qtylist{2;10;20}{ms}$) follow Poisson statistics, as expected from an uncorrelated photoemission process where spatial and temporal fluctuations are minimal. However, for longer time intervals ($\Delta t = \qty{50}{ms}$), the distribution starts to deviate from the Poisson distribution. This deviation suggests that spatial correlations, due to the material properties of the sample, become significant enough to impact the distribution. While the impact of pulse light source should be minimal since the time intervals we look at are much longer than the pulse durations, the spatial correlations could be due to the material properties of the sample.
 
 
-The \gls{GrIr} dataset reveals more complex photoelectron count statistics over a broader range of time intervals. Figures \ref{fig:grir-stats-1}, \ref{fig:grir-stats-2}, and \ref{fig:grir-stats-3} show photoelectron count distributions for varying time windows ($\Delta t = \qtylist{10;50;100;500;1000;5000}{ms}$) in the acquisition time $T\approx\qty{30}{hour}$
+% The \gls{GrIr} dataset reveals more complex photoelectron count statistics over a broader range of time intervals. Figures \ref{fig:grir-stats-1}, \ref{fig:grir-stats-2}, and \ref{fig:grir-stats-3} show photoelectron count distributions for varying time windows ($\Delta t = \qtylist{10;50;100;500;1000;5000}{ms}$) in the acquisition time $T\approx\qty{30}{hour}$
 
 
 \begin{figure}
     \centering
-    \includegraphics[width=1\linewidth]{images/hist_counts_facetgrid_2_wse2.pdf}
+    \includegraphics[width=0.8\linewidth]{images/hist_counts_facetgrid_2_wse2.pdf}
     \caption{Distribution of photoelectron counts at time intervals $\Delta t =$ \qtylist{2;10;20;50}{ms} for a different volumetric subset of the full \gls{WSe2} dataset. Poisson statistics are observed at smaller time intervals, but as the time window increases ($\Delta t =$ \qty{50}{ms}), the data starts to deviate from the Poisson distribution, as spatial correlations become apparent.}
     \label{fig:wse2-stats-2}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=1\linewidth]{images/hist_counts_facetgrid_3_grir.pdf}
+    \includegraphics[width=0.8\linewidth]{images/hist_counts_facetgrid_3_grir.pdf}
     \caption{Distribution of photoelectron counts at time intervals $\Delta t =$ \qtylist{10;50;100;500;1000;5000}{ms} for a selected volumetric subset of the full \gls{GrIr} dataset. Poisson statistics provide a good fit at $\Delta t \leq \qty{100}{ms}$. However, for intervals $\Delta t =$ \qtylist{0.5;1;5}{s} the distribution exhibits over dispersion with a right-skewed tail, characteristic of the \gls{NB} distribution. The total counts in this selected region are $\gls{ncounts}=\num{1e6}$ with total observation time $T\approx\qty{4}{h}$  (See red region in \cref{fig:gmd-intensity}). The smaller $\Delta t$ values may represent the limiting case of the \gls{NB} distribution approaching Poisson statistics.}
     \label{fig:grir-stats-3}
 \end{figure}
@@ -155,7 +156,7 @@ The \gls{GrIr} dataset reveals more complex photoelectron count statistics over 
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\linewidth]{images/nn_denoised_counts_best_last_xy_bm3d.pdf}
-    \caption{}
+    \caption{Comparison of \gls{kx}–\gls{ky} slices for various \gls{ncounts}. The target image is shown for a single slice and for slice-summed images with \gls{winsize} values of \num{10} and \num{20}, demonstrating the effect of summing slices for visual quality improvement. The noisy image is also depicted as a slice-summed result, emphasizing that slice summing acts as a basic form of noise reduction. Denoised results are shown for the best and last trained neural network models ($w=1$), alongside \gls{BM3D}–Anscombe denoising applied with the optimal parameter $\sigma_{\text{o}}$ for $w=10$ and the same parameter used for $w=1$. The results illustrate that the neural network outperforms BM3D–Anscombe denoising at lower counts (\num{1e6}). At higher counts and when slices are summed, BM3D’s performance improves relative to the neural network.}
     \label{fig:nn-denoised-counts-best-last-xy-bm3d}
 \end{figure}
 
@@ -163,10 +164,16 @@ The \gls{GrIr} dataset reveals more complex photoelectron count statistics over 
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\linewidth]{images/nn_denoised_counts_best_last_ex_bm3d_slice_sum_last_model.pdf}
-    \caption{}
+    \caption{Denoised results are shown for the best and last trained neural network models, and for BM3D-Anscombe for single slice cuts and slice-summed images. The results indicate similar performance when slice-summed between neural network and BM3D.}
     \label{fig:nn-denoised-counts-best-last-xy-bm3d-slice-sum-last-model}
 \end{figure}
 
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{images/nn_diff_plots_8M.pdf}
+    \caption{Difference images comparing the best and last models for \gls{ncounts} \num{8e6}. The differences are computed relative to two references: the slice-summed target image with \gls{winsize} of \num{10}, and its BM3D-denoised version. The red regions indicate where the prediction is brighter than the noisy target, while blue regions indicate where the target is brighter. The target itself is noisy, so when subtracting the denoised outputs from the target, mostly red regions are visible. However, when using the BM3D-denoised target as a reference (assumed to approximate the correct image), the differences are mostly white (close to 0), with some blue regions where predicted features are less intense compared to the reference. Here, the difference plots highlight that the last model preserves features more effectively and aligns better with the BM3D-denoised target compared to the best model.}
+    \label{fig:nn_diff_plots_8M}
+\end{figure}
 
 % \subsection{Mathematical Formulation}
 % As shown in \cref{alg:bm3d} and \cref{fig:bm3d-schematic}, the \gls{BM3D} scheme is a two-stage image denoising algorithm that exploits non-local image similarities. The algorithm processes a noisy image $X$ to produce a denoised estimate $\hat{Y}$ through collaborative filtering of similar patches.

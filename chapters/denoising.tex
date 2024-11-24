@@ -62,25 +62,25 @@ Notice from \cref{eq:wiener-mse} that the Wiener filter requires access to the c
 As the Fourier basis operates globally, applying Wiener filtering with this basis can introduce periodic artifacts, as global transforms may overemphasize large-scale image features and fail to capture fine local details. This limitation has motivated the development of local adaptive variants and the exploration of alternative transform domains such as wavelets, which better capture local image characteristics \cite{buadesReviewImageDenoising2005}.
 
 \subsection{Non-Local Means}
-\todo{Since NLM is quite related to BM3D, it would also be helpful to define this in detail here. The definition is not that involved and I would say quite instructive to understand the non-locality.}
+\todo[disable]{Since NLM is quite related to BM3D, it would also be helpful to define this in detail here. The definition is not that involved and I would say quite instructive to understand the non-locality.}
 \todo[disable]{``also''? What else uses this redundancy? BM3D, but you haven't mentioned that one yet. At leae not in this chapter.}
 
 Other than linear filters, non-linear filters such as the median filter, replace each pixel with the median value of its neighbors and are much better at removing salt-and-pepper noise. Other approaches, such as bilateral filtering, combine spatial proximity and intensity similarity, allowing for selective smoothing that  preserves sharpness around edges. 
 
 The principle behind \gls{NLM} denoising builds on the redundancy of similar patches in the image and estimates a pixel value by taking a weighted average over other pixels with a similar local structure, regardless of their spatial distance. By utilizing these priors, denoising algorithms can indeed aggressively use the intrinsic properties of the images and thereby enhance the visual quality and provide estimates closer to the latent clean image.
 
-Non-Local Means (NLM) denoising is a highly effective method for removing noise by leveraging the inherent redundancy found in natural images. Unlike local filters, which operate on immediate pixel neighborhoods, NLM uses a non-local approach, meaning that it searches the entire image for patches or neighborhoods that resemble the local structure of a pixel's neighborhood, regardless of their spatial distance. The algorithm replaces a noisy pixel by computing a weighted average of all pixels in the image, with the weights determined by the similarity of their neighborhoods.
+% Non-Local Means (NLM) denoising is a highly effective method for removing noise by leveraging the inherent redundancy found in natural images. Unlike local filters, which operate on immediate pixel neighborhoods, NLM uses a non-local approach, meaning that it searches the entire image for patches or neighborhoods that resemble the local structure of a pixel's neighborhood, regardless of their spatial distance. The algorithm replaces a noisy pixel by computing a weighted average of all pixels in the image, with the weights determined by the similarity of their neighborhoods.
 
-The similarity between the neighborhoods of pixels $i$ and $j$ is measured using the Gaussian-weighted Euclidean distance between intensity vectors in a window surrounding each pixel:
-\begin{equation}
-    w(i,j) = \frac{1}{x(i)} \exp \left( -\frac{\|v(\mathcal{N}_i) - v(\mathcal{N}_j)\|_{2,a}^2}{h^2} \right),
-\end{equation}
-where $v(\mathcal{N}_i)$ is the vector of pixel intensities within the neighborhood $\mathcal{N}_i$ of pixel $i$, and $h$ is a parameter controlling the decay of weights as a function of this distance. The normalization factor $x(i)$ ensures that the weights sum to 1 for each pixel $i$.
+% The similarity between the neighborhoods of pixels $i$ and $j$ is measured using the Gaussian-weighted Euclidean distance between intensity vectors in a window surrounding each pixel:
+% \begin{equation}
+%     w(i,j) = \frac{1}{x(i)} \exp \left( -\frac{\|v(\mathcal{N}_i) - v(\mathcal{N}_j)\|_{2,a}^2}{h^2} \right),
+% \end{equation}
+% where $v(\mathcal{N}_i)$ is the vector of pixel intensities within the neighborhood $\mathcal{N}_i$ of pixel $i$, and $h$ is a parameter controlling the decay of weights as a function of this distance. The normalization factor $x(i)$ ensures that the weights sum to 1 for each pixel $i$.
 
-NLM is particularly effective at preserving edges and textures in the image, as the weight $w(i,j)$ assigns higher values to pixels whose neighborhoods are similar in appearance to the target pixel's neighborhood. As a result, NLM performs well in removing noise while maintaining important image features, making it a popular choice for denoising tasks, especially when the noise is uniformly distributed across the image.
+% NLM is particularly effective at preserving edges and textures in the image, as the weight $w(i,j)$ assigns higher values to pixels whose neighborhoods are similar in appearance to the target pixel's neighborhood. As a result, NLM performs well in removing noise while maintaining important image features, making it a popular choice for denoising tasks, especially when the noise is uniformly distributed across the image.
 
 
-\section{BM3D: Denoising in Sparse Domain}
+\section{BM3D: Denoising in Sparse Domain}\label{sec:bm3d}
 
 \begin{figure}
     \centering
@@ -90,9 +90,7 @@ NLM is particularly effective at preserving edges and textures in the image, as 
 \end{figure}
 
 
-As shown in \cref{alg:bm3d} and \cref{fig:bm3d-schematic}
-\todo{This needs more details. Try to provide the essential formulas of what is actually computed for all steps. You don't need to put those details into the algorithm, it's better to add them to the main text.}
-, the \gls{BM3D} scheme works by grouping similar patches in a 2D image and applying a 3D transform\footnote{This algorithm has also been proposed for 3D images, dubbed BM4D \cite{mNonlocalTransformdomainFilter}.}. This leads to an enhanced sparse representation of the image which after filtering is transformed back to the spatial domain.
+As shown in \cref{alg:bm3d} and \cref{fig:bm3d-schematic}\todo[disable]{This needs more details. Try to provide the essential formulas of what is actually computed for all steps. You don't need to put those details into the algorithm, it's better to add them to the main text.}, the \gls{BM3D} scheme works by grouping similar patches in a 2D image and applying a 3D transform\footnote{This algorithm has also been proposed for 3D images, dubbed BM4D \cite{maggionimNonlocalTransformdomainFilter}.}. This leads to an enhanced sparse representation of the image which after filtering is transformed back to the spatial domain.
 % Main BM3D Algorithm
 \begin{algorithm}
     \caption{BM3D Denoising Algorithm}\label{alg:bm3d}
@@ -120,9 +118,9 @@ with group $B_G$ formed by selecting blocks that have distance below the thresho
 $$B_G = \{ B_i : d(B_R, B_i) \leq \tau \}$$
 
 The Collaborative Filtering\footnote{Interestingly, collaborative filtering has been the backbone of recommendation systems such as by Netflix and Spotify \cite{bellLessonsNetflixPrize2007,drorYahooMusicDataset2012}.}\todo[disable]{Reference for the Netfilx/Spotify statement?} shown in \cref{alg:collaborativefiltering} is then applied to the grouped blocks. This step consists of a 3D transform such as the discrete cosine transform (or the wavelet transform can be used).
-\todo{This 3D stacking and 3D filtering is a crucial component, which should be elaborated / illustrated more.}
+\todo[disable]{This 3D stacking and 3D filtering is a crucial component, which should be elaborated / illustrated more.}
 A filter is applied to the transformed blocks to remove noise, initially by hard thresholding and in the second run by Wiener filtering. The inverse 3D transform is then applied to the filtered blocks, and the filtered blocks are aggregated to form the estimate. The first run is considered the basic estimate, and it is only after Collaborative Wiener filtering that the final estimate is obtained.
-\todo{One a coarse level, this is all correct, but I would put much more detail. Also a sketch would be helpful.}
+\todo[disable]{One a coarse level, this is all correct, but I would put much more detail. Also a sketch would be helpful.}
     
 % Collaborative Filtering Algorithm
 \begin{algorithm}
