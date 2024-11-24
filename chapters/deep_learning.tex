@@ -10,7 +10,7 @@ Conversely, in the unsupervised setting, the model is exposed to the data withou
 
 This chapter, we will discuss the foundations of learning, covering the elements of how and why learning works. This is general to both the supervised and unsupervised setting. There the concepts of \textit{hypothesis class}, \textit{capacity}, \textit{realizability}, and the concept of \textit{generalization} capability are discussed. Then we take a look at a statistical learning\footnote{Machine learning and statistical learning are many times used interchangeably but the latter places more emphasis on the statistical properties of the learning algorithms, and the former on the algorithmic aspects.} paradigm known as \textit{\gls{ERM}}, aiming to minimize the training error/empirical risk. \Gls{ERM} comes with its own set of challenges, such as overfitting in hypothesis spaces with high \textit{capacity}, which can be mitigated by \textit{regularization}. 
 
-We discuss the combination of \textit{\gls{CNN}} and \textit{Autoencoders}, commonly used in image restoration tasks. Later, \gls{noise2noise}, a learning framework for image restoration not requiring clean images, introduced by \citeauthor{lehtinenNoise2NoiseLearningImage2018}, is discussed. To fully explain this framework, we look at the \textit{loss function} that allows this paradigm to work. We apply this training scheme using the concrete realization \texttt{UNET3D} architecture, the 2D variant introduced first by \citeauthor{ronnebergerUNetConvolutionalNetworks}.
+We discuss the combination of \textit{\gls{CNN}} and \textit{Autoencoders}, commonly used in image restoration tasks. Later, \gls{noise2noise}, a learning framework for image restoration not requiring clean images, introduced by \citeauthor{lehtinenNoise2NoiseLearningImage2018}, is discussed. To fully explain this framework, we look at the \textit{loss function} that allows this paradigm to work. We apply this training scheme using the concrete realization UNET3D architecture, the 2D variant introduced first by \citeauthor{ronnebergerUNetConvolutionalNetworks}.
 
 These methods are then applied to train a model that maps incomplete observations from \gls{PES} to the true multidimensional image, with $d=3$ dimensions. The aspects of data generation, training, and evaluation are henceforth, discussed in detail.
 
@@ -193,13 +193,7 @@ While Multilayered Perceptrons work great, for high dimensional data such as ima
 
 \subsection{Autoencoder}
 \cite{goodfellowDeepLearning2016}
-\subsection{UNET}
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=1\linewidth]{images/unet_architecture.pdf}
-    \caption{}
-    \label{fig:unet-architecture}
-\end{figure}
+
 
 \section{Noise2Noise Framework}
 In many practical scenarios such as our \gls{MPES} data, obtaining the true clean image $Y$ is not feasible, although sufficiently high quality noisy data exists. In the instance when multiple noisy realizations of the same underlying signal are available, \citeauthor{lehtinenNoise2NoiseLearningImage2018} demonstrated that it is possible to train a neural network to learn a restoration mapping to the underlying clean signal using only noisy observations for both inputs and targets \cite{lehtinenNoise2NoiseLearningImage2018}, a framework known as \textit{Noise2Noise}. 
@@ -225,7 +219,7 @@ Combining \cref{eq:risk} and \cref{eq:risk-min} can write the risk minimization 
 \end{equation}
 where using the law of total probability, the joint expectation $p(x,y)$ can be factorized to $p(x) \cdot p(y | x)$, and hence the expectation as well. This formulation is equivalent to solving the point estimation problem for each input sample separately. Due to this, the neural network inherits the properties of the loss function.
 
-We established in \cref{eq:l2-estimate} that minimizing the $L_2$ loss recovers the mean of the observations. Now, consider the case where the training targets $y$ are corrupted with zero-mean noise, $\mathbb{E}[n] = 0$. The expectation remains unchanged i.e.\ $\mathbb{E}[y] = \mathbb{E}[x^\prime|y]$, with $x^\prime$ being the corrupted data. For example, we previously demonstrated Poisson noise being zero-mean  in \cref{sec:poisson-noise-model} (see \cref{eq:poisson-noise,eq:zero-mean-noise}), and hence, the $L_2$ loss could also recover, on expectation, the true value of a Poisson noise corrupted variable.
+We established in \cref{eq:l2-estimate} that minimizing the $L_2$ loss recovers the mean of the observations. Now, consider the case where the training targets $y$ are corrupted with zero-mean noise, $\mathbb{E}[n] = 0$. The expectation remains unchanged i.e.\ $\mathbb{E}[y] = \mathbb{E}[x^\prime|y]$, with $x^\prime$ being the corrupted data. For example, we previously demonstrated Poisson noise being zero-mean  in \cref{sec:poisson-noise-model} (see \cref{eq:poisson-noise,eq:zero-mean-noise}), and hence, the $L_2$ loss could also recover, on expectation, the true value of a Poisson noise corrupted variable. Using other losses such as $L_1$ could allow recovery of signals with significant outlier content.
 
 This principle can extend to neural network training as we already said that the network inherits the properties of the loss. When minimizing the risk, a neural network trained with zero-mean noise-corrupted targets will converge to the same optimal hypothesis as it would with clean targets. This holds true in the context of \gls{ERM} as well. With infinite training data, minimizing the empirical risk using noisy observations is mathematically equivalent to minimizing it with clean targets (\cref{eq:erm}).
 
@@ -241,32 +235,120 @@ For finite data, the quality of the estimate depends on the variance of the nois
 \subsection{Regularization through Noisy Targets}
 It is important to note that the earlier discussion assumed that learning with clean targets is inherently successful, while in fact, as we discussed before, \gls{ERM} is prone to overfit (generalizes poorly) in high-capacity hypothesis spaces. Using noisy targets actually has the unexpected benefit to act as a form of regularization. The noise in the targets perturbs the training objective, preventing the network from relying excessively on precise input-output mappings. For image restoration tasks, this can lead to better generalization, as the network focuses on recovering the underlying clean signal structure rather than spurious details in the data.
 
-\section{Training an MPES denoiser}
-As seen in \cref{sec:image-formation}, the experimental setup (refer to \cref{section:hextof,section:dld}) for \gls{MPES} puts us in a unique position of having access to multiple noisy realizations of the same underlying signal. This allows us to generate training data pairs where both the input and target are noisy realizations of the same underlying signal.
+\section{Training an MPES Denoiser}
+As seen in \cref{sec:image-formation}, the experimental setup (refer to \cref{section:hextof,section:dld}) for \gls{MPES} puts us in a unique position of having access to multiple noisy realizations of the same underlying image. This allows us to generate training data pairs where both the input and target are noisy versions of the same image. We can hence leverage the Noise2Noise \gls{ERM}, as shown in \cref{eq:erm-noise2noise}, to train a neural network to denoise \gls{MPES} images. We perform all the shown experiments with the $L_2$ loss\footnote{Some preliminary study using the $L_1$ loss also shows promise. This could be attributed to the significantly high noise at low count levels.} as the underlying images we aim to recover are the expectation of the noisy images.
 
-Using \cref{eq:erm-noise2noise}
+Selecting the training data and neural network architecture are imperative for the success of the denoising task. Given the inherently multidimensional nature of \gls{MPES} data, it is advantageous to exploit cross-dimensional correlations to better estimate the underlying image. While 2D image restoration methods already utilize such principles in two dimensions, an example we already discussed with \gls{BM3D} in \cref{sec:bm3d}, higher dimensional data can provide additional information to improve the denoising performance\footnote{Algorithms such as BM4D \cite{maggionimNonlocalTransformdomainFilter} attempt to exploit this by considering the 3D structure of the data.}. 
 
-If we generate images with overlapping subsets, the formed images are not independent, as the same events could be present in multiple images. A simple example would be to generate image an image with \num{e6} counts and other with twice as many counts, where the former is a subset of the latter. This is a limitation of the method, but it is a reasonable approximation for the purpose of this study.
+This is further necessary since the 2D image slices from even our best dataset (\gls{ncounts} of \num{1.86e8} from \gls{GrIr}) are still noisy. In fact, in \cref{sec:mpes-bm3d-denoise}, we employed slice summing before denoising and also in evaluation. However, this summation leads to feature blurring and harnessing correlations across higher dimensions provides a more effective alternative.
+
+To this end, we employ the UNET3D architecture, utilizing 3D convolutions, upsampling and pooling, instead of their 2D counterparts. In the following, we detail the data generation process, network architecture, the training methodology, and validation and testing schemes.
+
+\subsection{Training Data Generation}
+The \gls{GrIr} dataset, with its high count, is used as the training dataset. While Noise2Noise training allows training with noisy data, it is not immediately apparent at what noise levels the training should be conducted. Naturally, the noise levels we aim to denoise should be reflected in the training set. Of particular interest are datasets obtained with shorter acquisition times $T$, and thus lower \gls{ncounts}. The authors in \cite{lehtinenNoise2NoiseLearningImage2018} demonstrated succesful training and inference on Poisson corrupted images with $\lambda \in [1, 50]$. Assuming Poisson noise\footnote{Which we know not to be the case from \cref{ch:pes-statistics}, but 
+sufficies for the current argument.}, for our lowest-count noisy dataset, which has an average count per voxel of \num{5.98e-3}, and even our highest count dataset (\num{1.13} per voxel; see \cref{noisy-dataset-table}), the noise levels lie largely outside the range previously studied. Only the highest count dataset aligns with their researched range.
+
+Hence, we go for the range that is most interesting for us, with inputs spanning \numrange{1e6}{4.8e7} and targets using \num{4.8e7} and \num{9.6e7}. To make this problem tractable and given the constraint of having independent datasets, a limited number (\num{34}) of input-target image pairs are used, as seen in \cref{fig:training-data-flowchart}. 
+
+The ideal situation is if we have independent noisy dataset realizations. For instance, \num{1e6} \gls{ncounts} should not be sampled from the same region which is a subset of a \num{2e6} dataset, as overlapping events would introduce dependencies between datasets. While achieving complete independence is straightforward for lower-count datasets, it becomes increasingly challenging when sampling from the highest \gls{ncounts} of \num{1.86e8}. To mitigate this issue, we avoid using the maximum \gls{ncounts} during training, increasing the independence of datasets. 
+
+Prior work by \citeauthor{lehtinenNoise2NoiseLearningImage2018} demonstrated that using cleaner targets, even with fewer noisy realizations (e.g., just two), significantly enhances denoising performance. Future improvements could involve incorporating other \gls{MPES} datasets to increase the pool of independent images. Additional studies could also examine whether including partially dependent datasets improves denoising performance.
+
+We employ a patch-based approach to getting training pairs. Firstly, to increase the training data, having many independent training pairs, and secondly to make the problem computationally feasible, as training on entire 3D volumes would be prohibitively expensive, making batch-based training challenging. We extract 3D patches from the 3D volumes, as shown in \cref{fig:training-3d-patch-example}, generating \num{5967} training pairs. The patches are extracted at $60 \times 240 \times 240$ size, with a stride of $30 \times 120 \times 120$. The patches are then normalized to have zero mean and \numrange{-1}{1} ranges, common preprocessing step that centers the data and enhances neural network learning performance \cite{bishopDeepLearningFoundations2024}. 
+
+To further augment the data, random rotations and flips are applied to the extracted patches. This augmentation not only increases the variability in the training data but also helps the neural network generalize better during inference.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1\linewidth]{images/training_flowchart.pdf}
-    \caption{Flowchart illustrating the input-target dataset pairs used for neural network training, derived from subsets of the \gls{GrIr} dataset. A total of \num{34} unique noisy subsets are represented, with each dataset corresponding to one blue box in the chart. The different combinations shown in the chart generate \num{51} input-target pairs across various counts, including \numlist{1e6;2e6;4e6;8e6;1.6e7;3.2e7;4.8e7;9.6e7}. Notably, the \num{4.8e7} and \num{9.6e7} counts serve as the target datasets, with \num{9.6e7} additionally functioning as the target for the \num{4.8e7} datasets.}
-    \label{fig:training-data}
+    \begin{subfigure}[t]{0.59\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{images/training_flowchart.pdf}
+        \caption{Flowchart illustrating the input-target dataset pairs, derived from subsets of the \gls{GrIr} dataset. A total of \num{34} unique noisy datasets are represented, with each dataset corresponding to one blue box in the chart. The different combinations shown in the chart generate \num{51} input-target pairs across counts \numrange{1e6}{9.6e7}.}
+        \label{fig:training-data-flowchart}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.39\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{images/training_3d_patch_example.pdf}
+        \caption{Showing example noisy input and noisy target and how 3D subsets (also called patches) are extracted for training. On top, how extracted subsets could look.}
+        \label{fig:training-3d-patch-example}
+    \end{subfigure}
+    \caption{Illustration of generating neural network training pairs. (a) The flowchart showing the input-target dataset pairs used for training, and (a) an example of noisy input and noisy target showing how 3D subsets are extracted from the volume. Through the combination with patch-based extraction, a total of \num{5967} training pairs are generated. The \num{4.8e7} and \num{9.6e7} counts serve as the target datasets, with \num{9.6e7} additionally functioning as the target for the \num{4.8e7} datasets.}
 \end{figure}
+
+\subsection{Model Architecture: UNET3D}
+\todo{Make this better}
+While in principle any denoising \gls{CNN} architecture could be used, we employ the UNET architecture, a popular choice for image restoration tasks, especially in medical imaging, where it has shown remarkable success \cite{ronnebergerUNetConvolutionalNetworks}. We use the extension of UNET to 3D data \cite{cicek3DUNetLearning2016} to train using 3D patches. Compared to deeper models, UNET is faster to train due to its relatively shallow architecture, making the 3D learning possible. 
+
+The architecture, as illustrated in \cref{fig:unet-architecture}, consists of an encoder-decoder structure with skip connections. The encoder compresses spatial information using a series of convolutional layers and 3D max-pooling operations, progressively reducing the spatial dimensions while increasing the feature channels. And the decoder reconstructs the data to its original dimensions using upsampling layers and convolutional operations.
+
+The use of skip-connections link corresponding encoder and decoder levels, allowing feature reuse and aiding gradient flow during training. These connections help recover fine-grained details lost during downsampling in the encoder.
+
+The model leverages 3D convolutions, allowing it to capture spatial features across the depth, height, and width dimensions simultaneously. Downsampling within the encoder is achieved through 3D max-pooling layers with $2 \times 2 \times 2$ kernels, while the decoder employs 3D upsampling to restore spatial dimensions. The input data is processed in patches of size $60 \times 240 \times 240$ voxels, which are reduced and then restored in the encoder-decoder pipeline. As illustrated in \cref{fig:unet-architecture}, intermediate feature maps progressively decrease in spatial dimensions (e.g., $230 \times 230 \times 20 \to 115 \times 115 \times 10 \to 57 \times 57 \times 5$) in the encoder and are restored in reverse order in the decoder. \todo{write about fmaps [16, 32, 64, 128, 256]}
+
+The model uses Leaky ReLU activation functions with a negative slope of 0.01, which enhances gradient flow in regions with low activation values. Group normalization (of size 8) is employed instead of batch normalization to improve training stability and performance, particularly for small batch sizes. The final layer of the network consists of a $1 \times 1 \times 1$ convolution, which maps the feature space to a single output channel, producing the denoised result.
+
+Due to memory limitations, we use a mini-batch size of \num{16}. Batch normalization for small batch sizes is known to be unstable, and hence we use group normalization \cite{wuGroupNormalization2018} instead. Group normalization divides the channels into groups and computes the mean and variance within each group, reducing the issue of small batch sizes.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\linewidth]{images/training_3d_patch_example.pdf}
-    \caption{}
-    % \label{fig:images-noisy-denoised-training}
+    \includegraphics[width=1\linewidth]{images/unet_architecture.pdf}
+    \caption{UNET3D architecture used for training the neural network, with example inputs propogated through the network. The architecture consists of an encoder-decoder structure with skip connections. The encoder compresses spatial information using a series of convolutional layers and 3D max-pooling operations, while the decoder reconstructs the data to its original dimensions using upsampling layers and convolutional operations. Skip connections link corresponding encoder and decoder levels, allowing feature reuse and aiding gradient flow during training.}
+    \label{fig:unet-architecture}
 \end{figure}
 
+\section{Training and Validation}
+For training, the model is optimized using the Adam optimizer with an initial learning rate of \num{0.001} and beta values of \num{0.9} and \num{0.99}. The learning rate is adjusted dynamically using a \texttt{ReduceLROnPlateau} scheduler, which reduces the rate by a factor of \num{0.1} if the primary evaluation metric does not improve for \num{10} validation runs. The training is conducted with a batch size of \num{16}, for a maximum of \num{1e3} epochs or until \num{1e5} iterations are completed. Validation is performed every \num{1e3} iterations using \gls{SSIM} as the primary metric and \gls{PSNR} as evaluation metrics. This training was performed prior to the results regarding \gls{MSSSIM} in \cref{sec:metric_comparison_experiment}. Therefore, while \gls{SSIM} was used here, a better validation could be obtained using \gls{MSSSIM} in future work.
+
+For validation, we split our 3D dataset with a 80-20 ratio along the $E$ dimension, with the first 80\% used for training and the remaining 20\% for validation. Most of the key features exist in the training set but due to limited data availability, we can only employ low quality features for validation. We use the highest count dataset to validate against. The validation set is used to monitor the model's performance and prevent overfitting. 
+
+Checkpoints are saved after every validation run, enabling resumption from the last checkpoint if interrupted. Furthermore, the model with the best validation \gls{SSIM} score is saved separately. The training progress for a single (training) example is shown in \cref{fig:training-progress-example}, where the denoising performance shows perceptually significant improvements already at early stages of training.
+
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{images/training_progress_example2.pdf}
+    \caption{Denoising predictions at step \numlist{1000;5000;10000} during training are shown, along with the input and target images. The key features, though blurry, are quickly discernible in the denoised images, even at early stages of training.}
+    \label{fig:training-progress-example}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{images/val_over_time.pdf}
+    \caption{Denoising predictions at step \numlist{1000;5000;13000;100000} during validation are shown, the latter two of which correspond to the best and last models. The input and target images are also shown. The validation set features not as discernible as the training set, as they correspond to energies much above the Fermi level.}
+    \label{fig:val-progress-example}
+\end{figure}
+
+The training and validation loss are shown in \cref{fig:loss-training-val}. It has already been exemplified in \cite{lehtinenNoise2NoiseLearningImage2018} that the training loss does not decrease during training, as the network can not possibly learn to transform one instance of noise to another, as the training asks for the impossible. Hence, other than the initial decrease, the network loss stays plateaued consistently across \num{1e5} steps. However, since our validation target is a higher quality noisy dataset \num{1.86e8}, the expectation would be that it reports higher loss values. But as we discussed earlier, the validation set data is much above Fermi level, with features in distiguishable. The validation loss can be seen to converge to a stable value at \num{4e4} steps. 
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[t]{0.49\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{images/loss_training_val.pdf}
+        \caption{}
+        \label{fig:loss-training-val}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.49\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{images/ssim_training_val.pdf}
+        \caption{}
+        \label{fig:ssim-training-val}
+    \end{subfigure}
+    \caption{(a) Training and validation loss and (b) \gls{SSIM} scores across  trained using UNET3D architecture.}
+    \label{fig:loss-ssim-training-val}
+\end{figure}
+
+The metric assessment using \gls{SSIM}, shown in \cref{fig:ssim-training-val}, also shows constant fluctuations around an average value in during training but are shown to be converging in the validation. We therefore look at two models, the (\textit{best}) model with the highest validation \gls{SSIM} of \num{0.23} that happens early on during training, after about \num{25} epochs\footnote{Meaning we do \num{25} passes of our entire dataset during training.}, and the (\textit{last}) model at end of training, where the validation \gls{SSIM} has converged to \num{0.2}.
+
+\cref{fig:3d-image-noisy-denoised-training} illustrates how the mapping $\hat{h}$ learned during training predicts data. Looking at \cref{fig:images-noisy-denoised-training}, we see the noisy and denoised \gls{ky}-\gls{kx} cuts for the \gls{GrIr} dataset, at different noise (count) levels. The noisy images show no discernible features below \num{8e6} counts, while the denoised images show clear features similar to the target. The model evaluated on the training set hence shows promising results. To really be sure that the model achieved generalized capability of denoising the experimental data, and not just learned the features of the training set, we need to evaluate it on independent test data.
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\linewidth]{images/noisy_denoised_3d.pdf}
-    \caption{}
-    % \label{fig:images-noisy-denoised-training}
+    \caption{Example prediction (forward pass) from \num{4e6} count dataset, using the best model The prediction resolves the key features in the noisy input, showing the effectiveness of the denoising model.}
+    \label{fig:3d-image-noisy-denoised-training}
 \end{figure}
 
 
@@ -277,37 +359,27 @@ If we generate images with overlapping subsets, the formed images are not indepe
     \label{fig:images-noisy-denoised-training}
 \end{figure}
 
+\subsection{Evaluating Model Denoising Performance}
+We use the \gls{GdW} dataset for evaluating the model's generalization capability. \cref{fig:nn-denoised-counts-best-last-ex-bm3d} shows a \gls{kx}--\gls{E} slice for noisy and denoised images for best and last models, as well as comparison with \gls{BM3D}--Anscombe denoising. The plot also show the slice summed image with \gls{winsize} of \num{10} for noisy image, that also acts as some sort of denoising. BM3D results are also shown for this sum as for lower counts, BM3D performs poorly. \cref{fig:nn-denoised-counts-best-last-xy-bm3d} shows the \gls{ky}--\gls{kx} slice for the same models and \gls{BM3D}--Anscombe denoising.
+
+From this it is clear that neural network based denoising performs much better at lower counts (already at \num{1e6}) than BM3D based denoising. This can be seen by 
+
+From 
+
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1\linewidth]{images/training_progress_example2.pdf}
+    \includegraphics[width=1\linewidth]{images/nn_denoised_counts_best_last_ex_bm3d.pdf}
     \caption{}
-    \label{fig:training-progress-example}
+    \label{fig:nn-denoised-counts-best-last-ex-bm3d}
 \end{figure}
 
 
-\begin{figure}
-    \centering
 
-    \begin{subfigure}[b]{0.7\linewidth}
-        \centering
-        \includegraphics[width=1\linewidth]{images/loss_training_val.pdf}
-        \caption{}
-        \label{fig:loss-training-val}
-    \end{subfigure}
 
-    \begin{subfigure}[b]{0.7\linewidth}
-        \centering
-        \includegraphics[width=1\linewidth]{images/ssim_training_val.pdf}
-        \caption{}
-        \label{fig:ssim-training-val}
-    \end{subfigure}
 
-    \caption{Training and validation loss and \gls{SSIM} scores for the neural network model trained on the \gls{GrIr} dataset.}
-    \label{fig:loss-ssim-training-val}
-\end{figure}
 
-\section{Testing}
+
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\linewidth]{images/nn_gdw_msssim.pdf}
@@ -316,40 +388,70 @@ If we generate images with overlapping subsets, the formed images are not indepe
 \end{figure}
 
 
-\begin{figure}
-    \centering
-    \begin{subfigure}[b]{1\linewidth}
-        \centering
-        \includegraphics[width=1\linewidth]{images/nn_denoised_ex_w_1.pdf}
-        \caption{}
-        \label{fig:nn-denoised-ex-w-1}
-    \end{subfigure}
+% \begin{figure}
+%     \centering
+%     \begin{subfigure}[b]{1\linewidth}
+%         \centering
+%         \includegraphics[width=1\linewidth]{images/nn_denoised_ex_w_1.pdf}
+%         \caption{}
+%         \label{fig:nn-denoised-ex-w-1}
+%     \end{subfigure}
 
-    \begin{subfigure}[b]{1\linewidth}
-        \centering
-        \includegraphics[width=1\linewidth]{images/nn_denoised_ex_w_20.pdf}
-        \caption{\num{4e6} count dataset. The denoising performance leaves room for improvement, using the adjusted optimal $\sigma_{\text{o}}\approx0.4$.}
-        \label{fig:nn-denoised-ex-w-20}
-    \end{subfigure}
+%     \begin{subfigure}[b]{1\linewidth}
+%         \centering
+%         \includegraphics[width=1\linewidth]{images/nn_denoised_ex_w_20.pdf}
+%         \caption{\num{4e6} count dataset. The denoising performance leaves room for improvement, using the adjusted optimal $\sigma_{\text{o}}\approx0.4$.}
+%         \label{fig:nn-denoised-ex-w-20}
+%     \end{subfigure}
+%     \caption{}
+%     \label{fig:nn-denoised-ex-w}
+% \end{figure}
+
+% \begin{figure}
+%     \centering
+%     \begin{subfigure}[b]{1\linewidth}
+%         \centering
+%         \includegraphics[width=1\linewidth]{images/nn_denoised_xy_w_1.pdf}
+%         \caption{}
+%         \label{fig:nn-denoised-xy-w-1}
+%     \end{subfigure}
+
+%     \begin{subfigure}[b]{1\linewidth}
+%         \centering
+%         \includegraphics[width=1\linewidth]{images/nn_denoised_xy_w_20.pdf}
+%         \caption{}
+%         \label{fig:nn-denoised-xy-w-20}
+%     \end{subfigure}
+%     \caption{}
+%     \label{fig:nn-denoised-xy-w}
+% \end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\linewidth]{images/nn_diff_plots_2M.pdf}
     \caption{}
-    \label{fig:nn-denoised-ex-w}
+    \label{fig:nn_diff_plots_2M}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[h]
     \centering
-    \begin{subfigure}[b]{1\linewidth}
-        \centering
-        \includegraphics[width=1\linewidth]{images/nn_denoised_xy_w_1.pdf}
-        \caption{}
-        \label{fig:nn-denoised-xy-w-1}
-    \end{subfigure}
-
-    \begin{subfigure}[b]{1\linewidth}
-        \centering
-        \includegraphics[width=1\linewidth]{images/nn_denoised_xy_w_20.pdf}
-        \caption{}
-        \label{fig:nn-denoised-xy-w-20}
-    \end{subfigure}
+    \includegraphics[width=1\linewidth]{images/nn_diff_plots_8M.pdf}
     \caption{}
-    \label{fig:nn-denoised-xy-w}
+    \label{fig:nn_diff_plots_8M}
 \end{figure}
+
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=1\linewidth]{images/nn_denoised_counts_best_last_xy.pdf}
+%     \caption{}
+%     \label{fig:nn-denoised-counts-best-last-xy}
+% \end{figure}
+
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=1\linewidth]{images/nn_denoised_counts_best_last_ex.pdf}
+%     \caption{}
+%     \label{fig:nn-denoised-counts-best-last-ex}
+% \end{figure}
+
+
