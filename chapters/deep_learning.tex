@@ -18,23 +18,23 @@ Much of the foundational concepts discussed are based on \cite{shalev-shwartzUnd
 
 \section{Foundations of Learning}
 Statistical regression is a classical example of a learning algorithm, where the goal of regression is to learn a function that maps the input data to the output data.
-Let us approach the image restoration problem from this perspective. Using the general observation model defined in \cref{eq:observation-model}, the learning problem is then to find a hypothesis $h$ that maps the degraded image $X$ to the true image $Y$ that generalizes well.
+Let us approach the image restoration problem from this perspective. Using the general observation model defined in \cref{eq:observation-model}, the learning problem is then to find a hypothesis $h$ \todo{Explaining why this is called hypothesis could be helpful.} hat maps the degraded image $X$ to the true image $Y$ that generalizes well.
 \begin{equation}
     h: X \mapsto Y
 \end{equation}
 
-In machine learning, we do not make any explicit assumption of the \textit{data generating distribution} except that all instances of the data are \textit{\gls{iid}} and generated according to a distribution $\mathcal{D}$ i.e.\ $Y, X \sim \mathcal{D}$. Continuing forward, since the discussion is not restricted to images, we denote input and target as $x$ and $y$ respectively. 
+In machine learning, we \todo{This is a context, where ``we'' sounds a bit off. It sounds like we don't do this in machine learning, but other might. I would phrase this in passive, e.g., ``no explicit assumptions are made''} do not make any explicit assumption of the \textit{data generating distribution} except that all instances of the data are \textit{\gls{iid}} and generated according to a distribution $\mathcal{D}$ i.e.\ $Y, X \sim \mathcal{D}$. Continuing forward, since the discussion is not restricted to images, we denote input and target as $x$ and $y$ respectively. 
 
 \subsection{Generalization}\label{sec:generalization}
-\Gls{generalization} refers to the ability of a learning algorithm to perform well on new, unseen data. The goal of learning is to find a hypothesis $h$ that generalizes well to new data. 
+\Gls{generalization} refers to the ability of a learning algorithm to perform well on new, unseen data. The goal of learning is to find a hypothesis $h$ that generalizes well to new data\todo{Here one has to know that $h$ was chosen based on the training data.}. 
 
-If the data generating distribution $\mathcal{D}$ is \gls{iid} and known, the \textit{generalization error}/\textit{population risk} $\mathcal{R}(\theta)$, with model parameters $\theta$, can be minimized to find the optimal hypothesis $\hat{h}^*$. $\mathcal{R}(\theta)$ is defined as expectation taken across the data generating distribution $\mathcal{D}$, with the predicted output of a hypothesis $h(x; \theta)$ and the true output $y$:
+If the data generating distribution $\mathcal{D}$ is \gls{iid} and known\todo{But this is pretty much never the case, is it?}, the \textit{generalization error}/\textit{population risk} $\mathcal{R}(\theta)$, with model parameters $\theta$\todo{Before you can use the model parameters, you first need to mention that $h$ is parametrized with these parameters.}, can be minimized to find the optimal hypothesis $\hat{h}^*$. $\mathcal{R}(\theta)$ is defined as expectation taken across the data generating distribution $\mathcal{D}$, with the predicted output of a hypothesis $h(x; \theta)$ and the true output $y$:
 \begin{equation}\label{eq:risk}
     \mathcal{R}(\theta) = \mathbb{E}_{(x, y) \sim \mathcal{D}} \left[ \ell(h(x; \theta), y) \right]
 \end{equation}
 where the loss $\ell$ measures the difference between two quantities, such as of $h(x; \theta)$ and $y$.
 
-Through optimization, the optimal hypothesis $\hat{h}^*$ can be found that minimizes the expected risk $\mathcal{R}$:
+Through optimization, the optimal hypothesis $\hat{h}^*$ \todo{Even if you know the distribution (which you don't), you would usually not find a global optimizer with numerical optimization. But you can desribe the optimal hypothesis as solution to an optimization problem.} can be found that minimizes the expected risk $\mathcal{R}$:\todo{It's also very unlikely that there is only one global optimizer, which is implied by $\hat{h}^* = \argmin$... To avoid this, you can write, $\hat{h}^* \in \argmin$...}
 \begin{equation}\label{eq:risk-min}
     \hat{h}^* = \argmin_{h \in \mathcal{H}} \mathcal{R}(\mathcal{D}; \theta)
 \end{equation}
