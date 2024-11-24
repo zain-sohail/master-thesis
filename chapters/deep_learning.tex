@@ -32,6 +32,7 @@ If the data generating distribution $\mathcal{D}$ is \gls{iid} and known\todo{Bu
 \begin{equation}\label{eq:risk}
     \mathcal{R}(\theta) = \mathbb{E}_{(x, y) \sim \mathcal{D}} \left[ \ell(h(x; \theta), y) \right]
 \end{equation}
+\todo{$\mathcal{R}$ is not a good symbol for this, since you'll use $R$ for the regularizer below (which is a fitting symbol there). So $\mathcal{R}$ and $R$ look very related, but are very different.}
 where the loss $\ell$ measures the difference between two quantities, such as of $h(x; \theta)$ and $y$.
 
 Through optimization, the optimal hypothesis $\hat{h}^*$ \todo{Even if you know the distribution (which you don't), you would usually not find a global optimizer with numerical optimization. But you can desribe the optimal hypothesis as solution to an optimization problem.} can be found that minimizes the expected risk $\mathcal{R}$:\todo{It's also very unlikely that there is only one global optimizer, which is implied by $\hat{h}^* = \argmin$... To avoid this, you can write, $\hat{h}^* \in \argmin$...}
