@@ -67,7 +67,7 @@ As the Fourier basis operates globally, applying Wiener filtering with this basi
 
 Other than linear filters, non-linear filters such as the median filter, replace each pixel with the median value of its neighbors and are much better at removing salt-and-pepper noise. Other approaches, such as bilateral filtering, combine spatial proximity and intensity similarity, allowing for selective smoothing that  preserves sharpness around edges. 
 
-The principle behind \gls{NLM} denoising builds on the redundancy of similar patches in the image and estimates a pixel value by taking a weighted average over other pixels with a similar local structure, regardless of their spatial distance. By utilizing these priors, denoising algorithms can indeed aggressively use the intrinsic properties of the images and thereby enhance the visual quality and provide estimates closer to the latent clean image.
+The principle behind \gls{NLM} denoising builds on the redundancy of similar patches in the image and estimates a pixel value by taking a weighted average over other pixels with a similar local structure, regardless of their spatial distance. By utilizing these priors, denoising algorithms can indeed use the intrinsic properties of the images and thereby enhance the visual quality and provide estimates closer to the latent clean image.
 
 % Non-Local Means (NLM) denoising is a highly effective method for removing noise by leveraging the inherent redundancy found in natural images. Unlike local filters, which operate on immediate pixel neighborhoods, NLM uses a non-local approach, meaning that it searches the entire image for patches or neighborhoods that resemble the local structure of a pixel's neighborhood, regardless of their spatial distance. The algorithm replaces a noisy pixel by computing a weighted average of all pixels in the image, with the weights determined by the similarity of their neighborhoods.
 
@@ -138,7 +138,7 @@ A filter is applied to the transformed blocks to remove noise, initially by hard
     \end{algorithmic}
 \end{algorithm}
 
-The \gls{BM3D} algorithm had showed one of the best denoising performances and can only be contested by the recent deep-learning based denoising methods. 
+The \gls{BM3D} algorithm has shown one of the best denoising performances and can only be contested by the recent deep-learning based denoising methods. 
 
 \section{Poisson Noise and Variance Stabilization}\label{sec:poisson-noise-model}
 In imaging systems, the observed intensity $x[i]$ at each voxel $i$ of a noisy image $X$ is a stochastic mapping of the latent distribution $y[i]$ due to the measurement process.\todo[disable]{The fact that this is a stochastic mapping is not due to the low light setting. For that it's enough that you are measuring. The Possion part is due to the low light setting.} In low light settings, such as photon-limited imaging, $x[i]$ can be modeled as independent Poisson characterized by the true intensity $y[i]$, we aim to estimate\footnote{This assumption is discussed in more detail in \cref{section:photoelectron-counting-stats}, and is true for a constant intensity light source.} \cite{makitaloOptimalInversionAnscombe2011,kimDeepLearningbasedStatistical2021} 
