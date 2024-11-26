@@ -85,7 +85,7 @@ The principle behind \gls{NLM} denoising builds on the redundancy of similar pat
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{images/bm3d_schematic.png}
-    \caption{Block diagram showing the 2-stage \gls{BM3D} algorithm, consisting of block matching, collaborative filtering, and aggregation. Reprinted from \cite{wangFPGABasedHardwareAccelerator2020}, under the terms of the Creative Commons Attribution 4.0 International License.}
+    \caption{\textit{Block diagram showing the 2-stage \gls{BM3D} algorithm}. The diagram consists of block matching, collaborative filtering, and aggregation blocks, performed twice. The first stage being the basic estimate and the second stage being the final estimate. The algorithm is applied to each reference block in the image, and the final estimate is obtained by aggregating the filtered blocks. Reprinted from \cite{wangFPGABasedHardwareAccelerator2020}, under the terms of the Creative Commons Attribution 4.0 International License.}
     \label{fig:bm3d-schematic}
 \end{figure}
 
@@ -259,7 +259,7 @@ This method has been shown to perform better than methods based on explicit Pois
 \begin{figure} 
     \centering
     \includegraphics[width=1\linewidth]{images/bm3d_anscombe_scheme.pdf}
-    \caption{Block diagram showing the denoising scheme for Poisson corrupted images, consisting of the Anscombe transform, BM3D denoising, and the inversion of the Anscombe transform.}
+    \caption{\textit{Denoising scheme for Poisson images:} Block diagram showing the denoising scheme for Poisson corrupted images, consisting of the Anscombe transform, BM3D denoising, and the inversion of the Anscombe transform.}
     \label{fig:anscombe-bm3d}
 \end{figure}
 

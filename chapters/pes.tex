@@ -68,7 +68,7 @@ Deutsches Elektronen-Synchrotron DESY is a national research center in Germany t
 
 \begin{figure}
     \includegraphics[width=1\linewidth]{images/flash_fel.png}
-    \caption{Schematic view of \gls{FLASH}, showing the accelerator section, and the two beamlines: FLASH1 and FLASH2. Reprinted from \cite{faatzSimultaneousOperationTwo2016}, under the terms of the Creative Commons Attribution 3.0 License.}
+    \caption{\textit{Schematic of FLASH:} showing the accelerator section, and the two beamlines: FLASH1 and FLASH2. Reprinted from \cite{faatzSimultaneousOperationTwo2016}, under the terms of the Creative Commons Attribution 3.0 License.}
     \label{fig:flash-schematic}
 \end{figure}
 
@@ -81,7 +81,7 @@ Efficient detection schemes are then necessary to capture all emitted electrons 
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{images/2024-08-27-10-50-01.png}
-    \caption{The simplified overview of the \gls{FLASH} pulse structure, the PG2 beamline with synchronized pump laser (top left) and the \gls{HEXTOF} experimental setup (middle) used to perform time-resolved momentum microscopy.
+    \caption{\textit{Pulse structure, beamline and HEXTOF:} The simplified overview of the \gls{FLASH} pulse structure, the PG2 beamline with synchronized pump laser (top left) and the \gls{HEXTOF} experimental setup (middle) used to perform time-resolved momentum microscopy.
     Reprinted from \cite{kutnyakhovTimeMomentumresolvedPhotoemission2020}, under the terms of the Creative Commons Attribution 4.0 International License.}
     \label{fig:hex-tof}
 \end{figure}
@@ -99,7 +99,7 @@ The kinetic energies of photoelectrons are resolved through a TOF spectrometer, 
 \begin{figure}
     \centering
     \includegraphics[width=0.7\linewidth]{images/chessy_deblurring_merged_events.png}
-    \caption{Chessy sample before and after merging double-counted events, showing better resolved features. Chessy test sample is employed to determine the spatial overlap and field of view alignment in a momentum microscope using the \gls{PEEM} mode. Courtesy of M. Heber.}
+    \caption{\textit{Chessy sample before and after correction:} Merging double-counted events shows better resolved features. The Chessy test sample is employed to determine the spatial overlap and field-of-view alignment in a momentum microscope using the \gls{PEEM} mode. Courtesy of M. Heber.}
     \label{fig:chessy-distribution}
 \end{figure}
 
@@ -126,14 +126,14 @@ Individual electrons released by the photoemission process are difficult to dire
         \caption{Calibrated \gls{kx}--\gls{ky} map of \gls{GrIr} near \gls{EF}. This map represents the momentum distribution of photoelectrons detected by the \gls{HEXTOF} setup, with pixel values mapped to physical momentum axes.}
         \label{fig:grir-2d-slice-calibrated}
     \end{subfigure}
-    \caption{(a) Illustrative view of the circular \gls{MCP}, showing its hexagonal microchannel structure, which plays a critical role in amplifying electron signals within the detection system. (b) Circular momentum map of the \gls{GrIr} dataset in the \gls{kx}--\gls{ky} plane, derived from measurements using the full detection setup, which includes the \gls{MCP} as part of the \gls{TOF}-\gls{MM} and \gls{DLD} configuration. Both the MCP structure and momentum map share a circular geometry, reflecting the consistent spatial organization across the detection system.}
+    \caption{\textit{MCP and momentum map:} (a) Illustrative view of the circular \gls{MCP}, showing its hexagonal microchannel structure, which plays a critical role in amplifying electron signals within the detection system. (b) Circular momentum map of the \gls{GrIr} dataset in the \gls{kx}--\gls{ky} plane, derived from measurements using the full detection setup, which includes the \gls{MCP} as part of the \gls{TOF}-\gls{MM} and \gls{DLD} configuration. Both the MCP structure and momentum map share a circular geometry, reflecting the consistent spatial organization across the detection system.}
     \label{fig:combined-figures}
 \end{figure}
 
 \Glspl{MCP} are structured dense 2D array of hexagonal microchannels (with \unit{\micro\meter} sizes), as can be seen in \cref{fig:mcp}. With millions of such channels, each charge cloud can be localized. When an electron strikes the surface of the \gls{MCP}, it generates a cascade of secondary electrons, resulting in a final charge cloud that is orders of magnitude stronger than the initial signal. For additional gain, the \glspl{MCP} can be stacked in two layers, with V-stack (Chevron) configuration\footnote{Alternate configuration with an even higher gain by stacking together three layers is known as Z-stack.}
 as can be seen in top of \cref{fig:dld}, where the V shape is visible when viewing MCP 1 and MCP 2 together \cite{ladislaswizaMicrochannelPlateDetectors1979,paschottaMicrochannelPlatesEncyclopedia2019}. 
 
-The amplified charge cloud is then collected by a readout system, such as  phosphor screens paired with a \gls{CCD}, resistive anodes, wedge-and-strip anodes, and pixelated detectors. In the phosphor screen method, phosphor screen that converts the charge cloud into light, which can be detected by, e.g., a \gls{CCD} camera. The phosphor--\gls{CCD} scheme provides a high spatial resolution of the electrons to be recorded, but lacks the temporal resolution necessary for \gls{trPES}, i.e., it has a much slower decay time than the dynamics being studied.
+The amplified charge cloud is then collected by a readout system, such as  phosphor screens paired with a charge-coupled device (CCD), resistive anodes, wedge-and-strip anodes, and pixelated detectors. In the phosphor screen method, phosphor screen that converts the charge cloud into light, which can be detected by, e.g., a CCD camera. The phosphor--CCD scheme provides a high spatial resolution of the electrons to be recorded, but lacks the temporal resolution necessary for \gls{trPES}, i.e., it has a much slower decay time than the dynamics being studied.
 
 Pixelated detectors, which divide the anode into discrete segments, provide an alternative means to capture spatial information with high precision. However, the need to read each pixel individually limits their processing speed, as each pixel must be sequentially analyzed. While this approach supports multiple simultaneous hits across the pixel grid, it remains inadequate for experiments requiring rapid data acquisition and precise temporal resolution. Improvements in the readout speed have been suggested and the prospect of using pixelated detectors in future experiments is being realized \cite{correaTEMPUSTimepix4basedSystem2024}.
 
@@ -141,7 +141,7 @@ Pixelated detectors, which divide the anode into discrete segments, provide an a
 \begin{figure}
     \centering
     \includegraphics[width=0.9\linewidth]{images/dld.pdf}
-    \caption{Diagram of an example \gls{DLD}, with an \gls{MCP} and a delayline structure. \textbf{\gls{MCP} Structure}: The \glspl{MCP} are arranged in a V-stack (Chevron) configuration, with microchannels at opposite tilt angles to enhance electron cascade efficiency. Each channel, shown as simplified lines within the semi-transparent blue \gls{MCP} layers, initiates an electron cascade upon impact. This cascade amplifies the signal across both \glspl{MCP}, preserving spatial information and forming a final charge cloud. \textbf{Delayline Structure}: Below the \glspl{MCP}, the $x$ and $y$ meandering delay lines are presented, rotated \qty{45}{degree} relative to one another, illustrating how each delay line (labeled X and Y) captures spatial information through the timing of signals between designated endpoints ($x_1$, $x_2$, $y_1$, $y_2$).}
+    \caption{\textit{Diagram of DLD and MCP components:} Diagram of an example \gls{DLD}, with an \gls{MCP} and a delayline structure. \textbf{\gls{MCP} Structure:} The \glspl{MCP} are arranged in a V-stack (Chevron) configuration, with microchannels at opposite tilt angles to enhance electron cascade efficiency. Each channel, shown as simplified lines within the semi-transparent blue \gls{MCP} layers, initiates an electron cascade upon impact. This cascade amplifies the signal across both \glspl{MCP}, preserving spatial information and forming a final charge cloud. \textbf{Delayline Structure:} Below the \glspl{MCP}, the $x$ and $y$ meandering delay lines are presented, rotated \qty{45}{degree} relative to one another, illustrating how each delay line (labeled X and Y) captures spatial information through the timing of signals between designated endpoints ($x_1$, $x_2$, $y_1$, $y_2$).}
     \label{fig:dld}
 \end{figure}
 \Glspl{MCP} in combination with a delay-line readout are known as \glspl{DLD} \cite{oelsnerMicrospectroscopyImagingUsing2001}. \Glspl{DLD} have the unique ability to capture single-event data with high spatiotemporal accuracy. As shown in \cref{fig:dld}, a delay-line readout includes two orthogonal meandering\footnote{This zigzag pattern increases effective length, allowing for finer temporal resolution and hence position.} delay lines (meanders), positioned beneath the MCP, labeled Delay Line X and Y. When an electron strikes the \gls{MCP}, the resulting amplified charge cloud is transmitted to the delay lines. The charge propagates in both directions along each delay line, with timing recorded at each endpoint ($x_1$, $x_2$, $y_1$, $y_2$) by a time-to-digital converter (TDC). By calculating timing differences along the $x$ and $y$ axes, the exact position of the electron impact is determined and by using a reference trigger, the arrival time of the electron $t_{\text{tof}}$ can also be determined. This allows precise determination of the electron's position in both \gls{PEEM} and \gls{MM} modes, providing real and surface parallel momentum information, respectively.
